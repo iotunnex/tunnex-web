@@ -22,9 +22,14 @@ trust domain, and Tunnex-hosted infrastructure is never in the product's trust p
 ```sh
 pnpm install
 cp .dev.vars.example .dev.vars   # local env vars/secrets (gitignored)
+pnpm db:migrate:local            # apply D1 migrations to the local simulator
 pnpm dev                         # Astro dev server (fast iteration)
 pnpm preview                     # build + serve through the real Worker (wrangler dev)
 ```
+
+Local development needs **zero Cloudflare credentials**: D1 and KV run in wrangler's
+local simulation (state under `.wrangler/state/`, gitignored). Cloudflare account
+credentials are CI-only — never `wrangler login` or token files on a laptop.
 
 ## Checks
 
@@ -33,6 +38,25 @@ pnpm typecheck     # astro check (TypeScript strict)
 pnpm lint          # eslint
 pnpm format:check  # prettier
 ```
+
+## Data (D1 + KV)
+
+- **D1** (`DB` binding, database `tunnex-site-db`): durable data — subscribers,
+  trial_requests, trials, enterprise_leads, email_events. Schema changes are numbered
+  SQL files in `migrations/`.
+- **KV** (`RATE_LIMIT` binding): rate-limit counters only. Rate limiting NEVER writes
+  to D1.
+
+Migration rules:
+
+- Local: `pnpm db:migrate:local` (wrangler local simulator).
+- Remote: applied **only** by `deploy.yml` on pushes to main (`wrangler d1 migrations
+apply tunnex-site-db --remote` runs before `wrangler deploy`; a migration failure
+  fails the deploy). Migrations are never applied from a laptop.
+- **Preview deploys never touch the remote database** — previews validate build +
+  serve; schema changes reach the remote DB on main only. A PR that adds a migration
+  AND code depending on it will have a preview running against the pre-migration
+  schema until merge.
 
 ## LAUNCH_MODE
 

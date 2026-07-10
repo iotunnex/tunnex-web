@@ -20,3 +20,16 @@ LAUNCH_MODE = "prelaunch"
 
 [observability.logs]
 enabled = true
+
+# Durable data. Migrations live in ./migrations; applied locally with
+# `pnpm db:migrate:local`, remotely ONLY by deploy.yml on main pushes.
+[[d1_databases]]
+binding = "DB"
+database_name = "tunnex-site-db"
+database_id = "PLACEHOLDER-created-by-bootstrap-ci"
+migrations_dir = "migrations"
+
+# Rate limiting counters ONLY (never D1 writes for rate limits).
+[[kv_namespaces]]
+binding = "RATE_LIMIT"
+id = "PLACEHOLDER-created-by-bootstrap-ci"

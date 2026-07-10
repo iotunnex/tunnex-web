@@ -11,7 +11,8 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro build && wrangler dev",
-    "typecheck": "astro check",
+    "typecheck": "wrangler types && astro check",
+    "db:migrate:local": "wrangler d1 migrations apply tunnex-site-db --local",
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check ."

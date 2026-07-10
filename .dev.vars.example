@@ -1,9 +1,18 @@
 # Copy to .dev.vars for local development (gitignored).
 # Production secrets are set with `wrangler secret put <NAME>` — never in wrangler.toml.
-#
-# No secrets are required yet. Future stories add:
-#   RESEND_API_KEY    (S2.1)
-#   TURNSTILE_SECRET  (S2.2)
+# Cloudflare account credentials are CI-ONLY (GitHub Actions secrets) — never on a laptop.
 
-# Optional local override of the launch mode (defaults to "prelaunch"):
+# --- Secrets used by the site Worker ---
+
+# Resend API key for outbound email via mail.tunnex.io (used from S2.1).
+# Local dev can use a Resend test-mode key.
+# RESEND_API_KEY=re_...
+
+# Cloudflare Turnstile secret key for server-side form verification (used from S2.2).
+# Local dev can use the Turnstile test secret: 1x0000000000000000000000000000000AA
+# TURNSTILE_SECRET=0x...
+
+# --- Optional local overrides ---
+
+# Launch mode override (defaults to "prelaunch"):
 # LAUNCH_MODE=prelaunch
