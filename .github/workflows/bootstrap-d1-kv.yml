@@ -34,7 +34,7 @@ jobs:
       - name: Create D1 database (idempotent)
         run: pnpm exec wrangler d1 create tunnex-site-db || echo "d1 create failed — may already exist"
       - name: Echo D1 database ID
-        run: pnpm exec wrangler d1 info tunnex-site-db
+        run: pnpm exec wrangler d1 list
       - name: Create KV namespace (idempotent)
         run: pnpm exec wrangler kv namespace create RATE_LIMIT || echo "kv create failed — may already exist"
       - name: Echo KV namespace IDs
