@@ -3,13 +3,15 @@
 # `.dev.vars` (local, gitignored; see .dev.vars.example).
 
 name = "tunnex-site"
-main = "./dist/_worker.js/index.js"
 compatibility_date = "2026-07-01"
 compatibility_flags = ["nodejs_compat"]
 
+# The build generates the deployable config (dist/client/wrangler.json) plus a
+# .wrangler/deploy/config.json redirect — `wrangler dev`/`deploy` after
+# `astro build` picks it up automatically. This file is the source config.
 [assets]
 binding = "ASSETS"
-directory = "./dist"
+directory = "./dist/client"
 
 [vars]
 # "prelaunch" | "beta" — see README. Flipping this is the only change
