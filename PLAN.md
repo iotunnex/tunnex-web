@@ -50,10 +50,15 @@ Current: **S0.1 merged — next: S0.2 (in progress)**
 - **S0.2:** CI must pin Node from committed `.nvmrc` (Node 22) in every job — no floating
   "latest node". Verify all deps on LATEST STABLE release line; bump laggards; README note
   that renovate/dependabot config is a candidate follow-up. No betas/RCs/canaries.
-- **S0.3:** ~~explicit decision on the adapter's auto-enabled SESSION KV binding~~ RESOLVED
-  in S0.2 (pulled forward — deploy DoD depended on it): sessions disabled via
-  `session: { driver: sessionDrivers.null() }` in astro.config.mjs; no SESSION binding in
-  the deployed Worker config. Revisit only if the site ever gains a login.
+- **SESSION binding:** RESOLVED in S0.2 (approved; removed from S0.3 scope): sessions
+  disabled via `session: { driver: sessionDrivers.null() }` in astro.config.mjs; no
+  SESSION binding in the deployed Worker config. Revisit only if the site ever gains a login.
+- **Branch protection:** RESOLVED — repo stays private on GitHub Free; merges gated by the
+  review protocol (CI green + explicit sign-off), same as the product repo pre-S6.0b.
+  Mechanized branch protection — trigger: repo public at beta. Do not enable GitHub Pro.
+- **Major-version migrations (from S1.1 onward):** any major dependency migration gets its
+  own commit and a visual check of EVERY page in the story report. (The astro 5→7 major
+  landed inside S0.2 with only a placeholder page to regress against — accepted once.)
 - **TypeScript 7:** npm latest is TS 7.0 (native compiler) but `@astrojs/check` peers at
   `^5||^6` — pinned to TS 6.x; bump when the Astro toolchain supports 7.
 - **Renovate/dependabot:** candidate follow-up to automate latest-stable bumps.
