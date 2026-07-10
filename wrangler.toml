@@ -32,4 +32,4 @@ migrations_dir = "migrations"
 # Rate limiting counters ONLY (never D1 writes for rate limits).
 [[kv_namespaces]]
 binding = "RATE_LIMIT"
-id = "PLACEHOLDER-created-by-bootstrap-ci"
+id = "9b73f242b63a473981d42a105406a3fc"
