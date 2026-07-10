@@ -89,10 +89,10 @@ GitHub Actions (Node pinned from `.nvmrc` in every job — never floating):
 
 Required GitHub Actions secrets (repo → Settings → Secrets → Actions):
 
-| Secret                  | Purpose                                             |
-| ----------------------- | --------------------------------------------------- |
-| `CLOUDFLARE_API_TOKEN`  | API token with **Workers Scripts: Edit** permission |
-| `CLOUDFLARE_ACCOUNT_ID` | The Cloudflare account ID the Worker deploys into   |
+| Secret                  | Purpose                                                                              |
+| ----------------------- | ------------------------------------------------------------------------------------ |
+| `CLOUDFLARE_API_TOKEN`  | API token with **Workers Scripts: Edit**, **D1: Edit**, **Workers KV Storage: Edit** |
+| `CLOUDFLARE_ACCOUNT_ID` | The Cloudflare account ID the Worker deploys into                                    |
 
 Notes:
 

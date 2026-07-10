@@ -26,6 +26,14 @@ jobs:
       - run: pnpm lint
       - run: pnpm format:check
       - run: pnpm build
+      # Remote migrations run here and ONLY here (never from a laptop, never
+      # on previews). Step order is load-bearing: a migration failure fails
+      # the job before the deploy step runs.
+      - name: Apply D1 migrations (remote)
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: pnpm exec wrangler d1 migrations apply tunnex-site-db --remote
       - name: Deploy to production
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}

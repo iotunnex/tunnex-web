@@ -1,0 +1,48 @@
+# TEMPORARY (S0.3): create the D1 database + KV namespace from CI (Cloudflare
+# credentials are CI-only) and echo their IDs into the run log. Runs again
+# after the real IDs land in wrangler.toml to apply the initial remote
+# migration. Removed once bootstrap is complete — permanent remote migrations
+# live in deploy.yml.
+
+name: Bootstrap D1 + KV
+
+on:
+  push:
+    branches: [story/S0.3-data-plumbing]
+    paths:
+      - .github/workflows/bootstrap-d1-kv.yml
+      - wrangler.toml
+
+concurrency:
+  group: bootstrap-d1-kv
+  cancel-in-progress: false
+
+jobs:
+  bootstrap:
+    runs-on: ubuntu-latest
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Create D1 database (idempotent)
+        run: pnpm exec wrangler d1 create tunnex-site-db || echo "d1 create failed — may already exist"
+      - name: Echo D1 database ID
+        run: pnpm exec wrangler d1 info tunnex-site-db
+      - name: Create KV namespace (idempotent)
+        run: pnpm exec wrangler kv namespace create RATE_LIMIT || echo "kv create failed — may already exist"
+      - name: Echo KV namespace IDs
+        run: pnpm exec wrangler kv namespace list
+      - name: Apply initial remote migration (only once real IDs are committed)
+        run: |
+          if grep -q 'PLACEHOLDER' wrangler.toml; then
+            echo "wrangler.toml still has placeholder IDs — skipping remote migration"
+          else
+            pnpm exec wrangler d1 migrations apply tunnex-site-db --remote
+          fi
