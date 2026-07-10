@@ -1,0 +1,20 @@
+# Cloudflare Worker config for the tunnex.io marketing site.
+# Secrets are NEVER stored here — use `wrangler secret put` (prod) and
+# `.dev.vars` (local, gitignored; see .dev.vars.example).
+
+name = "tunnex-site"
+main = "./dist/_worker.js/index.js"
+compatibility_date = "2026-07-01"
+compatibility_flags = ["nodejs_compat"]
+
+[assets]
+binding = "ASSETS"
+directory = "./dist"
+
+[vars]
+# "prelaunch" | "beta" — see README. Flipping this is the only change
+# needed to switch site modes.
+LAUNCH_MODE = "prelaunch"
+
+[observability.logs]
+enabled = true

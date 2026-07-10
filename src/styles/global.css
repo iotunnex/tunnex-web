@@ -1,0 +1,5 @@
+@import 'tailwindcss';
+
+/* Dark-mode-first: `dark:` variants activate via a `.dark` class on <html>
+   (toggle lands in S1.1) rather than prefers-color-scheme alone. */
+@custom-variant dark (&:where(.dark, .dark *));
