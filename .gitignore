@@ -1,0 +1,15 @@
+# build output
+dist/
+.astro/
+.wrangler/
+
+# dependencies
+node_modules/
+
+# environment — secrets never committed
+.env
+.env.*
+.dev.vars
+
+# OS / editor
+.DS_Store
