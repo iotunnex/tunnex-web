@@ -53,7 +53,7 @@ exports[`email templates > renders newsletter-confirm (html + text snapshot) 1`]
     <img src="https://example.test/email/tunnex-logo-2x.png" alt="Tunnex" width="176" height="22" style="display:block;border:0;">
   </div>
   <div style="background-color:#ffffff;border:1px solid #d3dee9;border-radius:8px;padding:28px;color:#132032;font-size:15px;line-height:1.6;">
-<p style="margin:0 0 16px;">One click and you’re on the list — launch news and release notes, nothing else.</p><p style="margin:24px 0;"><a href="https://example.test/subscribe/confirm?token=RAW_TOKEN_PLACEHOLDER" style="display:inline-block;background-color:#0e7490;color:#ffffff;text-decoration:none;font-weight:600;font-size:15px;padding:10px 20px;border-radius:6px;">Confirm subscription</a></p><p style="margin:16px 0 0;color:#4a5c74;font-size:13px;">This link is valid for 30 minutes and can be used once. If you didn’t subscribe, ignore this email and you won’t hear from us.</p>
+<p style="margin:0 0 16px;">One click and you’re on the list — launch news and release notes, nothing else.</p><p style="margin:24px 0;"><a href="https://example.test/subscribe/confirm?token=RAW_TOKEN_PLACEHOLDER" style="display:inline-block;background-color:#0e7490;color:#ffffff;text-decoration:none;font-weight:600;font-size:15px;padding:10px 20px;border-radius:6px;">Confirm subscription</a></p><p style="margin:16px 0 0;color:#4a5c74;font-size:13px;">This link is valid for 24 hours and can be used once. If you didn’t subscribe, ignore this email and you won’t hear from us.</p>
   </div>
   <p style="color:#4a5c74;font-size:12px;line-height:1.5;padding-top:16px;margin:0;">
     Tunnex — self-hosted Zero Trust VPN. Your keys. Your servers. Your network.<br>
@@ -65,7 +65,7 @@ exports[`email templates > renders newsletter-confirm (html + text snapshot) 1`]
   "subject": "Confirm your Tunnex updates subscription",
   "text": "One click and you’re on the list — launch news and release notes, nothing else.
 
-Confirm here (valid 30 minutes, single use):
+Confirm here (valid 24 hours, single use):
 https://example.test/subscribe/confirm?token=RAW_TOKEN_PLACEHOLDER
 
 If you didn’t subscribe, ignore this email and you won’t hear from us.",

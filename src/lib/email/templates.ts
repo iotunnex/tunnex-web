@@ -201,13 +201,13 @@ const renderers: Renderers = {
       paragraph('One click and you’re on the list — launch news and release notes, nothing else.') +
         button(confirmUrl, 'Confirm subscription') +
         muted(
-          'This link is valid for 30 minutes and can be used once. If you didn’t subscribe, ignore this email and you won’t hear from us.',
+          'This link is valid for 24 hours and can be used once. If you didn’t subscribe, ignore this email and you won’t hear from us.',
         ),
     ),
     text: [
       'One click and you’re on the list — launch news and release notes, nothing else.',
       '',
-      'Confirm here (valid 30 minutes, single use):',
+      'Confirm here (valid 24 hours, single use):',
       confirmUrl,
       '',
       'If you didn’t subscribe, ignore this email and you won’t hear from us.',
