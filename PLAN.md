@@ -46,7 +46,7 @@ prettier-plugin-astro as dev tooling.)
 
 ## Story Status (re-entry pointer — update on every merge)
 
-Current: **S1.5 merged — next: S1.6 (docs skeleton)**
+Current: **S1.6 merged — EPIC 1 complete; next: S2.1 (email infrastructure)**
 
 ---
 
