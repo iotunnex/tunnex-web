@@ -1,0 +1,19 @@
+---
+interface Props {
+  label?: string;
+  class?: string;
+}
+
+const { label, class: className = '' } = Astro.props;
+---
+
+<figure class={`overflow-hidden rounded-lg border border-border bg-surface ${className}`}>
+  {
+    label && (
+      <figcaption class="border-b border-border px-4 py-1.5 font-mono text-xs tracking-wide text-text-muted uppercase">
+        {label}
+      </figcaption>
+    )
+  }
+  <pre class="overflow-x-auto px-4 py-3 font-mono text-sm text-link"><code><slot /></code></pre>
+</figure>

@@ -6,11 +6,13 @@ import '../styles/global.css';
 interface Props {
   title: string;
   description?: string;
+  noindex?: boolean;
 }
 
 const {
   title,
   description = 'Self-hosted Zero Trust VPN. Your keys. Your servers. Your network.',
+  noindex = false,
 } = Astro.props;
 ---
 
@@ -20,11 +22,19 @@ const {
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex" />}
     <title>{title}</title>
+    <script is:inline>
+      // Pre-paint theme init: dark is the default; an explicit stored choice wins.
+      // Runs before first paint so there is no flash or layout shift.
+      if (localStorage.getItem('theme') === 'light') {
+        document.documentElement.classList.remove('dark');
+      }
+    </script>
   </head>
-  <body class="min-h-screen bg-white text-zinc-900 antialiased dark:bg-zinc-950 dark:text-zinc-100">
+  <body class="flex min-h-screen flex-col bg-bg text-text antialiased">
     <Nav />
-    <main>
+    <main class="flex-1">
       <slot />
     </main>
     <Footer />

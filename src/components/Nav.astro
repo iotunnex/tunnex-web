@@ -1,7 +1,111 @@
 ---
-// Nav shell — links, LAUNCH_MODE-dependent GitHub link, and styling land in S1.1.
+import { launchMode } from '../config';
+import ThemeToggle from './ThemeToggle.astro';
+
+const links = [
+  { href: '/pricing', label: 'Pricing' },
+  { href: '/download', label: 'Download' },
+  { href: '/security', label: 'Security' },
+  { href: '/docs', label: 'Docs' },
+];
+const showGitHub = launchMode === 'beta';
 ---
 
-<header>
-  <nav aria-label="Main"></nav>
+<header class="sticky top-0 z-40 border-b border-border bg-bg/90 backdrop-blur">
+  <nav aria-label="Main" class="mx-auto flex h-14 max-w-6xl items-center gap-6 px-4 sm:px-6">
+    <a
+      href="/"
+      class="font-mono text-lg font-bold tracking-tight text-text focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+    >
+      tunnex<span class="text-primary">.</span>
+    </a>
+
+    <ul class="hidden items-center gap-5 md:flex">
+      {
+        links.map((l) => (
+          <li>
+            <a
+              href={l.href}
+              class="text-sm text-text-muted transition-colors hover:text-text focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+            >
+              {l.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+
+    <div class="ml-auto flex items-center gap-3">
+      {
+        showGitHub && (
+          <a
+            href="https://github.com/iotunnex"
+            class="hidden text-sm text-text-muted transition-colors hover:text-text md:block"
+          >
+            GitHub
+          </a>
+        )
+      }
+      <ThemeToggle />
+      <button
+        id="nav-menu-btn"
+        type="button"
+        class="inline-flex size-9 items-center justify-center rounded-md border border-border text-text-muted hover:bg-surface-raised hover:text-text focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary md:hidden"
+        aria-label="Open menu"
+        aria-expanded="false"
+        aria-controls="nav-menu"
+      >
+        <svg
+          class="size-4"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          aria-hidden="true"
+        >
+          <path d="M4 7h16M4 12h16M4 17h16"></path>
+        </svg>
+      </button>
+    </div>
+  </nav>
+
+  <div id="nav-menu" class="hidden border-t border-border md:hidden">
+    <ul class="flex flex-col gap-1 px-4 py-3">
+      {
+        links.map((l) => (
+          <li>
+            <a
+              href={l.href}
+              class="block rounded-md px-2 py-2 text-sm text-text-muted hover:bg-surface-raised hover:text-text"
+            >
+              {l.label}
+            </a>
+          </li>
+        ))
+      }
+      {
+        showGitHub && (
+          <li>
+            <a
+              href="https://github.com/iotunnex"
+              class="block rounded-md px-2 py-2 text-sm text-text-muted hover:bg-surface-raised hover:text-text"
+            >
+              GitHub
+            </a>
+          </li>
+        )
+      }
+    </ul>
+  </div>
 </header>
+
+<script>
+  const btn = document.getElementById('nav-menu-btn');
+  const menu = document.getElementById('nav-menu');
+  btn?.addEventListener('click', () => {
+    const open = menu?.classList.toggle('hidden') === false;
+    btn.setAttribute('aria-expanded', String(open));
+    btn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+  });
+</script>

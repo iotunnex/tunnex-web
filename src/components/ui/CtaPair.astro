@@ -1,0 +1,24 @@
+---
+import Button from './Button.astro';
+
+interface Props {
+  primaryLabel: string;
+  primaryHref: string;
+  secondaryLabel: string;
+  secondaryHref: string;
+  class?: string;
+}
+
+const {
+  primaryLabel,
+  primaryHref,
+  secondaryLabel,
+  secondaryHref,
+  class: className = '',
+} = Astro.props;
+---
+
+<div class={`flex flex-wrap gap-3 ${className}`}>
+  <Button href={primaryHref} variant="primary">{primaryLabel}</Button>
+  <Button href={secondaryHref} variant="secondary">{secondaryLabel}</Button>
+</div>
