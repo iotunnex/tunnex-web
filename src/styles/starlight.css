@@ -1,0 +1,59 @@
+/*
+ * Starlight (docs) retheme onto the site's semantic token layer — /docs must
+ * not look like a different site. Only semantic --t-* references here; the
+ * primitive layer stays in tokens.css (token-guard enforced). Starlight's own
+ * light/dark toggle sets [data-theme] on <html>, which tokens.css maps to the
+ * same semantic remap as the marketing pages' .dark class.
+ */
+@import './tokens.css';
+
+:root {
+  /* Accent */
+  --sl-color-accent-low: var(--t-surface-raised);
+  --sl-color-accent: var(--t-primary);
+  --sl-color-accent-high: var(--t-link);
+
+  /* Grays (Starlight's scale mapped onto semantic surfaces/text) */
+  --sl-color-white: var(--t-text);
+  --sl-color-gray-1: var(--t-text);
+  --sl-color-gray-2: var(--t-text-muted);
+  --sl-color-gray-3: var(--t-text-muted);
+  --sl-color-gray-4: var(--t-border);
+  --sl-color-gray-5: var(--t-border);
+  --sl-color-gray-6: var(--t-surface-raised);
+  --sl-color-gray-7: var(--t-surface);
+  --sl-color-black: var(--t-bg);
+
+  /* Surfaces + structure */
+  --sl-color-bg: var(--t-bg);
+  --sl-color-bg-nav: var(--t-surface);
+  --sl-color-bg-sidebar: var(--t-surface);
+  --sl-color-bg-inline-code: var(--t-surface-raised);
+  --sl-color-hairline: var(--t-border);
+  --sl-color-hairline-light: var(--t-border);
+  --sl-color-hairline-shade: var(--t-border);
+
+  /* Text */
+  --sl-color-text: var(--t-text);
+  --sl-color-text-accent: var(--t-link);
+  --sl-color-text-invert: var(--t-primary-fg);
+
+  /* Note asides (used by the Stub markers) follow the brand accent instead of
+     Starlight's default blue. */
+  --sl-color-blue: var(--t-primary);
+  --sl-color-blue-low: var(--t-surface-raised);
+  --sl-color-blue-high: var(--t-link);
+}
+
+/* Sidebar current item: marketing primary-button treatment instead of a
+   full-strength accent slab (cyan stays reserved for links/hairlines). */
+.sidebar-content a[aria-current='page'],
+.sidebar-content a[aria-current='page']:hover {
+  background-color: var(--t-primary);
+  color: var(--t-primary-fg);
+}
+
+/* Header wordmark matches the marketing nav (text color, not accent). */
+.site-title {
+  color: var(--t-text);
+}

@@ -49,7 +49,10 @@
   setLabel();
   btn?.addEventListener('click', () => {
     const dark = root.classList.toggle('dark');
-    localStorage.setItem('theme', dark ? 'dark' : 'light');
+    const mode = dark ? 'dark' : 'light';
+    localStorage.setItem('theme', mode);
+    // Keep the Starlight docs toggle in sync — one choice, whole site.
+    localStorage.setItem('starlight-theme', mode);
     setLabel();
   });
 </script>

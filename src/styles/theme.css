@@ -1,92 +1,10 @@
 /*
- * THEME — single source of truth for every color on the site.
- *
- * Two-layer token architecture:
- *   1. PRIMITIVES (--p-*): raw OKLCH scales. Referenced ONLY inside this file.
- *   2. SEMANTIC tokens (--color-*): what components consume, via Tailwind
- *      utilities (bg-bg, bg-surface, text-text, bg-primary, …).
- *
- * Rules (CI-enforced by scripts/lint-tokens.mjs):
- *   - No raw hex/oklch color values outside this file.
- *   - No --p-* references outside this file.
- *   - Components are mode-unaware: .dark remaps the SAME semantic names.
- *
- * Changing the brand = editing the primitive layer below. Nothing else.
- * Palette: "Signal Cyan" (approved S1.1) — deep slate base, one cyan accent,
- * slate-grey supporting neutral. WCAG AA verified in both modes.
+ * Tailwind mapping for the token system. Raw values live in tokens.css (the
+ * only place colors are defined); this file exposes the semantic layer as
+ * Tailwind utilities. Starlight imports tokens.css directly (no @theme in its
+ * CSS pipeline).
  */
-
-:root {
-  /* ---- PRIMITIVES: neutral scale (blue-biased slate) ---- */
-  --p-neutral-0: oklch(100% 0 0);
-  --p-neutral-50: oklch(98.34% 0.0042 236.5);
-  --p-neutral-100: oklch(95.46% 0.011 243.65);
-  --p-neutral-200: oklch(89.55% 0.0192 248.04);
-  --p-neutral-300: oklch(85.71% 0.0236 246.08);
-  --p-neutral-400: oklch(75.37% 0.0375 253.51);
-  --p-neutral-600: oklch(46.95% 0.045 255.74);
-  --p-neutral-800: oklch(31.99% 0.0535 259.36);
-  --p-neutral-850: oklch(26.08% 0.0493 260.66);
-  --p-neutral-900: oklch(24.12% 0.0393 256.7);
-  --p-neutral-925: oklch(22.24% 0.0406 260.82);
-  --p-neutral-950: oklch(18.23% 0.0315 261.1);
-
-  /* ---- PRIMITIVES: accent scale (signal cyan) ---- */
-  --p-accent-300: oklch(82.14% 0.1127 207.48);
-  --p-accent-400: oklch(76.23% 0.1235 208.38);
-  --p-accent-600: oklch(51.98% 0.0936 223.13);
-  --p-accent-700: oklch(44.5% 0.0796 223.26);
-  --p-accent-950: oklch(23.48% 0.0388 221.59);
-
-  /* ---- PRIMITIVES: status scales (semantic-only, not brand) ---- */
-  --p-green-400: oklch(77.29% 0.1535 163.22);
-  --p-green-700: oklch(50.81% 0.1049 165.61);
-  --p-green-950: oklch(26.88% 0.0527 163.85);
-  --p-red-400: oklch(71.06% 0.1661 22.22);
-  --p-red-700: oklch(50.54% 0.1905 27.52);
-  --p-red-950: oklch(23.61% 0.0765 25.23);
-  --p-amber-400: oklch(80.39% 0.145 79.58);
-  --p-amber-700: oklch(53.05% 0.1099 72.69);
-  --p-amber-950: oklch(24.23% 0.0457 80.25);
-
-  /* ---- SEMANTIC LAYER: light mode ---- */
-  --t-bg: var(--p-neutral-50);
-  --t-surface: var(--p-neutral-0);
-  --t-surface-raised: var(--p-neutral-100);
-  --t-border: var(--p-neutral-200);
-  --t-text: var(--p-neutral-900);
-  --t-text-muted: var(--p-neutral-600);
-  --t-primary: var(--p-accent-600);
-  --t-primary-hover: var(--p-accent-700);
-  --t-primary-fg: var(--p-neutral-0);
-  --t-link: var(--p-accent-600);
-  --t-success: var(--p-green-700);
-  --t-success-fg: var(--p-neutral-0);
-  --t-warning: var(--p-amber-700);
-  --t-warning-fg: var(--p-neutral-0);
-  --t-error: var(--p-red-700);
-  --t-error-fg: var(--p-neutral-0);
-}
-
-/* Dark mode (site default): SAME semantic names, remapped. */
-.dark {
-  --t-bg: var(--p-neutral-950);
-  --t-surface: var(--p-neutral-925);
-  --t-surface-raised: var(--p-neutral-850);
-  --t-border: var(--p-neutral-800);
-  --t-text: oklch(94.14% 0.0088 253.86); /* #E7EDF5 */
-  --t-text-muted: var(--p-neutral-400);
-  --t-primary: var(--p-accent-400);
-  --t-primary-hover: var(--p-accent-300);
-  --t-primary-fg: var(--p-accent-950);
-  --t-link: var(--p-accent-300);
-  --t-success: var(--p-green-400);
-  --t-success-fg: var(--p-green-950);
-  --t-warning: var(--p-amber-400);
-  --t-warning-fg: var(--p-amber-950);
-  --t-error: var(--p-red-400);
-  --t-error-fg: var(--p-red-950);
-}
+@import './tokens.css';
 
 @theme {
   /* Remove Tailwind's default palette: only semantic colors exist, so a

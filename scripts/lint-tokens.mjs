@@ -1,5 +1,5 @@
 // Token guard (standing CI check): every color on the site must come from the
-// semantic token layer in src/styles/theme.css. Red build when any other
+// semantic token layer in src/styles/tokens.css. Red build when any other
 // source file contains:
 //   1. a raw hex color        (#0A1220, #fff)
 //   2. a raw oklch()/rgb()/hsl() value
@@ -11,7 +11,10 @@ import { join, relative } from 'node:path';
 
 const ROOT = new URL('..', import.meta.url).pathname;
 const SCAN_DIR = join(ROOT, 'src');
-const THEME_FILE = join(ROOT, 'src/styles/theme.css');
+const THEME_FILES = new Set([
+  join(ROOT, 'src/styles/tokens.css'), // raw values (primitives + semantic layer)
+  join(ROOT, 'src/styles/theme.css'), // Tailwind mapping over tokens.css
+]);
 const EXTENSIONS = /\.(astro|css|ts|tsx|js|mjs|jsx|html|svg|md|mdx)$/;
 
 const TAILWIND_PALETTE =
@@ -46,7 +49,7 @@ function* walk(dir) {
 
 const violations = [];
 for (const file of walk(SCAN_DIR)) {
-  if (file === THEME_FILE) continue;
+  if (THEME_FILES.has(file)) continue;
   const text = readFileSync(file, 'utf8');
   const lines = text.split('\n');
   for (const rule of RULES) {
@@ -66,4 +69,4 @@ if (violations.length > 0) {
   for (const v of violations) console.error('  ' + v);
   process.exit(1);
 }
-console.log('Token guard passed: no raw colors or primitive tokens outside theme.css.');
+console.log('Token guard passed: no raw colors or primitive tokens outside the token files.');
