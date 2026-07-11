@@ -6,11 +6,13 @@ import '../styles/global.css';
 interface Props {
   title: string;
   description?: string;
+  noindex?: boolean;
 }
 
 const {
   title,
   description = 'Self-hosted Zero Trust VPN. Your keys. Your servers. Your network.',
+  noindex = false,
 } = Astro.props;
 ---
 
@@ -20,6 +22,7 @@ const {
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex" />}
     <title>{title}</title>
     <script is:inline>
       // Pre-paint theme init: dark is the default; an explicit stored choice wins.
