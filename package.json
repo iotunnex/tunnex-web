@@ -13,7 +13,8 @@
     "preview": "astro build && wrangler dev",
     "typecheck": "wrangler types && astro check",
     "db:migrate:local": "wrangler d1 migrations apply tunnex-site-db --local",
-    "lint": "eslint .",
+    "lint": "eslint . && node scripts/lint-tokens.mjs",
+    "lint:tokens": "node scripts/lint-tokens.mjs",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },

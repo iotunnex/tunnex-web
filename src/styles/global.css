@@ -1,5 +1,12 @@
 @import 'tailwindcss';
+@import './theme.css';
 
-/* Dark-mode-first: `dark:` variants activate via a `.dark` class on <html>
-   (toggle lands in S1.1) rather than prefers-color-scheme alone. */
+/* Dark-mode-first: `dark:` variants and the .dark semantic remap activate via
+   a `.dark` class on <html>, toggled by ThemeToggle and persisted. */
 @custom-variant dark (&:where(.dark, .dark *));
+
+html {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  scrollbar-gutter: stable;
+}
