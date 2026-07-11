@@ -50,6 +50,21 @@ const features: { title: string; body: string; tag?: string }[] = [
     <CodeSnippet label="one-command install" class="max-w-xl">
       curl -fsSL https://get.tunnex.io | sh
     </CodeSnippet>
+    <p class="max-w-xl text-sm text-text-muted">
+      Runs on any VPS with Docker and a public address.
+      {
+        isBeta ? (
+          <>
+            Prefer to verify first?{' '}
+            <a href="/docs/quickstart/" class="font-semibold text-link">
+              Download, check the SHA256, inspect, then run →
+            </a>
+          </>
+        ) : (
+          <>The installer ships with the beta.</>
+        )
+      }
+    </p>
     <CtaPair
       primaryLabel={isBeta ? 'Download' : 'Start 14-day trial'}
       primaryHref={isBeta ? '/download' : '/trial'}

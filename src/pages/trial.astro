@@ -1,0 +1,36 @@
+---
+import Base from '../layouts/Base.astro';
+import Button from '../components/ui/Button.astro';
+import Card from '../components/ui/Card.astro';
+
+// INTERIM placeholder (accuracy fix): keeps every "Start 14-day trial" CTA
+// from 404ing until S3.2 ships the real request form on this same route.
+---
+
+<Base
+  title="Tunnex — Start your trial"
+  description="Tunnex Enterprise trial requests open shortly. Join the waitlist and be first in line."
+>
+  <section
+    class="mx-auto flex min-h-[60vh] w-full max-w-6xl flex-col justify-center px-4 py-20 sm:px-6"
+  >
+    <Card class="mx-auto flex w-full max-w-md flex-col gap-4 p-8">
+      <h1 class="text-xl font-semibold">Trial requests open shortly</h1>
+      <p class="text-sm text-text-muted">
+        The 14-day Enterprise trial works like this: request it with your work email, confirm, and
+        your license key arrives the moment the beta opens — your 14 days start only when the key is
+        issued.
+      </p>
+      <p class="text-sm text-text-muted">
+        Until requests open, join the waitlist and we’ll tell you the moment they do.
+      </p>
+      <Button href="/download" variant="primary" class="w-full">Join the waitlist</Button>
+      <p class="text-xs text-text-muted">
+        In a hurry? Write to
+        <a href="mailto:sales@tunnex.io?subject=Tunnex%20trial" class="font-semibold text-link">
+          sales@tunnex.io</a
+        > and we’ll set you up directly.
+      </p>
+    </Card>
+  </section>
+</Base>

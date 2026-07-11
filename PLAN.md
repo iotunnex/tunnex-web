@@ -85,6 +85,16 @@ Current: **S2.2 merged — next: S2.3 (newsletter double-opt-in; MERGE GATED on 
   NOTHING until Cloudflare Email Routing is configured post-domain-purchase — the launch
   runbook must include that step (waitlist mailto on /download depends on it; a disclosure
   address that bounces is worse than none — security@ is mandatory in that setup).
+- **Trial length RECONCILED (2026-07-12): 14 days stands** — the platform repo's
+  architecture-licensing.md said 30 and is the stale side (being fixed there). Do not
+  change site copy/templates/schema.
+- **/trial interim placeholder (until S3.2):** minimal page keeps every trial CTA from
+  404ing; S3.2's real request form replaces it on the same route.
+- **Install-path rules (from platform message):** hero one-liner stays visually but is a
+  placeholder until get.tunnex.io resolves (prelaunch caption says "ships with the beta";
+  beta caption links verify-first docs + GitHub release fallback). Beta surfaces must show
+  BOTH paths (one-liner AND download → SHA256 → inspect → run) plus the prerequisite line
+  "any VPS with Docker and a public address."
 - **Test-send HARD GATE (S2.1 merged without it):** execute scripts/test-send.mjs the
   moment Resend + mail.tunnex.io DNS land on Pawan's side; S2.3 CANNOT MERGE until the
   test-send evidence exists (its flows send real email).
@@ -275,7 +285,9 @@ Current: **S2.2 merged — next: S2.3 (newsletter double-opt-in; MERGE GATED on 
 
 - **EPIC 5 — Downloads & install script.** Trigger: product beta (repo public, S6.6 done).
   R2 bucket at dl.tunnex.io fed by the product repo's release CI; `get.tunnex.io` Worker
-  route serving install.sh; flip LAUNCH_MODE=beta; waitlist announcement send.
+  route as a THIN REDIRECT/PROXY to the PLATFORM repo's released install.sh — one script,
+  one source of truth; NEVER hand-written or forked in this repo; flip LAUNCH_MODE=beta;
+  waitlist announcement send.
 - **EPIC 6 — Real license issuance.** Trigger: product EPIC 12 (S12.1/S12.2) exists.
   Ed25519 signing (WebCrypto) behind the Issuer interface, private key in a Worker
   secret/KMS — SECURITY-REVIEWED story, decide-before-code mandatory. Beta trial path goes
