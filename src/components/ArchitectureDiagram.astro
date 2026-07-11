@@ -1,0 +1,187 @@
+---
+// Hand-rolled architecture diagram. All paints are semantic-token utilities or
+// currentColor (token-guard enforced) so the diagram restyles with the theme.
+---
+
+<svg
+  viewBox="0 0 880 460"
+  role="img"
+  aria-labelledby="arch-title arch-desc"
+  class="w-full max-w-4xl"
+>
+  <title id="arch-title">Tunnex architecture: everything runs in your infrastructure</title>
+  <desc id="arch-desc">
+    A boundary box labelled “your infrastructure” contains the self-hosted control plane, two
+    WireGuard gateways, and three clients (laptop, server, phone). Clients connect to the gateways
+    over WireGuard tunnels, and the control plane distributes configuration and policy to gateways
+    and clients. Outside the boundary, a separate box labelled “tunnex.io (hosted)” handles billing
+    and licensing only, linked to the control plane by a single dashed license-check line. The
+    hosted service is never in the data path.
+  </desc>
+
+  <defs>
+    <marker
+      id="arrow"
+      viewBox="0 0 8 8"
+      refX="7"
+      refY="4"
+      markerWidth="7"
+      markerHeight="7"
+      orient="auto-start-reverse"
+    >
+      <path d="M0 0 L8 4 L0 8 z" fill="currentColor"></path>
+    </marker>
+  </defs>
+
+  <!-- customer boundary -->
+  <rect
+    x="16"
+    y="16"
+    width="568"
+    height="428"
+    rx="14"
+    class="fill-surface stroke-border"
+    stroke-width="1.5"></rect>
+  <text x="40" y="52" class="fill-text-muted font-mono" font-size="13" letter-spacing="2"
+    >YOUR INFRASTRUCTURE</text
+  >
+
+  <!-- control plane -->
+  <rect
+    x="44"
+    y="196"
+    width="156"
+    height="68"
+    rx="8"
+    class="fill-surface-raised stroke-primary"
+    stroke-width="1.5"></rect>
+  <text x="122" y="224" text-anchor="middle" class="fill-text" font-size="14" font-weight="600"
+    >Control plane</text
+  >
+  <text x="122" y="244" text-anchor="middle" class="fill-text-muted" font-size="12"
+    >self-hosted</text
+  >
+
+  <!-- gateways -->
+  <rect
+    x="284"
+    y="110"
+    width="132"
+    height="58"
+    rx="8"
+    class="fill-surface-raised stroke-border"
+    stroke-width="1.5"></rect>
+  <text x="350" y="134" text-anchor="middle" class="fill-text" font-size="13" font-weight="600"
+    >Gateway</text
+  >
+  <text x="350" y="152" text-anchor="middle" class="fill-text-muted" font-size="11">WireGuard</text>
+
+  <rect
+    x="284"
+    y="292"
+    width="132"
+    height="58"
+    rx="8"
+    class="fill-surface-raised stroke-border"
+    stroke-width="1.5"></rect>
+  <text x="350" y="316" text-anchor="middle" class="fill-text" font-size="13" font-weight="600"
+    >Gateway</text
+  >
+  <text x="350" y="334" text-anchor="middle" class="fill-text-muted" font-size="11">WireGuard</text>
+
+  <!-- clients -->
+  <rect
+    x="478"
+    y="92"
+    width="84"
+    height="44"
+    rx="8"
+    class="fill-surface-raised stroke-border"
+    stroke-width="1.5"></rect>
+  <text x="520" y="118" text-anchor="middle" class="fill-text" font-size="12">Laptop</text>
+
+  <rect
+    x="478"
+    y="208"
+    width="84"
+    height="44"
+    rx="8"
+    class="fill-surface-raised stroke-border"
+    stroke-width="1.5"></rect>
+  <text x="520" y="234" text-anchor="middle" class="fill-text" font-size="12">Server</text>
+
+  <rect
+    x="478"
+    y="324"
+    width="84"
+    height="44"
+    rx="8"
+    class="fill-surface-raised stroke-border"
+    stroke-width="1.5"></rect>
+  <text x="520" y="350" text-anchor="middle" class="fill-text" font-size="12">Phone</text>
+
+  <!-- WireGuard tunnels: clients <-> gateways -->
+  <g class="stroke-primary" stroke-width="2" fill="none">
+    <path d="M478 114 C 448 118, 440 126, 416 134"></path>
+    <path d="M478 226 C 448 210, 442 174, 416 152"></path>
+    <path d="M478 234 C 448 250, 442 288, 416 312"></path>
+    <path d="M478 346 C 448 342, 440 334, 416 326"></path>
+  </g>
+  <text
+    x="447"
+    y="238"
+    text-anchor="middle"
+    class="fill-primary font-mono"
+    font-size="10"
+    transform="rotate(-90 447 238)">WireGuard tunnels</text
+  >
+
+  <!-- control plane -> gateways/clients: config & policy (dashed) -->
+  <g
+    class="stroke-text-muted"
+    stroke-width="1.5"
+    fill="none"
+    stroke-dasharray="5 4"
+    marker-end="url(#arrow)"
+  >
+    <path d="M200 214 C 236 200, 248 166, 280 146" class="text-text-muted"></path>
+    <path d="M200 246 C 236 260, 248 294, 280 314" class="text-text-muted"></path>
+  </g>
+  <text x="228" y="172" class="fill-text-muted" font-size="11">config &amp; policy</text>
+
+  <!-- hosted tunnex box (outside the boundary) -->
+  <rect
+    x="648"
+    y="196"
+    width="204"
+    height="68"
+    rx="8"
+    class="fill-bg stroke-border"
+    stroke-width="1.5"
+    stroke-dasharray="6 4"></rect>
+  <text x="750" y="224" text-anchor="middle" class="fill-text" font-size="14" font-weight="600"
+    >tunnex.io (hosted)</text
+  >
+  <text x="750" y="244" text-anchor="middle" class="fill-text-muted" font-size="12"
+    >billing &amp; license only</text
+  >
+
+  <!-- single license line crossing the boundary -->
+  <path
+    d="M584 230 L 648 230"
+    class="stroke-text-muted"
+    stroke-width="1.5"
+    fill="none"
+    stroke-dasharray="5 4"
+    marker-start="url(#arrow)"
+    marker-end="url(#arrow)"></path>
+  <text x="616" y="220" text-anchor="middle" class="fill-text-muted" font-size="10">license</text>
+
+  <!-- callout -->
+  <text x="750" y="292" text-anchor="middle" class="fill-warning" font-size="12" font-weight="600"
+    >Never in the data path.</text
+  >
+  <text x="750" y="312" text-anchor="middle" class="fill-text-muted" font-size="11"
+    >No traffic, no keys, no user data.</text
+  >
+</svg>
