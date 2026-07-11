@@ -1,0 +1,122 @@
+---
+import Base from '../layouts/Base.astro';
+import Card from '../components/ui/Card.astro';
+import ArchitectureDiagram from '../components/ArchitectureDiagram.astro';
+
+// Every claim on this page is limited to founder-approved positioning
+// (home/pricing copy + locked plan decisions). No overclaiming: fail-closed
+// is "designed", never a platform-specific persistence promise.
+
+const cantSee = [
+  {
+    what: 'Your traffic',
+    detail:
+      'WireGuard tunnels terminate on your gateways. Packets never route through anything we operate.',
+  },
+  {
+    what: 'Your network keys',
+    detail:
+      'WireGuard keys are generated and stored on your machines. There is no key escrow — your private keys never touch our systems.',
+  },
+  {
+    what: 'Your configs',
+    detail: 'Network topology, ACLs, and policies live in your control plane — self-hosted.',
+  },
+  {
+    what: 'Your users',
+    detail:
+      'Identity stays between your control plane and your identity provider. We never see accounts or sign-ins.',
+  },
+  {
+    what: 'Your logs',
+    detail: 'Audit logs are written and kept inside your infrastructure. Nothing streams to us.',
+  },
+];
+---
+
+<Base
+  title="Tunnex — Security"
+  description="Tunnex security model: your infrastructure is its own trust domain. Hosted service holds billing and license records only — offline license verification, fail-closed client design."
+>
+  <section class="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-16 sm:px-6 md:py-20">
+    <h1 class="text-4xl font-bold tracking-tight">Security</h1>
+    <p class="max-w-2xl text-lg text-text-muted">
+      The honest version: the most secure component is the one that isn’t there. Tunnex is built so
+      our infrastructure cannot touch your network — not by policy, by architecture.
+    </p>
+  </section>
+
+  <section class="mx-auto flex max-w-6xl flex-col gap-6 px-4 pb-16 sm:px-6">
+    <h2 class="text-2xl font-bold tracking-tight">Two trust domains. One of them is yours.</h2>
+    <p class="max-w-2xl text-text-muted">
+      Everything that moves or protects your data — control plane, gateways, clients — runs on
+      infrastructure you own. Our hosted service is a separate trust domain that holds exactly two
+      kinds of records: billing and licenses. It is never in your traffic path, and your VPN keeps
+      running even if tunnex.io goes dark.
+    </p>
+    <div class="overflow-x-auto">
+      <div class="min-w-[600px] sm:min-w-0"><ArchitectureDiagram /></div>
+    </div>
+  </section>
+
+  <section class="border-y border-border bg-surface/50">
+    <div class="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-16 sm:px-6">
+      <h2 class="text-2xl font-bold tracking-tight">What we cannot see</h2>
+      <p class="max-w-2xl text-sm text-text-muted">
+        Not “do not look at” — cannot. These never leave your infrastructure:
+      </p>
+      <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-6">
+        {
+          cantSee.map((item, i) => (
+            <div class={i < 3 ? 'lg:col-span-2' : 'lg:col-span-3'}>
+              <Card class="h-full">
+                <h3 class="text-base font-semibold">{item.what}</h3>
+                <p class="mt-2 text-sm text-text-muted">{item.detail}</p>
+              </Card>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="mx-auto grid max-w-6xl gap-10 px-4 py-16 sm:px-6 md:grid-cols-2">
+    <div class="flex flex-col gap-3">
+      <h2 class="text-2xl font-bold tracking-tight">Licenses verify offline</h2>
+      <p class="text-sm text-text-muted">
+        Enterprise license keys are verified inside your deployment against a public key that ships
+        in the binary. There is no phone-home, no license server in your critical path, and
+        air-gapped deployments are fully supported.
+      </p>
+      <p class="text-sm text-text-muted">
+        When a license expires: a grace period with warnings, then Enterprise features lapse to the
+        Open tier. The VPN keeps running — license state never touches the data plane. Upgrading
+        again is pasting a new key, not a reinstall.
+      </p>
+    </div>
+    <div class="flex flex-col gap-3">
+      <h2 class="text-2xl font-bold tracking-tight">Designed to fail closed</h2>
+      <p class="text-sm text-text-muted">
+        The desktop clients include a kill-switch designed to fail closed: if the tunnel drops,
+        traffic stops rather than silently falling back to the open network. Fail-open is a design
+        bug, not a convenience.
+      </p>
+      <p class="text-sm text-text-muted">
+        We say “designed to” deliberately — hardening this behavior on every platform is ongoing
+        engineering, and we would rather under-promise here than oversell a security boundary.
+      </p>
+    </div>
+  </section>
+
+  <section class="border-t border-border bg-surface/50">
+    <div class="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-16 sm:px-6">
+      <h2 class="text-2xl font-bold tracking-tight">Found a vulnerability?</h2>
+      <p class="max-w-2xl text-sm text-text-muted">
+        Email
+        <a href="mailto:security@tunnex.io" class="font-semibold text-link"> security@tunnex.io</a>.
+        A human reads every report, and we will acknowledge yours. We don’t run a bug bounty
+        program. Please give us a reasonable window to fix the issue before public disclosure.
+      </p>
+    </div>
+  </section>
+</Base>
