@@ -105,6 +105,9 @@ Current: **S2.2 merged — next: S2.3 (newsletter double-opt-in; MERGE GATED on 
 - **Turnstile production keys (S2.3 merge gate #2):** the always-pass test key must never
   be a deployed default — real sitekey in wrangler.toml [vars], TURNSTILE_SECRET as
   Worker secret via CI; test pair stays local-dev only (.dev.vars).
+- **SECURITY — rotate the Turnstile secret after S2.3 merges:** the secret transited
+  chat/screenshot during setup. Pawan regenerates in widget settings; then update the
+  repo secret + .dev.vars and re-run the secret sync.
 - **Test-send HARD GATE (S2.1 merged without it):** execute scripts/test-send.mjs the
   moment Resend + mail.tunnex.io DNS land on Pawan's side; S2.3 CANNOT MERGE until the
   test-send evidence exists (its flows send real email).

@@ -18,6 +18,9 @@ not_found_handling = "404-page"
 # "prelaunch" | "beta" — see README. Flipping this is the only change
 # needed to switch site modes.
 LAUNCH_MODE = "prelaunch"
+# Turnstile widget sitekey (public). The always-pass TEST key is local-dev
+# only (.dev.vars) — never a deployed default.
+PUBLIC_TURNSTILE_SITE_KEY = "0x4AAAAAADz8NeQ_TUjJuy-0"
 
 [observability.logs]
 enabled = true
