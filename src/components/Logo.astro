@@ -1,24 +1,53 @@
 ---
-// Brand lockup, per-mode per Pawan's decision (S2.1 review):
+// Brand renderings, per-mode per Pawan's decisions:
 //   dark mode  → ORIGINAL indigo/purple assets (fixed colors, gradients kept)
-//   light mode → cyan-tokenized variant (semantic tokens, single-accent rule)
-// Both inline so the light variant's CSS variables resolve. Visibility is
-// plain CSS keyed on BOTH .dark (marketing) and [data-theme='dark'] (docs),
-// independent of Tailwind so it works on Starlight pages too.
+//   light mode → cyan-tokenized variants (semantic tokens)
+// Variants (nav-logo decision): 'wordmark' for Nav + docs SiteTitle (the
+// mark-T + wordmark-T stutter reads as "T TUNNEX" at nav size); 'lockup'
+// (mark + wordmark) for the Footer; 'badge' is the proposed alternative
+// (mark in a rounded tile before the wordmark — structural separation).
+// Visibility is plain CSS keyed on BOTH .dark (marketing) and
+// [data-theme='dark'] (docs), independent of Tailwind.
 import lockupDark from '../assets/logo-lockup-dark.svg?raw';
 import lockupLight from '../assets/logo-lockup-light.svg?raw';
+import wordmarkDark from '../assets/wordmark.svg?raw';
+import wordmarkLight from '../assets/wordmark-light.svg?raw';
+import markDark from '../assets/logo.svg?raw';
 
 interface Props {
+  variant?: 'lockup' | 'wordmark' | 'badge';
   class?: string;
 }
 
-const { class: className = 'h-6' } = Astro.props;
+const { variant = 'lockup', class: className = 'h-6' } = Astro.props;
 
-const dark = lockupDark.replace('<svg ', `<svg class="logo-variant-dark ${className}" `);
-const light = lockupLight.replace('<svg ', `<svg class="logo-variant-light ${className}" `);
+const pair =
+  variant === 'wordmark' || variant === 'badge'
+    ? { dark: wordmarkDark, light: wordmarkLight }
+    : { dark: lockupDark, light: lockupLight };
+
+const dark = pair.dark.replace('<svg ', `<svg class="logo-variant-dark ${className}" `);
+const light = pair.light.replace('<svg ', `<svg class="logo-variant-light ${className}" `);
+
+// Badge tile: the mark sits in a rounded square before the wordmark. The
+// dark-mode mark is the fixed-color original; light mode reuses it on a dark
+// tile so the purple stays legible in both modes (tile provides the ground).
+const badgeMark = markDark.replace('<svg ', '<svg class="h-4 w-auto" ');
 ---
 
-<Fragment set:html={dark + light} />
+{
+  variant === 'badge' ? (
+    <span class={`inline-flex items-center gap-2 ${className.replace(/h-\S+/, '')}`.trim()}>
+      <span
+        class="inline-flex size-7 items-center justify-center rounded-md border border-border bg-surface-raised"
+        set:html={badgeMark}
+      />
+      <Fragment set:html={dark + light} />
+    </span>
+  ) : (
+    <Fragment set:html={dark + light} />
+  )
+}
 
 <style is:global>
   .logo-variant-dark {
