@@ -1,0 +1,16 @@
+---
+// Inline tokenized brand lockup (single source: src/assets/logo.svg).
+// Mark + accent glyphs use var(--t-primary); letterforms use currentColor —
+// the logo theme-swaps with everything else.
+import logo from '../assets/logo.svg?raw';
+
+interface Props {
+  class?: string;
+}
+
+const { class: className = 'h-6' } = Astro.props;
+
+const svg = logo.replace('<svg ', `<svg class="${className}" `);
+---
+
+<Fragment set:html={svg} />

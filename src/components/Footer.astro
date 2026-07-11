@@ -1,5 +1,6 @@
 ---
 import { launchMode } from '../config';
+import Logo from './Logo.astro';
 
 const year = new Date().getFullYear();
 const showGitHub = launchMode === 'beta';
@@ -8,8 +9,9 @@ const showGitHub = launchMode === 'beta';
 <footer class="mt-auto border-t border-border">
   <div class="mx-auto grid max-w-6xl gap-8 px-4 py-10 sm:grid-cols-2 sm:px-6 md:grid-cols-4">
     <div class="sm:col-span-2 md:col-span-1">
-      <p class="font-mono text-base font-bold text-text">
-        tunnex<span class="text-primary">.</span>
+      <p class="text-text">
+        <Logo class="h-5 w-auto" />
+        <span class="sr-only">Tunnex</span>
       </p>
       <p class="mt-2 max-w-xs text-sm text-text-muted">
         Self-hosted Zero Trust VPN. Your keys. Your servers. Your network.
