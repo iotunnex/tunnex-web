@@ -68,6 +68,13 @@
   --t-error-fg: var(--p-neutral-0);
 }
 
+/* Brand badge tile: fixed dark ground for the fixed-color mark — deliberately
+   the same in both modes (the tile IS the mark's ground). */
+:root {
+  --t-badge-ground: var(--p-neutral-850);
+  --t-badge-ground-border: var(--p-neutral-800);
+}
+
 /* Dark mode (site default): SAME semantic names, remapped.
    [data-theme='dark'] covers Starlight docs pages, which manage their own
    mode attribute instead of the site's .dark class. */

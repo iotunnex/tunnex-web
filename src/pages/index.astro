@@ -40,7 +40,7 @@ const features: { title: string; body: string; tag?: string }[] = [
     <h1 class="max-w-3xl text-4xl font-bold tracking-tight text-balance sm:text-5xl">
       Self-hosted Zero Trust VPN.
     </h1>
-    <p class="text-xl font-medium">
+    <p class="relative text-xl font-medium" id="hero-tagline">
       Connect everything. <span class="text-primary">Trust nothing.</span>
     </p>
     <p class="max-w-2xl text-text-muted">
@@ -142,4 +142,62 @@ const features: { title: string; body: string; tag?: string }[] = [
       />
     </div>
   </section>
+
+  <script>
+    // Hero tagline typing reveal. Once per page load. DOM-first: the full
+    // two-tone text is server-rendered above (SEO + no-JS read it verbatim);
+    // this script only wraps existing characters in spans and fades them in,
+    // so the block's size never changes — zero layout shift. Honors
+    // prefers-reduced-motion by doing nothing.
+    const tagline = document.getElementById('hero-tagline');
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (tagline && !reduced) {
+      const chars: HTMLElement[] = [];
+      const wrap = (node: Node) => {
+        if (node.nodeType === Node.TEXT_NODE) {
+          const frag = document.createDocumentFragment();
+          for (const ch of node.textContent ?? '') {
+            const span = document.createElement('span');
+            span.textContent = ch;
+            if (ch !== ' ') chars.push(span);
+            frag.appendChild(span);
+          }
+          node.parentNode?.replaceChild(frag, node);
+        } else {
+          [...node.childNodes].forEach(wrap);
+        }
+      };
+      [...tagline.childNodes].forEach(wrap);
+      for (const c of chars) c.style.opacity = '0';
+
+      const caret = document.createElement('span');
+      caret.setAttribute('aria-hidden', 'true');
+      caret.style.cssText =
+        'position:absolute;width:2px;height:1.1em;background:var(--t-primary);animation:tagline-caret 1s steps(1) infinite;';
+      tagline.appendChild(caret);
+      const style = document.createElement('style');
+      style.textContent = '@keyframes tagline-caret{50%{opacity:0}}';
+      document.head.appendChild(style);
+      const parentBox = tagline.getBoundingClientRect();
+      const moveCaret = (el: HTMLElement) => {
+        const r = el.getBoundingClientRect();
+        caret.style.left = `${r.right - parentBox.left}px`;
+        caret.style.top = `${r.top - parentBox.top}px`;
+      };
+
+      let i = 0;
+      const step = () => {
+        if (i >= chars.length) {
+          setTimeout(() => caret.remove(), 900);
+          return;
+        }
+        const el = chars[i]!;
+        el.style.opacity = '1';
+        moveCaret(el);
+        i += 1;
+        setTimeout(step, 34);
+      };
+      setTimeout(step, 250);
+    }
+  </script>
 </Base>

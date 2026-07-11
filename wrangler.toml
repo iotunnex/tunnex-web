@@ -12,6 +12,7 @@ compatibility_flags = ["nodejs_compat"]
 [assets]
 binding = "ASSETS"
 directory = "./dist/client"
+not_found_handling = "404-page"
 
 [vars]
 # "prelaunch" | "beta" — see README. Flipping this is the only change

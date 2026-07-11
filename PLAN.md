@@ -90,6 +90,9 @@ Current: **S2.2 merged — next: S2.3 (newsletter double-opt-in; MERGE GATED on 
   change site copy/templates/schema.
 - **/trial interim placeholder (until S3.2):** minimal page keeps every trial CTA from
   404ing; S3.2's real request form replaces it on the same route.
+- **S4.2 OG image source (brand decision):** the VERTICAL lockup (mark above wordmark) is
+  the OG/Twitter-card image source; simplified badge mark is the favicon candidate
+  (node network smears below ~24px — verified at 16/24/40px renders).
 - **Install-path rules (from platform message):** hero one-liner stays visually but is a
   placeholder until get.tunnex.io resolves (prelaunch caption says "ships with the beta";
   beta caption links verify-first docs + GitHub release fallback). Beta surfaces must show
