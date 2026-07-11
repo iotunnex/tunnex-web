@@ -39,6 +39,36 @@ pnpm lint          # eslint
 pnpm format:check  # prettier
 ```
 
+## Design tokens (the token contract)
+
+Every color on the site comes from `src/styles/theme.css` — the single source of truth.
+Two layers:
+
+- **Primitives** (`--p-*`): raw OKLCH scales. Referenced ONLY inside `theme.css`.
+- **Semantic tokens**: what components use, via Tailwind utilities. `.dark` on `<html>`
+  remaps the same names, so components are mode-unaware.
+
+| Semantic token                       | Utility examples                | Use                                     |
+| ------------------------------------ | ------------------------------- | --------------------------------------- |
+| `--color-bg`                         | `bg-bg`                         | page background                         |
+| `--color-surface`                    | `bg-surface`                    | cards, code blocks                      |
+| `--color-surface-raised`             | `bg-surface-raised`             | raised/hover surfaces                   |
+| `--color-border`                     | `border-border`                 | borders, dividers                       |
+| `--color-text`                       | `text-text`                     | primary text                            |
+| `--color-text-muted`                 | `text-text-muted`               | secondary text                          |
+| `--color-primary(-hover/-fg)`        | `bg-primary`, `text-primary-fg` | the ONE brand accent (CTAs, highlights) |
+| `--color-link`                       | `text-link`                     | links / inline highlights               |
+| `--color-success/warning/error(-fg)` | `bg-success`, `text-error` …    | semantic status (NOT brand)             |
+
+Rules (CI-enforced by `pnpm lint:tokens`, part of `pnpm lint`):
+
+- No raw hex/oklch/rgb/hsl values outside `theme.css`.
+- No `--p-*` references outside `theme.css`.
+- No Tailwind default-palette classes (`bg-zinc-900`, …) — the default palette is
+  disabled, so they'd silently produce no CSS.
+- Changing the brand = editing the primitive layer in `theme.css` only; zero component
+  changes. `/styleguide` is the acceptance surface for theme swaps.
+
 ## Data (D1 + KV)
 
 - **D1** (`DB` binding, database `tunnex-site-db`): durable data — subscribers,
