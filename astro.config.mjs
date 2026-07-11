@@ -42,6 +42,12 @@ export default defineConfig({
         access: 'public',
         default: 'contact',
       }),
+      // Base URL for release artifacts (R2 at dl.tunnex.io — EPIC 5).
+      DOWNLOAD_BASE_URL: envField.string({
+        context: 'server',
+        access: 'public',
+        default: 'https://dl.tunnex.io',
+      }),
     },
   },
   vite: {

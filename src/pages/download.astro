@@ -1,0 +1,159 @@
+---
+import Base from '../layouts/Base.astro';
+import Button from '../components/ui/Button.astro';
+import Card from '../components/ui/Card.astro';
+import CodeSnippet from '../components/ui/CodeSnippet.astro';
+import { launchMode, downloadBaseUrl } from '../config';
+
+const isBeta = launchMode === 'beta';
+
+// Artifact filenames are placeholders until the product repo's release CI
+// fixes the naming scheme (EPIC 5).
+const targets = [
+  {
+    os: 'macOS',
+    kind: 'Desktop client',
+    detail: 'Universal .pkg · macOS 13+',
+    file: 'tunnex-desktop-latest.pkg',
+  },
+  {
+    os: 'Windows',
+    kind: 'Desktop client',
+    detail: 'Installer .exe · Windows 10+',
+    file: 'tunnex-desktop-setup-latest.exe',
+  },
+  {
+    os: 'CLI',
+    kind: 'Server + CLI',
+    detail: 'Linux amd64/arm64 · macOS',
+    file: null, // installed via the one-command script
+  },
+];
+---
+
+<Base
+  title="Tunnex — Download"
+  description="Download the Tunnex desktop clients and CLI. Self-hosted Zero Trust VPN."
+>
+  <section class="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-16 sm:px-6 md:py-20">
+    <h1 class="text-4xl font-bold tracking-tight">Download</h1>
+    <p class="max-w-2xl text-lg text-text-muted">
+      {
+        isBeta
+          ? 'Desktop clients and the server CLI. Everything installs on your infrastructure.'
+          : 'Tunnex is launching soon. Downloads open with the beta.'
+      }
+    </p>
+  </section>
+
+  {
+    !isBeta && (
+      <section class="mx-auto flex max-w-6xl flex-col gap-6 px-4 pb-16 sm:px-6">
+        <Card class="flex max-w-2xl flex-col gap-4 p-8">
+          <h2 class="text-xl font-semibold">Coming soon</h2>
+          <p class="text-sm text-text-muted">
+            The beta ships the macOS and Windows desktop clients plus the server CLI. Join the
+            waitlist and we will email you the moment downloads open — nothing else, no marketing
+            drip.
+          </p>
+          <div class="flex flex-wrap gap-3">
+            {/* Waitlist CTA — S2.3's double-opt-in newsletter form replaces this mailto. */}
+            <Button href="mailto:sales@tunnex.io?subject=Tunnex%20waitlist" variant="primary">
+              Join the waitlist
+            </Button>
+            <Button href="/trial" variant="secondary">
+              Start a trial request
+            </Button>
+          </div>
+        </Card>
+      </section>
+    )
+  }
+
+  {
+    isBeta && (
+      <>
+        <section class="mx-auto grid max-w-6xl gap-4 px-4 pb-12 sm:px-6 md:grid-cols-3">
+          {targets.map((t) => (
+            <Card class="flex flex-col gap-3">
+              <div class="flex items-center justify-between">
+                <h2 class="text-lg font-semibold">{t.os}</h2>
+                <span class="rounded-full border border-border px-2 py-0.5 text-[11px] font-medium tracking-wide text-text-muted uppercase">
+                  {t.kind}
+                </span>
+              </div>
+              <p class="text-sm text-text-muted">{t.detail}</p>
+              {t.file ? (
+                <div class="mt-auto flex flex-col gap-2">
+                  <Button href={`${downloadBaseUrl}/latest/${t.file}`} variant="primary">
+                    Download
+                  </Button>
+                </div>
+              ) : (
+                <div class="mt-auto">
+                  <CodeSnippet label="install">curl -fsSL https://get.tunnex.io | sh</CodeSnippet>
+                </div>
+              )}
+            </Card>
+          ))}
+        </section>
+
+        <section class="mx-auto flex max-w-6xl flex-col gap-2 px-4 pb-12 sm:px-6">
+          <p class="text-sm text-text-muted">
+            Verify what you run:{' '}
+            <a href={`${downloadBaseUrl}/latest/SHA256SUMS`} class="font-semibold text-link">
+              SHA256SUMS
+            </a>{' '}
+            for every artifact in this release.
+          </p>
+        </section>
+
+        <section class="border-t border-border bg-surface/50">
+          <div class="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-12 sm:px-6">
+            <div class="flex flex-col gap-2">
+              <h2 class="text-xl font-semibold tracking-tight">Installing unsigned beta builds</h2>
+              <p class="max-w-2xl text-sm text-text-muted">
+                Beta builds are not yet code-signed — your OS will warn you. Signed and notarized
+                builds ship at GA. Until then, verify the SHA256 checksum above, then:
+              </p>
+            </div>
+            <div class="grid gap-8 md:grid-cols-2">
+              <div class="flex flex-col gap-2">
+                <h3 class="text-base font-semibold">macOS (Gatekeeper)</h3>
+                <ol class="flex list-decimal flex-col gap-1.5 pl-5 text-sm text-text-muted">
+                  <li>
+                    Open the .pkg. macOS blocks it — on macOS 15 (Sequoia) and later, go to
+                    <strong class="text-text"> System Settings → Privacy &amp; Security</strong>,
+                    scroll to the blocked-app notice, and choose
+                    <strong class="text-text"> Open Anyway</strong>.
+                  </li>
+                  <li>
+                    On macOS 14 and earlier you can instead right-click the .pkg and choose
+                    <strong class="text-text"> Open → Open</strong>.
+                  </li>
+                  <li>
+                    Terminal alternative (removes the quarantine flag):
+                    <code class="font-mono text-link">
+                      {' '}
+                      xattr -d com.apple.quarantine tunnex-desktop-latest.pkg
+                    </code>
+                  </li>
+                </ol>
+              </div>
+              <div class="flex flex-col gap-2">
+                <h3 class="text-base font-semibold">Windows (SmartScreen)</h3>
+                <ol class="flex list-decimal flex-col gap-1.5 pl-5 text-sm text-text-muted">
+                  <li>Run the installer. SmartScreen shows “Windows protected your PC”.</li>
+                  <li>
+                    Click <strong class="text-text">More info</strong>, then
+                    <strong class="text-text"> Run anyway</strong>.
+                  </li>
+                </ol>
+              </div>
+            </div>
+          </div>
+        </section>
+      </>
+    )
+  }
+</Base>

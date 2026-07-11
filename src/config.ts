@@ -1,4 +1,4 @@
-import { LAUNCH_MODE, ENTERPRISE_PRICING } from 'astro:env/server';
+import { LAUNCH_MODE, ENTERPRISE_PRICING, DOWNLOAD_BASE_URL } from 'astro:env/server';
 
 /**
  * Site launch mode. Single import point for the flag — flipping the value in
@@ -26,3 +26,10 @@ export const enterprisePricing: EnterprisePricing = ENTERPRISE_PRICING;
 
 /** Placeholder until real pricing is set — only rendered in `indicative` mode. */
 export const indicativeSeatPrice = '$15';
+
+/**
+ * Release artifact base (R2 bucket behind dl.tunnex.io — EPIC 5). Download
+ * links render only in `beta` mode; artifact filenames are placeholders until
+ * the product repo's release CI fixes them.
+ */
+export const downloadBaseUrl = DOWNLOAD_BASE_URL;
