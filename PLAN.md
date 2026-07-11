@@ -46,7 +46,7 @@ prettier-plugin-astro as dev tooling.)
 
 ## Story Status (re-entry pointer — update on every merge)
 
-Current: **S1.6 merged — EPIC 1 complete; next: S2.1 (email infrastructure)**
+Current: **S2.1 merged (test-send pending, gates S2.3) — next: S2.2 (Turnstile + rate-limit middleware)**
 
 ---
 
