@@ -43,6 +43,20 @@ const features: { title: string; body: string; tag?: string }[] = [
     <p class="relative text-xl font-medium" id="hero-tagline">
       Connect everything. <span class="text-primary">Trust nothing.</span>
     </p>
+    <script is:inline>
+      // Pre-paint hide for the typing reveal — prevents the flash-and-erase a
+      // deferred module would cause. Reduced-motion users never get hidden
+      // text; a failsafe restores it if the module doesn't claim the element.
+      (() => {
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        const el = document.getElementById('hero-tagline');
+        if (!el) return;
+        el.style.opacity = '0';
+        setTimeout(() => {
+          if (el.dataset.typing !== 'claimed') el.style.opacity = '';
+        }, 1500);
+      })();
+    </script>
     <p class="max-w-2xl text-text-muted">
       Tunnex gives your team WireGuard-fast private networking with single sign-on and Zero Trust
       policies — on infrastructure you run. Your network never touches ours.
@@ -145,13 +159,18 @@ const features: { title: string; body: string; tag?: string }[] = [
 
   <script>
     // Hero tagline typing reveal. Once per page load. DOM-first: the full
-    // two-tone text is server-rendered above (SEO + no-JS read it verbatim);
-    // this script only wraps existing characters in spans and fades them in,
-    // so the block's size never changes — zero layout shift. Honors
-    // prefers-reduced-motion by doing nothing.
+    // two-tone text is server-rendered (SEO + no-JS read it verbatim); the
+    // inline pre-paint script above hides it before first frame so there is
+    // no flash-and-erase. Characters are wrapped, revealed sequentially, and
+    // the ORIGINAL text nodes are restored at the end so the settled line has
+    // the exact SSR kerning. Honors prefers-reduced-motion (script no-ops and
+    // the inline failsafe never hides the text).
     const tagline = document.getElementById('hero-tagline');
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (tagline && !reduced) {
+      tagline.dataset.typing = 'claimed';
+      const original = [...tagline.childNodes].map((n) => n.cloneNode(true));
+
       const chars: HTMLElement[] = [];
       const wrap = (node: Node) => {
         if (node.nodeType === Node.TEXT_NODE) {
@@ -159,6 +178,7 @@ const features: { title: string; body: string; tag?: string }[] = [
           for (const ch of node.textContent ?? '') {
             const span = document.createElement('span');
             span.textContent = ch;
+            span.style.opacity = '0';
             if (ch !== ' ') chars.push(span);
             frag.appendChild(span);
           }
@@ -168,27 +188,32 @@ const features: { title: string; body: string; tag?: string }[] = [
         }
       };
       [...tagline.childNodes].forEach(wrap);
-      for (const c of chars) c.style.opacity = '0';
+      tagline.style.opacity = '';
 
+      // Caret: solid while typing; blinks only once typing completes.
       const caret = document.createElement('span');
       caret.setAttribute('aria-hidden', 'true');
-      caret.style.cssText =
-        'position:absolute;width:2px;height:1.1em;background:var(--t-primary);animation:tagline-caret 1s steps(1) infinite;';
+      caret.style.cssText = 'position:absolute;width:2px;height:1.1em;background:var(--t-primary);';
       tagline.appendChild(caret);
       const style = document.createElement('style');
       style.textContent = '@keyframes tagline-caret{50%{opacity:0}}';
       document.head.appendChild(style);
-      const parentBox = tagline.getBoundingClientRect();
       const moveCaret = (el: HTMLElement) => {
+        const box = tagline.getBoundingClientRect();
         const r = el.getBoundingClientRect();
-        caret.style.left = `${r.right - parentBox.left}px`;
-        caret.style.top = `${r.top - parentBox.top}px`;
+        caret.style.left = `${r.right - box.left}px`;
+        caret.style.top = `${r.top - box.top}px`;
       };
 
       let i = 0;
       const step = () => {
         if (i >= chars.length) {
-          setTimeout(() => caret.remove(), 900);
+          caret.style.animation = 'tagline-caret 1s steps(1) infinite';
+          setTimeout(() => {
+            caret.remove();
+            // Restore the pristine SSR nodes — exact original kerning.
+            tagline.replaceChildren(...original);
+          }, 1000);
           return;
         }
         const el = chars[i]!;
