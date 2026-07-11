@@ -30,6 +30,11 @@ implement → test → report → WAIT FOR REVIEW → merge → next. Story numb
    input; structured JSON logs (never log raw tokens); secrets only via `wrangler secret`
    (`.dev.vars` locally, `.dev.vars.example` committed); no dependency additions beyond the
    approved list without asking.
+7. **Design passes (standing rule from S1.3 close, applies to every page story from S1.4
+   onward, part of DoD):** before merge, run three review passes on the story's pages —
+   ux-copy, design-critique, accessibility-review (design plugin; if unavailable, run as
+   three parallel review subagents). One-line findings/fixes per pass in the story report
+   (and merge commit if fixes land post-report).
 
 **Approved dependencies:** astro, @astrojs/starlight, @astrojs/cloudflare, tailwind, zod,
 hono (optional), resend, psl, a maintained disposable-email-domains list, vitest,
@@ -74,6 +79,9 @@ Current: **S1.3 merged — next: S1.4 (download page)**
 - **SVG token rule (standing, from S1.1 sign-off):** inline SVGs use semantic tokens only
   (currentColor / var(--color-*)) — never hardcoded fills; token guard catches fill/stroke
   violations in src/.
+- **Email routing (S4.4 runbook item):** sales@tunnex.io / security@tunnex.io receive
+  NOTHING until Cloudflare Email Routing is configured post-domain-purchase — the launch
+  runbook must include that step (waitlist mailto on /download depends on it).
 - **Migrations are append-only** (standing rule from S0.3 merge): 0001 is applied to the
   remote DB — schema changes from here are NEW migration files, never edits to applied ones.
 - **Node:** local default Node is 18 (nvm); wrangler 4 needs ≥22. `.nvmrc`=22 committed;
