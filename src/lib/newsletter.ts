@@ -16,7 +16,7 @@ export const subscribeInput = z.object({
 });
 
 export const GENERIC_SUBSCRIBE_MESSAGE =
-  'If that address is eligible, a confirmation email is on its way. The link inside is valid for 24 hours.';
+  'If that address checks out, a confirmation email is on its way. The link inside is valid for 24 hours.';
 
 /** Data access the flows need — D1 in production, in-memory in tests. */
 export interface SubscriberStore {

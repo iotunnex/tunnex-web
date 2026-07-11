@@ -20,7 +20,9 @@ if (!forcedInvalid && token) {
 ---
 
 <Base title="Tunnex — Confirm subscription" noindex>
-  <section class="mx-auto flex max-w-6xl flex-col px-4 py-20 sm:px-6">
+  <section
+    class="mx-auto flex min-h-[60vh] w-full max-w-6xl flex-col justify-center px-4 py-20 sm:px-6"
+  >
     <Card class="mx-auto flex w-full max-w-md flex-col gap-4 p-8">
       {
         state === 'valid' && (
@@ -61,9 +63,8 @@ if (!forcedInvalid && token) {
           <>
             <h1 class="text-xl font-semibold">This link isn’t valid anymore</h1>
             <p class="text-sm text-text-muted">
-              It may have been used already — if you just clicked Confirm, you’re all set and on the
-              list. Otherwise the link has expired or was mistyped; join the waitlist again for a
-              fresh one.
+              If you just clicked Confirm, you’re all set — you’re on the list. Otherwise this link
+              was already used, expired, or mistyped; join the waitlist again for a fresh one.
             </p>
             <Button href="/download" variant="secondary" class="w-full">
               Back to the waitlist

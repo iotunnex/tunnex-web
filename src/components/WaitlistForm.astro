@@ -4,21 +4,23 @@ import Button from './ui/Button.astro';
 ---
 
 <form id="waitlist-form" class="flex flex-col gap-3" novalidate>
-  <label for="waitlist-email" class="text-sm font-medium">Work email</label>
-  <div class="flex flex-wrap gap-3">
+  <label for="waitlist-email" class="text-sm font-medium">Email</label>
+  <div class="flex max-w-xl flex-wrap gap-3">
     <input
       id="waitlist-email"
       name="email"
       type="email"
       required
       autocomplete="email"
-      placeholder="you@company.com"
-      class="min-w-64 flex-1 rounded-md border border-border bg-bg px-3 py-2 text-sm text-text placeholder:text-text-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+      placeholder="you@example.com"
+      aria-describedby="waitlist-status"
+      class="min-w-64 flex-1 rounded-md border border-border bg-surface-raised px-3 py-2 text-sm text-text placeholder:text-text-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
     />
     <Button variant="primary">Join the waitlist</Button>
   </div>
-  <div class="cf-turnstile" data-sitekey={PUBLIC_TURNSTILE_SITE_KEY} data-theme="auto"></div>
-  <p id="waitlist-status" role="status" aria-live="polite" class="text-sm text-text-muted"></p>
+  <div class="cf-turnstile" data-sitekey={PUBLIC_TURNSTILE_SITE_KEY}></div>
+  <p id="waitlist-status" role="status" aria-live="polite" class="min-h-5 text-sm text-text-muted">
+  </p>
   <noscript>
     <p class="text-sm text-text-muted">
       This form needs JavaScript. Without it, email
@@ -30,6 +32,16 @@ import Button from './ui/Button.astro';
   </noscript>
 </form>
 
+<script is:inline>
+  // Match the widget to the site theme (Turnstile's "auto" follows the OS,
+  // not our .dark toggle). Must run before api.js loads.
+  document
+    .querySelector('.cf-turnstile')
+    ?.setAttribute(
+      'data-theme',
+      document.documentElement.classList.contains('dark') ? 'dark' : 'light',
+    );
+</script>
 <script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 <script>
   const form = document.getElementById('waitlist-form') as HTMLFormElement | null;
@@ -39,15 +51,18 @@ import Button from './ui/Button.astro';
     event.preventDefault();
     if (!status) return;
 
-    const email = (form.elements.namedItem('email') as HTMLInputElement).value;
+    const emailInput = form.elements.namedItem('email') as HTMLInputElement;
+    const email = emailInput.value;
     const turnstileToken =
       (form.querySelector('input[name="cf-turnstile-response"]') as HTMLInputElement | null)
         ?.value ?? '';
 
     if (!email) {
-      status.textContent = 'Enter your work email first.';
+      emailInput.setAttribute('aria-invalid', 'true');
+      status.textContent = 'Enter your email first.';
       return;
     }
+    emailInput.removeAttribute('aria-invalid');
     if (!turnstileToken) {
       status.textContent = 'Complete the captcha, then try again.';
       return;
