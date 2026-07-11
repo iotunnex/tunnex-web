@@ -48,22 +48,22 @@ const targets = [
 
   {
     !isBeta && (
-      <section class="mx-auto flex max-w-6xl flex-col gap-6 px-4 pb-16 sm:px-6">
-        <Card class="flex max-w-2xl flex-col gap-4 p-8">
+      <section class="mx-auto flex max-w-6xl flex-col gap-6 px-4 pb-24 sm:px-6 md:pb-32">
+        <Card class="flex flex-col gap-4 p-8">
           <h2 class="text-xl font-semibold">Coming soon</h2>
-          <p class="text-sm text-text-muted">
+          <p class="max-w-2xl text-sm text-text-muted">
             The beta ships the macOS and Windows desktop clients plus the server CLI. Join the
             waitlist and we will email you the moment downloads open — nothing else, no marketing
             drip.
           </p>
-          <div class="flex flex-wrap gap-3">
+          <div class="flex flex-wrap items-center gap-4">
             {/* Waitlist CTA — S2.3's double-opt-in newsletter form replaces this mailto. */}
             <Button href="mailto:sales@tunnex.io?subject=Tunnex%20waitlist" variant="primary">
               Join the waitlist
             </Button>
-            <Button href="/trial" variant="secondary">
+            <a href="/trial" class="text-sm font-medium text-link">
               Start a trial request
-            </Button>
+            </a>
           </div>
         </Card>
       </section>
@@ -73,7 +73,7 @@ const targets = [
   {
     isBeta && (
       <>
-        <section class="mx-auto grid max-w-6xl gap-4 px-4 pb-12 sm:px-6 md:grid-cols-3">
+        <section class="mx-auto grid max-w-6xl gap-4 px-4 pb-4 sm:px-6 md:grid-cols-3">
           {targets.map((t) => (
             <Card class="flex flex-col gap-3">
               <div class="flex items-center justify-between">
@@ -86,25 +86,27 @@ const targets = [
               {t.file ? (
                 <div class="mt-auto flex flex-col gap-2">
                   <Button href={`${downloadBaseUrl}/latest/${t.file}`} variant="primary">
-                    Download
+                    Download<span class="sr-only"> for {t.os}</span>
                   </Button>
                 </div>
               ) : (
                 <div class="mt-auto">
-                  <CodeSnippet label="install">curl -fsSL https://get.tunnex.io | sh</CodeSnippet>
+                  <CodeSnippet label="install" class="[&_pre]:text-xs">
+                    curl -fsSL https://get.tunnex.io | sh
+                  </CodeSnippet>
                 </div>
               )}
             </Card>
           ))}
         </section>
 
-        <section class="mx-auto flex max-w-6xl flex-col gap-2 px-4 pb-12 sm:px-6">
+        <section class="mx-auto flex max-w-6xl flex-col gap-2 px-4 pb-16 sm:px-6">
           <p class="text-sm text-text-muted">
-            Verify what you run:{' '}
+            Verify before you install:{' '}
             <a href={`${downloadBaseUrl}/latest/SHA256SUMS`} class="font-semibold text-link">
               SHA256SUMS
             </a>{' '}
-            for every artifact in this release.
+            lists the checksum for every artifact in this release.
           </p>
         </section>
 
@@ -114,33 +116,41 @@ const targets = [
               <h2 class="text-xl font-semibold tracking-tight">Installing unsigned beta builds</h2>
               <p class="max-w-2xl text-sm text-text-muted">
                 Beta builds are not yet code-signed — your OS will warn you. Signed and notarized
-                builds ship at GA. Until then, verify the SHA256 checksum above, then:
+                builds ship at GA. Until then: first verify the SHA256 checksum above. If it does
+                not match, stop and delete the file. Only after it matches:
               </p>
             </div>
             <div class="grid gap-8 md:grid-cols-2">
-              <div class="flex flex-col gap-2">
+              <div class="flex flex-col gap-3">
                 <h3 class="text-base font-semibold">macOS (Gatekeeper)</h3>
                 <ol class="flex list-decimal flex-col gap-1.5 pl-5 text-sm text-text-muted">
                   <li>
-                    Open the .pkg. macOS blocks it — on macOS 15 (Sequoia) and later, go to
+                    Open the .pkg. macOS shows “Apple could not verify…” — click
+                    <strong class="text-text"> Done</strong>.
+                  </li>
+                  <li>
+                    On macOS 15 (Sequoia) and later, open
                     <strong class="text-text"> System Settings → Privacy &amp; Security</strong>,
-                    scroll to the blocked-app notice, and choose
+                    scroll to the notice that the .pkg was blocked, and choose
                     <strong class="text-text"> Open Anyway</strong>.
                   </li>
+                </ol>
+                <p class="text-sm font-medium">Alternatives:</p>
+                <ul class="flex list-disc flex-col gap-1.5 pl-5 text-sm text-text-muted">
                   <li>
-                    On macOS 14 and earlier you can instead right-click the .pkg and choose
-                    <strong class="text-text"> Open → Open</strong>.
+                    On macOS 14 and earlier, right-click the .pkg, choose
+                    <strong class="text-text"> Open</strong>, then click
+                    <strong class="text-text"> Open</strong> in the confirmation dialog.
                   </li>
                   <li>
-                    Terminal alternative (removes the quarantine flag):
-                    <code class="font-mono text-link">
-                      {' '}
+                    Terminal — only for this file, and only after its checksum matched:
+                    <code class="rounded bg-surface-raised px-1 font-mono text-[13px] text-text">
                       xattr -d com.apple.quarantine tunnex-desktop-latest.pkg
                     </code>
                   </li>
-                </ol>
+                </ul>
               </div>
-              <div class="flex flex-col gap-2">
+              <div class="flex flex-col gap-3">
                 <h3 class="text-base font-semibold">Windows (SmartScreen)</h3>
                 <ol class="flex list-decimal flex-col gap-1.5 pl-5 text-sm text-text-muted">
                   <li>Run the installer. SmartScreen shows “Windows protected your PC”.</li>

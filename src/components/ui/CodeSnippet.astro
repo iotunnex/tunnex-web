@@ -15,5 +15,9 @@ const { label, class: className = '' } = Astro.props;
       </figcaption>
     )
   }
-  <pre class="overflow-x-auto px-4 py-3 font-mono text-sm text-link"><code><slot /></code></pre>
+  <pre
+    class="overflow-x-auto px-4 py-3 font-mono text-sm text-link"
+    tabindex="0"
+    role="region"
+    aria-label={label ?? 'code'}><code><slot /></code></pre>
 </figure>
