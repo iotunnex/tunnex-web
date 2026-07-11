@@ -1,0 +1,38 @@
+---
+// Brand lockup, per-mode per Pawan's decision (S2.1 review):
+//   dark mode  → ORIGINAL indigo/purple assets (fixed colors, gradients kept)
+//   light mode → cyan-tokenized variant (semantic tokens, single-accent rule)
+// Both inline so the light variant's CSS variables resolve. Visibility is
+// plain CSS keyed on BOTH .dark (marketing) and [data-theme='dark'] (docs),
+// independent of Tailwind so it works on Starlight pages too.
+import lockupDark from '../assets/logo-lockup-dark.svg?raw';
+import lockupLight from '../assets/logo-lockup-light.svg?raw';
+
+interface Props {
+  class?: string;
+}
+
+const { class: className = 'h-6' } = Astro.props;
+
+const dark = lockupDark.replace('<svg ', `<svg class="logo-variant-dark ${className}" `);
+const light = lockupLight.replace('<svg ', `<svg class="logo-variant-light ${className}" `);
+---
+
+<Fragment set:html={dark + light} />
+
+<style is:global>
+  .logo-variant-dark {
+    display: none;
+  }
+  .dark .logo-variant-dark,
+  [data-theme='dark'] .logo-variant-dark {
+    display: block;
+  }
+  .logo-variant-light {
+    display: block;
+  }
+  .dark .logo-variant-light,
+  [data-theme='dark'] .logo-variant-light {
+    display: none;
+  }
+</style>

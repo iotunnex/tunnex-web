@@ -24,6 +24,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm typecheck
       - run: pnpm lint
+      - run: pnpm test
       - run: pnpm format:check
       - run: pnpm build
       # Remote migrations run here and ONLY here (never from a laptop, never

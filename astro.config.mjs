@@ -20,8 +20,10 @@ export default defineConfig({
   integrations: [
     starlight({
       title: 'Tunnex Docs',
+      favicon: '/favicon.svg',
       description: 'Documentation for Tunnex — self-hosted Zero Trust VPN.',
       customCss: ['./src/styles/starlight.css'],
+      components: { SiteTitle: './src/components/starlight/SiteTitle.astro' },
       head: [
         {
           tag: 'script',
@@ -60,6 +62,13 @@ export default defineConfig({
         context: 'server',
         access: 'public',
         default: 'https://dl.tunnex.io',
+      }),
+      // Base for links/assets inside outbound emails. Flips to
+      // https://tunnex.io in the S4.4 launch runbook.
+      EMAIL_LINK_BASE_URL: envField.string({
+        context: 'server',
+        access: 'public',
+        default: 'https://tunnex-site.iotunnex.workers.dev',
       }),
     },
   },

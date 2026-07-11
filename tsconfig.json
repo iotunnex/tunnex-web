@@ -2,7 +2,8 @@
   "extends": "astro/tsconfigs/strict",
   "compilerOptions": {
     "noUncheckedIndexedAccess": true,
-    "noImplicitOverride": true
+    "noImplicitOverride": true,
+    "allowImportingTsExtensions": true
   },
   "include": [".astro/types.d.ts", "worker-configuration.d.ts", "src/**/*"],
   "exclude": ["dist"]

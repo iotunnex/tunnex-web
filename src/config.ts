@@ -1,4 +1,9 @@
-import { LAUNCH_MODE, ENTERPRISE_PRICING, DOWNLOAD_BASE_URL } from 'astro:env/server';
+import {
+  LAUNCH_MODE,
+  ENTERPRISE_PRICING,
+  DOWNLOAD_BASE_URL,
+  EMAIL_LINK_BASE_URL,
+} from 'astro:env/server';
 
 /**
  * Site launch mode. Single import point for the flag — flipping the value in
@@ -33,3 +38,10 @@ export const indicativeSeatPrice = '$15';
  * the product repo's release CI fixes them.
  */
 export const downloadBaseUrl = DOWNLOAD_BASE_URL;
+
+/**
+ * Base for links and the hosted logo inside outbound emails — the production
+ * host that actually serves them today. Flipped to https://tunnex.io by the
+ * S4.4 launch runbook.
+ */
+export const emailLinkBaseUrl = EMAIL_LINK_BASE_URL;

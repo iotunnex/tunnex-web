@@ -83,6 +83,9 @@ Current: **S1.6 merged — EPIC 1 complete; next: S2.1 (email infrastructure)**
   NOTHING until Cloudflare Email Routing is configured post-domain-purchase — the launch
   runbook must include that step (waitlist mailto on /download depends on it; a disclosure
   address that bounces is worse than none — security@ is mandatory in that setup).
+- **Test-send HARD GATE (S2.1 merged without it):** execute scripts/test-send.mjs the
+  moment Resend + mail.tunnex.io DNS land on Pawan's side; S2.3 CANNOT MERGE until the
+  test-send evidence exists (its flows send real email).
 - **Migrations are append-only** (standing rule from S0.3 merge): 0001 is applied to the
   remote DB — schema changes from here are NEW migration files, never edits to applied ones.
 - **Node:** local default Node is 18 (nvm); wrangler 4 needs ≥22. `.nvmrc`=22 committed;
@@ -109,7 +112,13 @@ Current: **S1.6 merged — EPIC 1 complete; next: S2.1 (email infrastructure)**
   prefetch links). GET renders a confirmation page (read-only, zero writes); an explicit
   POST does the atomic consume. Applies to trial verify AND newsletter confirm.
 - **Token discipline (mirrors the product repo):** 32B random, base64url, sha256-hashed at
-  rest, single-use (atomic consume), 30-min expiry; raw token exists only in the emailed link.
+  rest, single-use (atomic consume); raw token exists only in the emailed link. Expiry is
+  TWO-TIER (S2.1 sign-off amendment): security-sensitive links (trial verify) 30 min;
+  list-consent links (newsletter confirm) 24 h — S2.3 inherits the 24 h tier.
+- **Trial clock starts at KEY ISSUANCE, not approval (locked, S2.1 sign-off):**
+  trials.started_at/expires_at are set when the key is issued; prelaunch approvals carry no
+  clock ("your 14 days start only when the key is issued" is public copy). S3.4's DoD must
+  test this.
 - **No enumeration oracles anywhere:** /api/trial/request AND /api/subscribe return identical
   generic responses whether or not the email/domain already exists.
 - **Issuance is a STUB.** `Issuer` interface only; PendingLaunchIssuer records intent. NO
