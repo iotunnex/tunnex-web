@@ -46,7 +46,7 @@ prettier-plugin-astro as dev tooling.)
 
 ## Story Status (re-entry pointer — update on every merge)
 
-Current: **S2.1 merged (test-send pending, gates S2.3) — next: S2.2 (Turnstile + rate-limit middleware)**
+Current: **S2.2 merged — next: S2.3 (newsletter double-opt-in; MERGE GATED on the S2.1 test-send)**
 
 ---
 
@@ -76,6 +76,8 @@ Current: **S2.1 merged (test-send pending, gates S2.3) — next: S2.2 (Turnstile
   startup-playful), work in BOTH dark and light modes, meet WCAG AA in both. Present as hex
   values + Tailwind theme token mapping + small rendered sample (hero + button + card)
   BEFORE writing the design system. Do not restyle S0.1's placeholder early.
+- **Copy principle (standing, from S2.2 sign-off):** brand line on brand surfaces, utility
+  copy on utility surfaces — meta/docs descriptions inform, they don't sloganeer.
 - **SVG token rule (standing, from S1.1 sign-off):** inline SVGs use semantic tokens only
   (currentColor / var(--color-*)) — never hardcoded fills; token guard catches fill/stroke
   violations in src/.
