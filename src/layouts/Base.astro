@@ -25,10 +25,12 @@ const {
     {noindex && <meta name="robots" content="noindex" />}
     <title>{title}</title>
     <script is:inline>
-      // Pre-paint theme init: dark is the default; an explicit stored choice wins.
-      // Runs before first paint so there is no flash or layout shift.
-      if (localStorage.getItem('theme') === 'light') {
-        document.documentElement.classList.remove('dark');
+      // Pre-paint theme init: dark is the default; an explicit stored choice
+      // wins (including one made on the Starlight docs pages). Runs before
+      // first paint so there is no flash or layout shift.
+      {
+        const mode = localStorage.getItem('theme') ?? localStorage.getItem('starlight-theme');
+        if (mode === 'light') document.documentElement.classList.remove('dark');
       }
     </script>
   </head>

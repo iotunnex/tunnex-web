@@ -21,7 +21,19 @@ export default defineConfig({
     starlight({
       title: 'Tunnex Docs',
       description: 'Documentation for Tunnex — self-hosted Zero Trust VPN.',
-      // Full docs skeleton lands in S1.6; a single stub page proves the integration.
+      customCss: ['./src/styles/starlight.css'],
+      head: [
+        {
+          tag: 'script',
+          // Dark-first parity with the marketing pages: adopt their stored
+          // choice; otherwise default docs to dark instead of Starlight's auto.
+          content: `
+            const t = localStorage.getItem('theme');
+            if (t === 'light' || t === 'dark') localStorage.setItem('starlight-theme', t);
+            else if (!localStorage.getItem('starlight-theme')) localStorage.setItem('starlight-theme', 'dark');
+          `,
+        },
+      ],
       sidebar: [{ label: 'Documentation', items: [{ autogenerate: { directory: 'docs' } }] }],
     }),
   ],
