@@ -5,7 +5,7 @@ sidebar:
   order: 4
 ---
 
-:::note[Stub]
+:::note[Page in progress]
 Placeholder — full CLI reference lands with the beta.
 :::
 

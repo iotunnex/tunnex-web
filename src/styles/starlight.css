@@ -44,3 +44,16 @@
   --sl-color-blue-low: var(--t-surface-raised);
   --sl-color-blue-high: var(--t-link);
 }
+
+/* Sidebar current item: marketing primary-button treatment instead of a
+   full-strength accent slab (cyan stays reserved for links/hairlines). */
+.sidebar-content a[aria-current='page'],
+.sidebar-content a[aria-current='page']:hover {
+  background-color: var(--t-primary);
+  color: var(--t-primary-fg);
+}
+
+/* Header wordmark matches the marketing nav (text color, not accent). */
+.site-title {
+  color: var(--t-text);
+}

@@ -5,7 +5,7 @@ sidebar:
   order: 2
 ---
 
-:::note[Stub]
+:::note[Page in progress]
 Placeholder — full architecture reference lands with the beta. The security
 posture is summarized on the [security page](/security/).
 :::
@@ -18,5 +18,5 @@ posture is summarized on the [security page](/security/).
 
 ## Trust boundary
 
-_To be written: what runs where, what the hosted service holds (billing and
-license records only), offline license verification._
+_To be written: what runs where, and what the hosted service holds (billing
+and license records only)._

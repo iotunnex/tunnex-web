@@ -28,9 +28,10 @@ export default defineConfig({
           // Dark-first parity with the marketing pages: adopt their stored
           // choice; otherwise default docs to dark instead of Starlight's auto.
           content: `
-            const t = localStorage.getItem('theme');
-            if (t === 'light' || t === 'dark') localStorage.setItem('starlight-theme', t);
-            else if (!localStorage.getItem('starlight-theme')) localStorage.setItem('starlight-theme', 'dark');
+            if (!localStorage.getItem('starlight-theme')) {
+              const t = localStorage.getItem('theme');
+              localStorage.setItem('starlight-theme', t === 'light' ? 'light' : 'dark');
+            }
           `,
         },
       ],

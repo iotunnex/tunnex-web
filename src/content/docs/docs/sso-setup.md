@@ -1,11 +1,11 @@
 ---
 title: SSO setup
-description: Configure Google or Microsoft Entra sign-in.
+description: Configure Google or Microsoft Entra ID sign-in.
 sidebar:
   order: 5
 ---
 
-:::note[Stub]
+:::note[Page in progress]
 Placeholder — full SSO guides land with the beta. SSO is an Enterprise feature
 (see [pricing](/pricing/)).
 :::

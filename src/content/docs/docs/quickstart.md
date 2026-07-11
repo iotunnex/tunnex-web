@@ -5,7 +5,7 @@ sidebar:
   order: 1
 ---
 
-:::note[Stub]
+:::note[Page in progress]
 Placeholder — the final quickstart is a two-question install (network name and
 admin email) followed by first-device enrollment. Content lands with the beta.
 :::
