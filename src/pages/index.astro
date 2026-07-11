@@ -40,10 +40,12 @@ const features: { title: string; body: string; tag?: string }[] = [
     <h1 class="max-w-3xl text-4xl font-bold tracking-tight text-balance sm:text-5xl">
       Self-hosted Zero Trust VPN.
     </h1>
-    <p class="text-xl font-medium text-text-muted">Your keys. Your servers. Your network.</p>
+    <p class="text-xl font-medium">
+      Connect everything. <span class="text-primary">Trust nothing.</span>
+    </p>
     <p class="max-w-2xl text-text-muted">
       Tunnex gives your team WireGuard-fast private networking with single sign-on and Zero Trust
-      policies — on infrastructure you run. Nothing about your network ever touches ours.
+      policies — on infrastructure you run. Your network never touches ours.
     </p>
     <CodeSnippet label="one-command install" class="max-w-xl">
       curl -fsSL https://get.tunnex.io | sh
@@ -60,7 +62,7 @@ const features: { title: string; body: string; tag?: string }[] = [
   <section class="border-y border-border bg-surface/50">
     <div class="mx-auto max-w-6xl px-4 py-16 sm:px-6">
       <h2 class="text-2xl font-bold tracking-tight">
-        Everything a private network needs. Nothing it doesn’t.
+        The features a private network actually needs.
       </h2>
       <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {
@@ -94,11 +96,12 @@ const features: { title: string; body: string; tag?: string }[] = [
 
   <!-- Architecture -->
   <section class="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-16 sm:px-6">
-    <h2 class="text-2xl font-bold tracking-tight">Your network never leaves your hands.</h2>
+    <h2 class="text-2xl font-bold tracking-tight">Built to run without us.</h2>
     <p class="max-w-2xl text-text-muted">
-      The control plane, gateways, and clients all run where you choose. Tunnex’s hosted service
-      handles licensing and billing only — it is never in your traffic path and never holds your
-      keys, your configs, or your users’ data. Your VPN keeps running even if tunnex.io goes dark.
+      Your keys. Your servers. Your network. The control plane, gateways, and clients all run where
+      you choose. Tunnex’s hosted service handles licensing and billing only — it is never in your
+      traffic path and never holds your keys, your configs, or your users’ data. Your VPN keeps
+      running even if tunnex.io goes dark.
     </p>
     <ArchitectureDiagram />
   </section>

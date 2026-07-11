@@ -21,7 +21,8 @@ export default defineConfig({
     starlight({
       title: 'Tunnex Docs',
       favicon: '/favicon.svg',
-      description: 'Documentation for Tunnex — self-hosted Zero Trust VPN.',
+      description:
+        'Tunnex documentation — install, configure, and operate your self-hosted Zero Trust VPN.',
       customCss: ['./src/styles/starlight.css'],
       components: { SiteTitle: './src/components/starlight/SiteTitle.astro' },
       head: [

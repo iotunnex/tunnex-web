@@ -56,7 +56,7 @@ exports[`email templates > renders newsletter-confirm (html + text snapshot) 1`]
 <p style="margin:0 0 16px;">One click and you’re on the list — launch news and release notes, nothing else.</p><p style="margin:24px 0;"><a href="https://example.test/subscribe/confirm?token=RAW_TOKEN_PLACEHOLDER" style="display:inline-block;background-color:#0e7490;color:#ffffff;text-decoration:none;font-weight:600;font-size:15px;padding:10px 20px;border-radius:6px;">Confirm subscription</a></p><p style="margin:16px 0 0;color:#4a5c74;font-size:13px;">This link is valid for 24 hours and can be used once. If you didn’t subscribe, ignore this email and you won’t hear from us.</p>
   </div>
   <p style="color:#4a5c74;font-size:12px;line-height:1.5;padding-top:16px;margin:0;">
-    Tunnex — self-hosted Zero Trust VPN. Your keys. Your servers. Your network.<br>
+    Tunnex — Connect everything. Trust nothing.<br>
     Questions? Reply to this email or write to sales@tunnex.io.
   </p>
 </div>
@@ -91,7 +91,7 @@ exports[`email templates > renders trial-already-exists (html + text snapshot) 1
 <p style="margin:0 0 16px;">Someone at <strong>acme.com</strong> already started a Tunnex Enterprise trial, and trials are one per company domain.</p><p style="margin:0 0 16px;">If you can’t find who has it, or the trial ended and you want more time, we’ll sort it out:</p><p style="margin:24px 0;"><a href="mailto:sales@tunnex.io?subject=Trial%20for%20acme.com" style="display:inline-block;background-color:#0e7490;color:#ffffff;text-decoration:none;font-weight:600;font-size:15px;padding:10px 20px;border-radius:6px;">Contact sales</a></p>
   </div>
   <p style="color:#4a5c74;font-size:12px;line-height:1.5;padding-top:16px;margin:0;">
-    Tunnex — self-hosted Zero Trust VPN. Your keys. Your servers. Your network.<br>
+    Tunnex — Connect everything. Trust nothing.<br>
     Questions? Reply to this email or write to sales@tunnex.io.
   </p>
 </div>
@@ -123,7 +123,7 @@ exports[`email templates > renders trial-approved (html + text snapshot) 1`] = `
 <p style="margin:0 0 16px;">Your 14-day Tunnex Enterprise trial for <strong>acme.com</strong> is approved.</p><p style="margin:0 0 16px;">Tunnex is launching soon: your license key will arrive in this inbox the moment the beta opens, and your 14 days start only when the key is issued — you lose nothing by being early.</p>
   </div>
   <p style="color:#4a5c74;font-size:12px;line-height:1.5;padding-top:16px;margin:0;">
-    Tunnex — self-hosted Zero Trust VPN. Your keys. Your servers. Your network.<br>
+    Tunnex — Connect everything. Trust nothing.<br>
     Questions? Reply to this email or write to sales@tunnex.io.
   </p>
 </div>
@@ -155,7 +155,7 @@ exports[`email templates > renders trial-d10-reminder (html + text snapshot) 1`]
 <p style="margin:0 0 16px;">The Tunnex Enterprise trial for <strong>acme.com</strong> ends on July 25, 2026.</p><p style="margin:0 0 16px;">When it does, Enterprise features lapse to the Open tier and your VPN keeps running — nothing breaks. If SSO, policies, or multi-org earned their keep, let’s talk pricing before the deadline.</p><p style="margin:24px 0;"><a href="mailto:sales@tunnex.io?subject=Tunnex%20Enterprise" style="display:inline-block;background-color:#0e7490;color:#ffffff;text-decoration:none;font-weight:600;font-size:15px;padding:10px 20px;border-radius:6px;">Talk to sales</a></p>
   </div>
   <p style="color:#4a5c74;font-size:12px;line-height:1.5;padding-top:16px;margin:0;">
-    Tunnex — self-hosted Zero Trust VPN. Your keys. Your servers. Your network.<br>
+    Tunnex — Connect everything. Trust nothing.<br>
     Questions? Reply to this email or write to sales@tunnex.io.
   </p>
 </div>
@@ -188,7 +188,7 @@ exports[`email templates > renders trial-d21-followup (html + text snapshot) 1`]
 <p style="margin:0 0 16px;">A week ago the Tunnex Enterprise trial for <strong>acme.com</strong> ended. One honest question: what stopped you?</p><p style="margin:0 0 16px;">Price, a missing feature, a rough edge — reply and tell us. We read every answer, and it directly shapes what we build next.</p>
   </div>
   <p style="color:#4a5c74;font-size:12px;line-height:1.5;padding-top:16px;margin:0;">
-    Tunnex — self-hosted Zero Trust VPN. Your keys. Your servers. Your network.<br>
+    Tunnex — Connect everything. Trust nothing.<br>
     Questions? Reply to this email or write to sales@tunnex.io.
   </p>
 </div>
@@ -220,7 +220,7 @@ exports[`email templates > renders trial-expired-upgrade (html + text snapshot) 
 <p style="margin:0 0 16px;">The Enterprise trial for <strong>acme.com</strong> has ended. Your deployment lapsed to the Open tier and keeps working — your network never depended on us.</p><p style="margin:0 0 16px;">Want SSO, Zero Trust policies, and multi-org back? Upgrading is pasting a new key.</p><p style="margin:24px 0;"><a href="https://example.test/pricing/" style="display:inline-block;background-color:#0e7490;color:#ffffff;text-decoration:none;font-weight:600;font-size:15px;padding:10px 20px;border-radius:6px;">See Enterprise pricing</a></p>
   </div>
   <p style="color:#4a5c74;font-size:12px;line-height:1.5;padding-top:16px;margin:0;">
-    Tunnex — self-hosted Zero Trust VPN. Your keys. Your servers. Your network.<br>
+    Tunnex — Connect everything. Trust nothing.<br>
     Questions? Reply to this email or write to sales@tunnex.io.
   </p>
 </div>
@@ -253,7 +253,7 @@ exports[`email templates > renders trial-key-delivery (html + text snapshot) 1`]
 <p style="margin:0 0 16px;">Welcome! Here is the 14-day Tunnex Enterprise trial key for <strong>acme.com</strong> (valid until July 25, 2026):</p><pre style="background-color:#f7fafc;border:1px solid #d3dee9;border-radius:6px;padding:12px;font-size:13px;overflow-x:auto;">TNX-TRIAL-KEY-PLACEHOLDER</pre><p style="margin:0 0 16px;">Paste it into your control plane — no reinstall, features unlock in place.</p><p style="margin:24px 0;"><a href="https://example.test/docs/quickstart/" style="display:inline-block;background-color:#0e7490;color:#ffffff;text-decoration:none;font-weight:600;font-size:15px;padding:10px 20px;border-radius:6px;">Follow the quickstart</a></p>
   </div>
   <p style="color:#4a5c74;font-size:12px;line-height:1.5;padding-top:16px;margin:0;">
-    Tunnex — self-hosted Zero Trust VPN. Your keys. Your servers. Your network.<br>
+    Tunnex — Connect everything. Trust nothing.<br>
     Questions? Reply to this email or write to sales@tunnex.io.
   </p>
 </div>
@@ -288,7 +288,7 @@ exports[`email templates > renders trial-verify (html + text snapshot) 1`] = `
 <p style="margin:0 0 16px;">You requested a 14-day Tunnex Enterprise trial for <strong>acme.com</strong>.</p><p style="margin:0 0 16px;">Confirm it from the device where you want to finish setup:</p><p style="margin:24px 0;"><a href="https://example.test/trial/verify?token=RAW_TOKEN_PLACEHOLDER" style="display:inline-block;background-color:#0e7490;color:#ffffff;text-decoration:none;font-weight:600;font-size:15px;padding:10px 20px;border-radius:6px;">Confirm trial request</a></p><p style="margin:16px 0 0;color:#4a5c74;font-size:13px;">This link is valid for 30 minutes and can be used once. If you didn’t request a trial, ignore this email — nothing happens without confirmation.</p>
   </div>
   <p style="color:#4a5c74;font-size:12px;line-height:1.5;padding-top:16px;margin:0;">
-    Tunnex — self-hosted Zero Trust VPN. Your keys. Your servers. Your network.<br>
+    Tunnex — Connect everything. Trust nothing.<br>
     Questions? Reply to this email or write to sales@tunnex.io.
   </p>
 </div>
