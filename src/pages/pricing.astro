@@ -1,0 +1,186 @@
+---
+import Base from '../layouts/Base.astro';
+import Button from '../components/ui/Button.astro';
+import { launchMode, enterprisePricing, indicativeSeatPrice } from '../config';
+
+const isBeta = launchMode === 'beta';
+const isIndicative = enterprisePricing === 'indicative';
+
+const openFeatures = [
+  'Self-hosted control plane, gateways, and clients',
+  'Unlimited devices',
+  'Single organization',
+  'Local authentication',
+  'WireGuard data plane',
+  'Desktop + CLI clients',
+  'Community support',
+];
+
+const faq = [
+  {
+    q: 'What happens when my license expires?',
+    a: 'Grace period with warnings, then Enterprise features lapse to Open. The VPN keeps running — always.',
+  },
+  {
+    q: 'Does it phone home?',
+    a: 'No. License keys are verified offline against a public key in the binary. Air-gapped deployments are fully supported.',
+  },
+  {
+    q: 'What do you see of my network?',
+    a: 'Nothing. Our hosted service holds billing and license records only — no traffic, no keys, no user data.',
+    link: { href: '/security', label: 'Read the security model →' },
+  },
+  {
+    q: 'What happens after the trial?',
+    a: 'Your deployment lapses to Open features and keeps working. Upgrade any time by pasting a new key — no reinstall, no migration.',
+  },
+];
+
+const enterpriseFeatures = [
+  'SSO: Google & Microsoft Entra',
+  'Zero Trust access policies',
+  'Multi-org (multi-tenant) management',
+  'Kubernetes operator',
+  'Priority support',
+];
+---
+
+<Base
+  title="Tunnex — Pricing"
+  description="Tunnex is self-hosted either way: the Open tier is free for unlimited devices; Enterprise adds SSO, Zero Trust policies, and multi-org management."
+>
+  <section class="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-16 sm:px-6 md:py-20">
+    <h1 class="text-4xl font-bold tracking-tight">Pricing</h1>
+    <p class="max-w-2xl text-lg text-text-muted">
+      Self-hosted either way. Your network runs on your infrastructure whether you pay us or not —
+      Enterprise is for teams that need identity, policy, and scale.
+    </p>
+  </section>
+
+  <section class="mx-auto grid max-w-6xl gap-6 px-4 pb-20 sm:px-6 lg:grid-cols-2">
+    <!-- Open tier -->
+    <div class="flex flex-col gap-6 rounded-lg border border-border bg-surface p-8">
+      <div class="flex flex-col gap-1">
+        <h2 class="text-lg font-semibold">Open</h2>
+        <p class="text-5xl font-bold tracking-tight">Free</p>
+        <p class="text-sm text-text-muted">Self-hosted, forever. No device caps, no seat math.</p>
+      </div>
+      <ul class="flex flex-col gap-3 text-sm">
+        {
+          openFeatures.map((f) => (
+            <li class="flex items-start gap-2.5">
+              <svg
+                class="mt-0.5 size-4 shrink-0 text-success"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M4 12.5 10 18 20 6" />
+              </svg>
+              {f}
+            </li>
+          ))
+        }
+      </ul>
+      <div class="mt-auto">
+        <Button href={isBeta ? '/download' : '/docs'} variant="secondary" class="w-full">
+          {isBeta ? 'Download' : 'Read the docs'}
+        </Button>
+      </div>
+    </div>
+
+    <!-- Enterprise tier -->
+    <div class="flex flex-col gap-6 rounded-lg border-2 border-primary bg-surface-raised p-8">
+      <div class="flex flex-col gap-1">
+        <div class="flex items-center justify-between">
+          <h2 class="text-lg font-semibold">Enterprise</h2>
+          <span
+            class="rounded-full border border-primary/40 px-2 py-0.5 text-[11px] font-medium tracking-wide text-primary uppercase"
+          >
+            14-day free trial
+          </span>
+        </div>
+        <p class="text-5xl font-bold tracking-tight">
+          {isIndicative ? `From ${indicativeSeatPrice}` : 'Custom'}
+        </p>
+        <p class="text-sm text-text-muted">
+          {
+            isIndicative
+              ? 'Per seat per month, billed annually.'
+              : 'Per-seat, billed annually. Quoted by team size.'
+          }
+        </p>
+      </div>
+      <p class="text-sm font-medium">Everything in Open, plus:</p>
+      <ul class="flex flex-col gap-3 text-sm">
+        {
+          enterpriseFeatures.map((f) => (
+            <li class="flex items-start gap-2.5">
+              <svg
+                class="mt-0.5 size-4 shrink-0 text-success"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M4 12.5 10 18 20 6" />
+              </svg>
+              {f}
+            </li>
+          ))
+        }
+      </ul>
+      {
+        /*
+        EPIC 7 CHECKOUT SLOT — structural mount point, do not remove.
+        When payments land (Stripe US + Razorpay India, trigger: product S12.5),
+        the checkout flow replaces the contents of this container. Until then it
+        carries the trial + sales CTAs.
+      */
+      }
+      <div id="checkout-slot" data-slot="checkout" class="mt-auto flex flex-col gap-3">
+        <Button href="/trial" variant="primary" class="w-full">Start 14-day free trial</Button>
+        <Button href="/enterprise" variant="secondary" class="w-full">Contact sales</Button>
+      </div>
+    </div>
+  </section>
+
+  <section class="border-t border-border">
+    <div class="mx-auto flex max-w-6xl flex-col gap-2 px-4 py-8 sm:px-6">
+      <h2 class="text-lg font-semibold">Not sure which tier?</h2>
+      <p class="max-w-2xl text-sm text-text-muted">
+        If your team signs in with Google or Microsoft, needs per-resource access policies, or runs
+        more than one organization, you want Enterprise. Otherwise start with Open — upgrading later
+        is a license key, not a migration.
+      </p>
+    </div>
+  </section>
+
+  <section class="border-t border-border bg-surface/50">
+    <div class="mx-auto flex max-w-6xl flex-col gap-8 px-4 py-16 sm:px-6">
+      <h2 class="text-xl font-semibold tracking-tight">Questions you should ask a VPN vendor</h2>
+      <div class="grid gap-x-10 gap-y-8 md:grid-cols-2">
+        {
+          faq.map((item) => (
+            <div class="flex flex-col gap-2">
+              <h3 class="text-base font-semibold">{item.q}</h3>
+              <p class="text-sm text-text-muted">{item.a}</p>
+              {item.link && (
+                <a href={item.link.href} class="text-sm font-semibold text-link">
+                  {item.link.label}
+                </a>
+              )}
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+</Base>

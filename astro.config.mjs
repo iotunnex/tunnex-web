@@ -35,6 +35,13 @@ export default defineConfig({
         access: 'public',
         default: 'prelaunch',
       }),
+      // Enterprise price presentation on /pricing — see src/config.ts.
+      ENTERPRISE_PRICING: envField.enum({
+        values: ['contact', 'indicative'],
+        context: 'server',
+        access: 'public',
+        default: 'contact',
+      }),
     },
   },
   vite: {
