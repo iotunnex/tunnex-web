@@ -4,8 +4,8 @@
 
 # --- Secrets used by the site Worker ---
 
-# Resend API key for outbound email via mail.tunnex.io (used from S2.1).
-# Local dev can use a Resend test-mode key.
+# Resend API key for outbound email via mail.tunnex.io (S2.1 mailer +
+# scripts/test-send.mjs). Local dev can use a Resend test-mode key.
 # RESEND_API_KEY=re_...
 
 # Cloudflare Turnstile secret key for server-side form verification (used from S2.2).

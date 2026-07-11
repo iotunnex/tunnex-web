@@ -136,7 +136,34 @@ Notes:
 - Dependency policy: latest **stable** release lines only (no betas/RCs/canaries).
   A `renovate`/`dependabot` config is a candidate follow-up to automate bumps.
 
-## DNS / email
+## Email (Resend on mail.tunnex.io)
 
-_Placeholder — mail.tunnex.io SPF/DKIM/DMARC records documented in S2.1; full go-live
-runbook in S4.4._
+Outbound email sends from `no-reply@mail.tunnex.io` (dedicated subdomain protects the
+root domain's reputation), Reply-To `sales@tunnex.io`. Typed mailer:
+`src/lib/email/mailer.ts` — `send(kind, to, data)`; templates in
+`src/lib/email/templates.ts` (HTML + plaintext pairs, snapshot-tested).
+
+### DNS records for mail.tunnex.io
+
+Add the sending domain `mail.tunnex.io` in the Resend dashboard (region us-east-1),
+then create exactly the records it lists. They will be:
+
+| Type | Host                               | Value                                             | Purpose                                                                  |
+| ---- | ---------------------------------- | ------------------------------------------------- | ------------------------------------------------------------------------ |
+| MX   | `send.mail.tunnex.io`              | `feedback-smtp.us-east-1.amazonses.com` (prio 10) | bounce/complaint feedback                                                |
+| TXT  | `send.mail.tunnex.io`              | `"v=spf1 include:amazonses.com ~all"`             | SPF                                                                      |
+| TXT  | `resend._domainkey.mail.tunnex.io` | `"p=<DKIM public key from the Resend dashboard>"` | DKIM                                                                     |
+| TXT  | `_dmarc.mail.tunnex.io`            | `"v=DMARC1; p=none; rua=mailto:sales@tunnex.io"`  | DMARC (monitor first; tighten to `p=quarantine` once reports look clean) |
+
+The exact host names/values come from the Resend dashboard after adding the domain —
+treat the table above as the shape to expect, and the dashboard as the source of truth.
+The root domain (`tunnex.io`) gets its own SPF/DMARC in the S4.4 launch runbook, along
+with Cloudflare Email Routing for `sales@`/`security@` (inbound).
+
+### Test sends
+
+```sh
+# RESEND_API_KEY in .dev.vars, then:
+node scripts/test-send.mjs you@example.com trial-verify   # one template
+node scripts/test-send.mjs you@example.com all            # every template
+```

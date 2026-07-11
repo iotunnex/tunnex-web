@@ -14,6 +14,9 @@ const SCAN_DIR = join(ROOT, 'src');
 const THEME_FILES = new Set([
   join(ROOT, 'src/styles/tokens.css'), // raw values (primitives + semantic layer)
   join(ROOT, 'src/styles/theme.css'), // Tailwind mapping over tokens.css
+  // Email clients cannot resolve CSS custom properties — emails inline fixed
+  // colors by design, single-sourced in this one file (mirrors light tokens).
+  join(ROOT, 'src/lib/email/palette.ts'),
 ]);
 const EXTENSIONS = /\.(astro|css|ts|tsx|js|mjs|jsx|html|svg|md|mdx)$/;
 

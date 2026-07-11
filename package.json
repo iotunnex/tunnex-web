@@ -15,6 +15,7 @@
     "db:migrate:local": "wrangler d1 migrations apply tunnex-site-db --local",
     "lint": "eslint . && node scripts/lint-tokens.mjs",
     "lint:tokens": "node scripts/lint-tokens.mjs",
+    "test": "vitest run",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },
@@ -23,6 +24,7 @@
     "@astrojs/starlight": "^0.41.3",
     "@tailwindcss/vite": "^4.3.2",
     "astro": "^7.0.7",
+    "resend": "^6.17.2",
     "tailwindcss": "^4.3.2"
   },
   "devDependencies": {
@@ -34,6 +36,7 @@
     "prettier-plugin-astro": "^0.14.1",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.63.0",
+    "vitest": "^4.1.10",
     "wrangler": "^4.110.0"
   },
   "pnpm": {

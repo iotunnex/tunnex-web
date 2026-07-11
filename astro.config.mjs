@@ -63,6 +63,13 @@ export default defineConfig({
         access: 'public',
         default: 'https://dl.tunnex.io',
       }),
+      // Base for links/assets inside outbound emails. Flips to
+      // https://tunnex.io in the S4.4 launch runbook.
+      EMAIL_LINK_BASE_URL: envField.string({
+        context: 'server',
+        access: 'public',
+        default: 'https://tunnex-site.iotunnex.workers.dev',
+      }),
     },
   },
   vite: {
