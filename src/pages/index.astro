@@ -3,54 +3,125 @@ import Base from '../layouts/Base.astro';
 import Card from '../components/ui/Card.astro';
 import CodeSnippet from '../components/ui/CodeSnippet.astro';
 import CtaPair from '../components/ui/CtaPair.astro';
+import ArchitectureDiagram from '../components/ArchitectureDiagram.astro';
 import { launchMode } from '../config';
 
-// Placeholder home page — real content lands in S1.2. This page exercises the
-// S1.1 design system (hero, CTA pair, code snippet, cards) on all breakpoints.
+const isBeta = launchMode === 'beta';
+
+const features: { title: string; body: string; tag?: string }[] = [
+  {
+    title: 'WireGuard data plane',
+    body: 'WireGuard moves your packets — modern cryptography, wire-speed performance, and no proprietary protocol in the middle.',
+  },
+  {
+    title: 'SSO that just works',
+    body: 'Google and Microsoft sign-in out of the box. Your identity provider decides who connects — revoke access once, and it is revoked everywhere.',
+    tag: 'Enterprise',
+  },
+  {
+    title: 'Multi-tenant organizations',
+    body: 'Isolated organizations on one deployment: separate networks, separate policies, separate admins. Built for MSPs and platform teams.',
+    tag: 'Enterprise',
+  },
+  {
+    title: 'Fail-closed kill-switch',
+    body: 'Desktop clients are designed to fail closed: if the tunnel drops, traffic stops. Your machines never silently fall back to the open network.',
+  },
+  {
+    title: 'Audit logging',
+    body: 'Every connection, policy change, and admin action is recorded. Answer “who reached what, and when” without your logs ever leaving your infrastructure.',
+  },
+];
 ---
 
 <Base title="Tunnex — Self-hosted Zero Trust VPN">
+  <!-- Hero -->
   <section class="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-20 sm:px-6 md:py-28">
     <h1 class="max-w-3xl text-4xl font-bold tracking-tight text-balance sm:text-5xl">
       Self-hosted Zero Trust VPN.
     </h1>
-    <p class="max-w-2xl text-lg text-text-muted">Your keys. Your servers. Your network.</p>
+    <p class="text-xl font-medium text-text-muted">Your keys. Your servers. Your network.</p>
+    <p class="max-w-2xl text-text-muted">
+      Tunnex gives your team WireGuard-fast private networking with single sign-on and Zero Trust
+      policies — on infrastructure you run. Nothing about your network ever touches ours.
+    </p>
     <CodeSnippet label="one-command install" class="max-w-xl">
       curl -fsSL https://get.tunnex.io | sh
     </CodeSnippet>
     <CtaPair
-      primaryLabel={launchMode === 'beta' ? 'Download' : 'Start 14-day trial'}
-      primaryHref={launchMode === 'beta' ? '/download' : '/trial'}
+      primaryLabel={isBeta ? 'Download' : 'Start 14-day trial'}
+      primaryHref={isBeta ? '/download' : '/trial'}
       secondaryLabel="Read the docs"
       secondaryHref="/docs"
     />
   </section>
 
-  <section class="mx-auto grid max-w-6xl gap-4 px-4 pb-24 sm:grid-cols-2 sm:px-6 lg:grid-cols-3">
-    <Card>
-      <h2 class="text-base font-semibold">WireGuard data plane</h2>
-      <p class="mt-2 text-sm text-text-muted">
-        Modern crypto in the kernel path. Your traffic never touches our servers.
+  <!-- Features -->
+  <section class="border-y border-border bg-surface/50">
+    <div class="mx-auto max-w-6xl px-4 py-16 sm:px-6">
+      <h2 class="text-2xl font-bold tracking-tight">
+        Everything a private network needs. Nothing it doesn’t.
+      </h2>
+      <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {
+          features.map((f) => (
+            <Card>
+              <div class="flex items-center justify-between gap-2">
+                <h3 class="text-base font-semibold">{f.title}</h3>
+                {f.tag && (
+                  <span class="rounded-full border border-border px-2 py-0.5 text-[11px] font-medium tracking-wide text-text-muted uppercase">
+                    {f.tag}
+                  </span>
+                )}
+              </div>
+              <p class="mt-2 text-sm text-text-muted">{f.body}</p>
+            </Card>
+          ))
+        }
+        <Card class="bg-surface-raised">
+          <h3 class="text-base font-semibold">Open core</h3>
+          <p class="mt-2 text-sm text-text-muted">
+            The self-hosted core is free for unlimited devices. Enterprise adds SSO, Zero Trust
+            policies, and multi-org management.
+          </p>
+          <a href="/pricing" class="mt-3 inline-block text-sm font-semibold text-link">
+            Compare tiers →
+          </a>
+        </Card>
+      </div>
+    </div>
+  </section>
+
+  <!-- Architecture -->
+  <section class="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-16 sm:px-6">
+    <h2 class="text-2xl font-bold tracking-tight">Your network never leaves your hands.</h2>
+    <p class="max-w-2xl text-text-muted">
+      The control plane, gateways, and clients all run where you choose. Tunnex’s hosted service
+      handles licensing and billing only — it is never in your traffic path and never holds your
+      keys, your configs, or your users’ data. Your VPN keeps running even if tunnex.io goes dark.
+    </p>
+    <ArchitectureDiagram />
+  </section>
+
+  <!-- Closing CTA -->
+  <section class="border-t border-border">
+    <div class="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-16 sm:px-6">
+      <h2 class="text-2xl font-bold tracking-tight">
+        {isBeta ? 'Up and running in minutes.' : 'Be first in line.'}
+      </h2>
+      <p class="max-w-2xl text-text-muted">
+        {
+          isBeta
+            ? 'Install the server, sign in with your identity provider, and connect your first device — all before your coffee gets cold.'
+            : 'Tunnex is launching soon. Request a trial now and your license key arrives the moment the beta opens.'
+        }
       </p>
-      <a href="/security" class="mt-3 inline-block text-sm font-semibold text-link">
-        Architecture →
-      </a>
-    </Card>
-    <Card>
-      <h2 class="text-base font-semibold">SSO built in</h2>
-      <p class="mt-2 text-sm text-text-muted">
-        Google and Microsoft sign-in with multi-tenant organizations.
-      </p>
-      <a href="/pricing" class="mt-3 inline-block text-sm font-semibold text-link">
-        Enterprise →
-      </a>
-    </Card>
-    <Card>
-      <h2 class="text-base font-semibold">Fail-closed by design</h2>
-      <p class="mt-2 text-sm text-text-muted">
-        Desktop clients with a kill-switch designed to fail closed, not open.
-      </p>
-      <a href="/download" class="mt-3 inline-block text-sm font-semibold text-link"> Clients → </a>
-    </Card>
+      <CtaPair
+        primaryLabel={isBeta ? 'Download' : 'Start 14-day trial'}
+        primaryHref={isBeta ? '/download' : '/trial'}
+        secondaryLabel="Contact sales"
+        secondaryHref="/enterprise"
+      />
+    </div>
   </section>
 </Base>

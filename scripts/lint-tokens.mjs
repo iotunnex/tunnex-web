@@ -28,6 +28,12 @@ const RULES = [
       'g',
     ),
   },
+  {
+    // SVG paints must stay themeable: currentColor, var(--color-*), none,
+    // transparent, url(#...), or a token utility class — never a literal color.
+    name: 'hardcoded SVG paint',
+    re: /\b(?:fill|stroke)="(?!none|currentColor|transparent|url\(|var\()[^"{]+"/g,
+  },
 ];
 
 function* walk(dir) {
