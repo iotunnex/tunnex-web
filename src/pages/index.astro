@@ -8,18 +8,20 @@ import { launchMode } from '../config';
 
 const isBeta = launchMode === 'beta';
 
-const features = [
+const features: { title: string; body: string; tag?: string }[] = [
   {
     title: 'WireGuard data plane',
-    body: 'Kernel-path WireGuard moves your packets. Modern cryptography, mesh-grade performance, and no proprietary protocol in the middle.',
+    body: 'WireGuard moves your packets — modern cryptography, wire-speed performance, and no proprietary protocol in the middle.',
   },
   {
     title: 'SSO that just works',
     body: 'Google and Microsoft sign-in out of the box. Your identity provider decides who connects — revoke access once, and it is revoked everywhere.',
+    tag: 'Enterprise',
   },
   {
     title: 'Multi-tenant organizations',
     body: 'Isolated organizations on one deployment: separate networks, separate policies, separate admins. Built for MSPs and platform teams.',
+    tag: 'Enterprise',
   },
   {
     title: 'Fail-closed kill-switch',
@@ -64,7 +66,14 @@ const features = [
         {
           features.map((f) => (
             <Card>
-              <h3 class="text-base font-semibold">{f.title}</h3>
+              <div class="flex items-center justify-between gap-2">
+                <h3 class="text-base font-semibold">{f.title}</h3>
+                {f.tag && (
+                  <span class="rounded-full border border-border px-2 py-0.5 text-[11px] font-medium tracking-wide text-text-muted uppercase">
+                    {f.tag}
+                  </span>
+                )}
+              </div>
               <p class="mt-2 text-sm text-text-muted">{f.body}</p>
             </Card>
           ))
