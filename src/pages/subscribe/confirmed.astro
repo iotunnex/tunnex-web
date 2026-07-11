@@ -2,13 +2,15 @@
 import Base from '../../layouts/Base.astro';
 import Button from '../../components/ui/Button.astro';
 import Card from '../../components/ui/Card.astro';
+import Logo from '../../components/Logo.astro';
 ---
 
 <Base title="Tunnex — Subscription confirmed" noindex>
   <section
     class="mx-auto flex min-h-[60vh] w-full max-w-6xl flex-col justify-center px-4 py-20 sm:px-6"
   >
-    <Card class="mx-auto flex w-full max-w-md flex-col gap-4 p-8">
+    <Card class="mx-auto flex w-full max-w-md flex-col items-center gap-4 p-8 text-center">
+      <Logo variant="vertical" />
       <h1 class="text-xl font-semibold">You’re on the list</h1>
       <p class="text-sm text-text-muted">
         We’ll email you the moment downloads open — launch news and release notes, nothing else.
