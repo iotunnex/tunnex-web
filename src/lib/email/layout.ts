@@ -10,7 +10,19 @@ export function renderShell(opts: {
   title: string;
   bodyHtml: string;
   assetBaseUrl: string;
+  /** Inbox preview line; hidden in the rendered body. */
+  preheader?: string;
+  /** false = internal notification footer instead of the customer footer. */
+  customerFooter?: boolean;
 }): string {
+  const preheader = opts.preheader
+    ? `<span style="display:none;font-size:1px;color:${EMAIL.bg};max-height:0;max-width:0;opacity:0;overflow:hidden;">${escapeHtml(opts.preheader)}</span>`
+    : '';
+  const footer =
+    opts.customerFooter === false
+      ? 'Internal notification — enterprise lead from tunnex.io/enterprise.'
+      : `Tunnex — self-hosted Zero Trust VPN. Your keys. Your servers. Your network.<br>
+    Questions? Reply to this email or write to sales@tunnex.io.`;
   return `<!doctype html>
 <html lang="en">
 <head>
@@ -19,6 +31,7 @@ export function renderShell(opts: {
 <title>${escapeHtml(opts.title)}</title>
 </head>
 <body style="margin:0;padding:0;background-color:${EMAIL.bg};">
+${preheader}
 <div style="max-width:560px;margin:0 auto;padding:32px 20px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
   <div style="padding-bottom:20px;">
     <img src="${opts.assetBaseUrl}/email/tunnex-logo-2x.png" alt="Tunnex" width="176" height="22" style="display:block;border:0;">
@@ -27,8 +40,7 @@ export function renderShell(opts: {
 ${opts.bodyHtml}
   </div>
   <p style="color:${EMAIL.textMuted};font-size:12px;line-height:1.5;padding-top:16px;margin:0;">
-    Tunnex — self-hosted Zero Trust VPN. Your keys. Your servers. Your network.<br>
-    Questions? Reply to this email or write to sales@tunnex.io.
+    ${footer}
   </p>
 </div>
 </body>

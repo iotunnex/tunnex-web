@@ -17,6 +17,12 @@ const THEME_FILES = new Set([
   // Email clients cannot resolve CSS custom properties — emails inline fixed
   // colors by design, single-sourced in this one file (mirrors light tokens).
   join(ROOT, 'src/lib/email/palette.ts'),
+  // Brand marks are fixed-color by design (founder decision: dark mode shows
+  // the original indigo/purple assets). Narrow, explicit file list — never a
+  // blanket asset exclusion. logo-lockup-light.svg is tokenized and NOT here.
+  join(ROOT, 'src/assets/logo.svg'),
+  join(ROOT, 'src/assets/wordmark.svg'),
+  join(ROOT, 'src/assets/logo-lockup-dark.svg'),
 ]);
 const EXTENSIONS = /\.(astro|css|ts|tsx|js|mjs|jsx|html|svg|md|mdx)$/;
 

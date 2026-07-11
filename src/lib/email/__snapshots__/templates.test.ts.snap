@@ -10,6 +10,7 @@ exports[`email templates > renders enterprise-lead (html + text snapshot) 1`] = 
 <title>New enterprise lead: Acme Corp</title>
 </head>
 <body style="margin:0;padding:0;background-color:#f7fafc;">
+
 <div style="max-width:560px;margin:0 auto;padding:32px 20px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
   <div style="padding-bottom:20px;">
     <img src="https://example.test/email/tunnex-logo-2x.png" alt="Tunnex" width="176" height="22" style="display:block;border:0;">
@@ -18,8 +19,7 @@ exports[`email templates > renders enterprise-lead (html + text snapshot) 1`] = 
 <p style="margin:0 0 16px;"><strong>Ada Lovelace</strong> (ada@acme.com)</p><p style="margin:0 0 16px;">Company: Acme Corp<br>Seats: 50</p><p style="margin:0 0 16px;">Message:<br>We need multi-org for two subsidiaries.</p>
   </div>
   <p style="color:#4a5c74;font-size:12px;line-height:1.5;padding-top:16px;margin:0;">
-    Tunnex — self-hosted Zero Trust VPN. Your keys. Your servers. Your network.<br>
-    Questions? Reply to this email or write to sales@tunnex.io.
+    Internal notification — enterprise lead from tunnex.io/enterprise.
   </p>
 </div>
 </body>
@@ -44,9 +44,10 @@ exports[`email templates > renders newsletter-confirm (html + text snapshot) 1`]
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Confirm your subscription to Tunnex updates</title>
+<title>Confirm your Tunnex updates subscription</title>
 </head>
 <body style="margin:0;padding:0;background-color:#f7fafc;">
+
 <div style="max-width:560px;margin:0 auto;padding:32px 20px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
   <div style="padding-bottom:20px;">
     <img src="https://example.test/email/tunnex-logo-2x.png" alt="Tunnex" width="176" height="22" style="display:block;border:0;">
@@ -61,7 +62,7 @@ exports[`email templates > renders newsletter-confirm (html + text snapshot) 1`]
 </div>
 </body>
 </html>",
-  "subject": "Confirm your subscription to Tunnex updates",
+  "subject": "Confirm your Tunnex updates subscription",
   "text": "One click and you’re on the list — launch news and release notes, nothing else.
 
 Confirm here (valid 30 minutes, single use):
@@ -78,9 +79,10 @@ exports[`email templates > renders trial-already-exists (html + text snapshot) 1
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>acme.com already has a Tunnex trial</title>
+<title>A Tunnex trial already exists for acme.com</title>
 </head>
 <body style="margin:0;padding:0;background-color:#f7fafc;">
+
 <div style="max-width:560px;margin:0 auto;padding:32px 20px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
   <div style="padding-bottom:20px;">
     <img src="https://example.test/email/tunnex-logo-2x.png" alt="Tunnex" width="176" height="22" style="display:block;border:0;">
@@ -95,7 +97,7 @@ exports[`email templates > renders trial-already-exists (html + text snapshot) 1
 </div>
 </body>
 </html>",
-  "subject": "acme.com already has a Tunnex trial",
+  "subject": "A Tunnex trial already exists for acme.com",
   "text": "Someone at acme.com already started a Tunnex Enterprise trial, and trials are one per company domain.
 
 If you can’t find who has it, or the trial ended and you want more time, write to sales@tunnex.io and we’ll sort it out.",
@@ -112,6 +114,7 @@ exports[`email templates > renders trial-approved (html + text snapshot) 1`] = `
 <title>Your Tunnex trial is approved</title>
 </head>
 <body style="margin:0;padding:0;background-color:#f7fafc;">
+
 <div style="max-width:560px;margin:0 auto;padding:32px 20px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
   <div style="padding-bottom:20px;">
     <img src="https://example.test/email/tunnex-logo-2x.png" alt="Tunnex" width="176" height="22" style="display:block;border:0;">
@@ -143,12 +146,13 @@ exports[`email templates > renders trial-d10-reminder (html + text snapshot) 1`]
 <title>4 days left in your Tunnex trial</title>
 </head>
 <body style="margin:0;padding:0;background-color:#f7fafc;">
+
 <div style="max-width:560px;margin:0 auto;padding:32px 20px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
   <div style="padding-bottom:20px;">
     <img src="https://example.test/email/tunnex-logo-2x.png" alt="Tunnex" width="176" height="22" style="display:block;border:0;">
   </div>
   <div style="background-color:#ffffff;border:1px solid #d3dee9;border-radius:8px;padding:28px;color:#132032;font-size:15px;line-height:1.6;">
-<p style="margin:0 0 16px;">The Enterprise trial for <strong>acme.com</strong> ends on July 25, 2026.</p><p style="margin:0 0 16px;">When it does, Enterprise features lapse to the Open tier and your VPN keeps running — nothing breaks. If SSO, policies, or multi-org earned their keep, let’s talk pricing before the deadline.</p><p style="margin:24px 0;"><a href="mailto:sales@tunnex.io?subject=Tunnex%20Enterprise" style="display:inline-block;background-color:#0e7490;color:#ffffff;text-decoration:none;font-weight:600;font-size:15px;padding:10px 20px;border-radius:6px;">Talk to sales</a></p>
+<p style="margin:0 0 16px;">The Tunnex Enterprise trial for <strong>acme.com</strong> ends on July 25, 2026.</p><p style="margin:0 0 16px;">When it does, Enterprise features lapse to the Open tier and your VPN keeps running — nothing breaks. If SSO, policies, or multi-org earned their keep, let’s talk pricing before the deadline.</p><p style="margin:24px 0;"><a href="mailto:sales@tunnex.io?subject=Tunnex%20Enterprise" style="display:inline-block;background-color:#0e7490;color:#ffffff;text-decoration:none;font-weight:600;font-size:15px;padding:10px 20px;border-radius:6px;">Talk to sales</a></p>
   </div>
   <p style="color:#4a5c74;font-size:12px;line-height:1.5;padding-top:16px;margin:0;">
     Tunnex — self-hosted Zero Trust VPN. Your keys. Your servers. Your network.<br>
@@ -175,12 +179,13 @@ exports[`email templates > renders trial-d21-followup (html + text snapshot) 1`]
 <title>How did your Tunnex trial go?</title>
 </head>
 <body style="margin:0;padding:0;background-color:#f7fafc;">
+
 <div style="max-width:560px;margin:0 auto;padding:32px 20px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
   <div style="padding-bottom:20px;">
     <img src="https://example.test/email/tunnex-logo-2x.png" alt="Tunnex" width="176" height="22" style="display:block;border:0;">
   </div>
   <div style="background-color:#ffffff;border:1px solid #d3dee9;border-radius:8px;padding:28px;color:#132032;font-size:15px;line-height:1.6;">
-<p style="margin:0 0 16px;">A week ago the Enterprise trial for <strong>acme.com</strong> ended. One honest question: what stopped you?</p><p style="margin:0 0 16px;">Price, a missing feature, a rough edge — reply and tell us. We read every answer, and it directly shapes what we build next.</p>
+<p style="margin:0 0 16px;">A week ago the Tunnex Enterprise trial for <strong>acme.com</strong> ended. One honest question: what stopped you?</p><p style="margin:0 0 16px;">Price, a missing feature, a rough edge — reply and tell us. We read every answer, and it directly shapes what we build next.</p>
   </div>
   <p style="color:#4a5c74;font-size:12px;line-height:1.5;padding-top:16px;margin:0;">
     Tunnex — self-hosted Zero Trust VPN. Your keys. Your servers. Your network.<br>
@@ -206,6 +211,7 @@ exports[`email templates > renders trial-expired-upgrade (html + text snapshot) 
 <title>Your Tunnex trial has ended</title>
 </head>
 <body style="margin:0;padding:0;background-color:#f7fafc;">
+
 <div style="max-width:560px;margin:0 auto;padding:32px 20px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
   <div style="padding-bottom:20px;">
     <img src="https://example.test/email/tunnex-logo-2x.png" alt="Tunnex" width="176" height="22" style="display:block;border:0;">
@@ -238,12 +244,13 @@ exports[`email templates > renders trial-key-delivery (html + text snapshot) 1`]
 <title>Your Tunnex Enterprise trial key</title>
 </head>
 <body style="margin:0;padding:0;background-color:#f7fafc;">
+<span style="display:none;font-size:1px;color:#f7fafc;max-height:0;max-width:0;opacity:0;overflow:hidden;">Your 14-day Enterprise trial key is inside — paste it into your control plane to unlock features.</span>
 <div style="max-width:560px;margin:0 auto;padding:32px 20px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
   <div style="padding-bottom:20px;">
     <img src="https://example.test/email/tunnex-logo-2x.png" alt="Tunnex" width="176" height="22" style="display:block;border:0;">
   </div>
   <div style="background-color:#ffffff;border:1px solid #d3dee9;border-radius:8px;padding:28px;color:#132032;font-size:15px;line-height:1.6;">
-<p style="margin:0 0 16px;">Welcome! Here is the 14-day Enterprise trial key for <strong>acme.com</strong> (valid until July 25, 2026):</p><pre style="background-color:#f7fafc;border:1px solid #d3dee9;border-radius:6px;padding:12px;font-size:13px;overflow-x:auto;">TNX-TRIAL-KEY-PLACEHOLDER</pre><p style="margin:0 0 16px;">Paste it into your control plane — no reinstall, features unlock in place.</p><p style="margin:24px 0;"><a href="https://example.test/docs/quickstart/" style="display:inline-block;background-color:#0e7490;color:#ffffff;text-decoration:none;font-weight:600;font-size:15px;padding:10px 20px;border-radius:6px;">Follow the quickstart</a></p>
+<p style="margin:0 0 16px;">Welcome! Here is the 14-day Tunnex Enterprise trial key for <strong>acme.com</strong> (valid until July 25, 2026):</p><pre style="background-color:#f7fafc;border:1px solid #d3dee9;border-radius:6px;padding:12px;font-size:13px;overflow-x:auto;">TNX-TRIAL-KEY-PLACEHOLDER</pre><p style="margin:0 0 16px;">Paste it into your control plane — no reinstall, features unlock in place.</p><p style="margin:24px 0;"><a href="https://example.test/docs/quickstart/" style="display:inline-block;background-color:#0e7490;color:#ffffff;text-decoration:none;font-weight:600;font-size:15px;padding:10px 20px;border-radius:6px;">Follow the quickstart</a></p>
   </div>
   <p style="color:#4a5c74;font-size:12px;line-height:1.5;padding-top:16px;margin:0;">
     Tunnex — self-hosted Zero Trust VPN. Your keys. Your servers. Your network.<br>
@@ -272,6 +279,7 @@ exports[`email templates > renders trial-verify (html + text snapshot) 1`] = `
 <title>Confirm your Tunnex trial request</title>
 </head>
 <body style="margin:0;padding:0;background-color:#f7fafc;">
+
 <div style="max-width:560px;margin:0 auto;padding:32px 20px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
   <div style="padding-bottom:20px;">
     <img src="https://example.test/email/tunnex-logo-2x.png" alt="Tunnex" width="176" height="22" style="display:block;border:0;">

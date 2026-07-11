@@ -68,9 +68,9 @@ const renderers: Renderers = {
   }),
 
   'trial-already-exists': ({ domain }, ctx) => ({
-    subject: `${domain} already has a Tunnex trial`,
+    subject: `A Tunnex trial already exists for ${domain}`,
     html: shell(
-      `${domain} already has a Tunnex trial`,
+      `A Tunnex trial already exists for ${domain}`,
       ctx,
       paragraph(
         `Someone at <strong>${escapeHtml(domain)}</strong> already started a Tunnex Enterprise trial, and trials are one per company domain.`,
@@ -112,11 +112,15 @@ const renderers: Renderers = {
       'Your Tunnex Enterprise trial key',
       ctx,
       paragraph(
-        `Welcome! Here is the 14-day Enterprise trial key for <strong>${escapeHtml(domain)}</strong> (valid until ${escapeHtml(expiresAt)}):`,
+        `Welcome! Here is the 14-day Tunnex Enterprise trial key for <strong>${escapeHtml(domain)}</strong> (valid until ${escapeHtml(expiresAt)}):`,
       ) +
         `<pre style="background-color:${EMAIL.bg};border:1px solid ${EMAIL.border};border-radius:6px;padding:12px;font-size:13px;overflow-x:auto;">${escapeHtml(licenseKey)}</pre>` +
         paragraph('Paste it into your control plane — no reinstall, features unlock in place.') +
         button(`${ctx.baseUrl}/docs/quickstart/`, 'Follow the quickstart'),
+      {
+        preheader:
+          'Your 14-day Enterprise trial key is inside — paste it into your control plane to unlock features.',
+      },
     ),
     text: [
       `Welcome! Here is the 14-day Tunnex Enterprise trial key for ${domain} (valid until ${expiresAt}):`,
@@ -129,12 +133,12 @@ const renderers: Renderers = {
   }),
 
   'trial-d10-reminder': ({ domain, daysLeft, expiresAt }, ctx) => ({
-    subject: `${daysLeft} days left in your Tunnex trial`,
+    subject: `${daysLeft} ${daysLeft === 1 ? 'day' : 'days'} left in your Tunnex trial`,
     html: shell(
-      `${daysLeft} days left in your Tunnex trial`,
+      `${daysLeft} ${daysLeft === 1 ? 'day' : 'days'} left in your Tunnex trial`,
       ctx,
       paragraph(
-        `The Enterprise trial for <strong>${escapeHtml(domain)}</strong> ends on ${escapeHtml(expiresAt)}.`,
+        `The Tunnex Enterprise trial for <strong>${escapeHtml(domain)}</strong> ends on ${escapeHtml(expiresAt)}.`,
       ) +
         paragraph(
           'When it does, Enterprise features lapse to the Open tier and your VPN keeps running — nothing breaks. If SSO, policies, or multi-org earned their keep, let’s talk pricing before the deadline.',
@@ -176,7 +180,7 @@ const renderers: Renderers = {
       'How did your Tunnex trial go?',
       ctx,
       paragraph(
-        `A week ago the Enterprise trial for <strong>${escapeHtml(domain)}</strong> ended. One honest question: what stopped you?`,
+        `A week ago the Tunnex Enterprise trial for <strong>${escapeHtml(domain)}</strong> ended. One honest question: what stopped you?`,
       ) +
         paragraph(
           'Price, a missing feature, a rough edge — reply and tell us. We read every answer, and it directly shapes what we build next.',
@@ -190,9 +194,9 @@ const renderers: Renderers = {
   }),
 
   'newsletter-confirm': ({ confirmUrl }, ctx) => ({
-    subject: 'Confirm your subscription to Tunnex updates',
+    subject: 'Confirm your Tunnex updates subscription',
     html: shell(
-      'Confirm your subscription to Tunnex updates',
+      'Confirm your Tunnex updates subscription',
       ctx,
       paragraph('One click and you’re on the list — launch news and release notes, nothing else.') +
         button(confirmUrl, 'Confirm subscription') +
@@ -218,6 +222,7 @@ const renderers: Renderers = {
       paragraph(`<strong>${escapeHtml(name)}</strong> (${escapeHtml(email)})`) +
         paragraph(`Company: ${escapeHtml(company)}<br>Seats: ${escapeHtml(seats)}`) +
         paragraph(`Message:<br>${escapeHtml(message)}`),
+      { customerFooter: false },
     ),
     text: [
       `New enterprise lead: ${company}`,
@@ -233,8 +238,13 @@ const renderers: Renderers = {
   }),
 };
 
-function shell(title: string, ctx: EmailContext, bodyHtml: string): string {
-  return renderShell({ title, bodyHtml, assetBaseUrl: ctx.baseUrl });
+function shell(
+  title: string,
+  ctx: EmailContext,
+  bodyHtml: string,
+  opts?: { preheader?: string; customerFooter?: boolean },
+): string {
+  return renderShell({ title, bodyHtml, assetBaseUrl: ctx.baseUrl, ...opts });
 }
 
 export function render<K extends EmailKind>(
