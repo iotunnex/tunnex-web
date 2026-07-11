@@ -41,7 +41,7 @@ prettier-plugin-astro as dev tooling.)
 
 ## Story Status (re-entry pointer — update on every merge)
 
-Current: **S0.3 merged — next: S1.1 (DECIDE-BEFORE-CODE palette first)**
+Current: **S1.1 merged — next: S1.2 (home page)**
 
 ---
 
@@ -71,6 +71,9 @@ Current: **S0.3 merged — next: S1.1 (DECIDE-BEFORE-CODE palette first)**
   startup-playful), work in BOTH dark and light modes, meet WCAG AA in both. Present as hex
   values + Tailwind theme token mapping + small rendered sample (hero + button + card)
   BEFORE writing the design system. Do not restyle S0.1's placeholder early.
+- **SVG token rule (standing, from S1.1 sign-off):** inline SVGs use semantic tokens only
+  (currentColor / var(--color-*)) — never hardcoded fills; token guard catches fill/stroke
+  violations in src/.
 - **Migrations are append-only** (standing rule from S0.3 merge): 0001 is applied to the
   remote DB — schema changes from here are NEW migration files, never edits to applied ones.
 - **Node:** local default Node is 18 (nvm); wrangler 4 needs ≥22. `.nvmrc`=22 committed;
