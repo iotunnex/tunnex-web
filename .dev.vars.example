@@ -8,9 +8,10 @@
 # scripts/test-send.mjs). Local dev can use a Resend test-mode key.
 # RESEND_API_KEY=re_...
 
-# Cloudflare Turnstile secret key for server-side form verification (used from S2.2).
-# Local dev can use the Turnstile test secret: 1x0000000000000000000000000000000AA
-# TURNSTILE_SECRET=0x...
+# Cloudflare Turnstile secret key for server-side form verification (S2.2+).
+# Local dev: use the official test secret (always passes, matches the default
+# test sitekey baked into PUBLIC_TURNSTILE_SITE_KEY):
+# TURNSTILE_SECRET=1x0000000000000000000000000000000AA
 
 # --- Optional local overrides ---
 

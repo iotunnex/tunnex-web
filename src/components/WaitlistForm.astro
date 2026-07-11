@@ -1,0 +1,74 @@
+---
+import { PUBLIC_TURNSTILE_SITE_KEY } from 'astro:env/client';
+import Button from './ui/Button.astro';
+---
+
+<form id="waitlist-form" class="flex flex-col gap-3" novalidate>
+  <label for="waitlist-email" class="text-sm font-medium">Work email</label>
+  <div class="flex flex-wrap gap-3">
+    <input
+      id="waitlist-email"
+      name="email"
+      type="email"
+      required
+      autocomplete="email"
+      placeholder="you@company.com"
+      class="min-w-64 flex-1 rounded-md border border-border bg-bg px-3 py-2 text-sm text-text placeholder:text-text-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+    />
+    <Button variant="primary">Join the waitlist</Button>
+  </div>
+  <div class="cf-turnstile" data-sitekey={PUBLIC_TURNSTILE_SITE_KEY} data-theme="auto"></div>
+  <p id="waitlist-status" role="status" aria-live="polite" class="text-sm text-text-muted"></p>
+  <noscript>
+    <p class="text-sm text-text-muted">
+      This form needs JavaScript. Without it, email
+      <a href="mailto:sales@tunnex.io?subject=Tunnex%20waitlist" class="font-semibold text-link">
+        sales@tunnex.io
+      </a>
+      with the subject “Tunnex waitlist”.
+    </p>
+  </noscript>
+</form>
+
+<script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+<script>
+  const form = document.getElementById('waitlist-form') as HTMLFormElement | null;
+  const status = document.getElementById('waitlist-status');
+
+  form?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    if (!status) return;
+
+    const email = (form.elements.namedItem('email') as HTMLInputElement).value;
+    const turnstileToken =
+      (form.querySelector('input[name="cf-turnstile-response"]') as HTMLInputElement | null)
+        ?.value ?? '';
+
+    if (!email) {
+      status.textContent = 'Enter your work email first.';
+      return;
+    }
+    if (!turnstileToken) {
+      status.textContent = 'Complete the captcha, then try again.';
+      return;
+    }
+
+    status.textContent = 'Sending…';
+    try {
+      const res = await fetch('/api/subscribe', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ email, turnstileToken }),
+      });
+      const body = (await res.json()) as { message?: string; error?: { message?: string } };
+      status.textContent = res.ok
+        ? (body.message ?? 'Check your inbox for the confirmation link.')
+        : (body.error?.message ?? 'Something went wrong. Try again shortly.');
+      if (res.ok) form.reset();
+      // @ts-expect-error Turnstile global from the widget script
+      if (res.ok && window.turnstile) window.turnstile.reset();
+    } catch {
+      status.textContent = 'Network error. Try again shortly.';
+    }
+  });
+</script>

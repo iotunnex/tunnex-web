@@ -71,6 +71,13 @@ export default defineConfig({
         access: 'public',
         default: 'https://tunnex-site.iotunnex.workers.dev',
       }),
+      // Turnstile widget sitekey. Default is Cloudflare's official visible
+      // TEST key (always passes) — production keys land via the S4.4 runbook.
+      PUBLIC_TURNSTILE_SITE_KEY: envField.string({
+        context: 'client',
+        access: 'public',
+        default: '1x00000000000000000000AA',
+      }),
     },
   },
   vite: {

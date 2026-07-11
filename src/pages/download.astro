@@ -4,6 +4,7 @@ import Button from '../components/ui/Button.astro';
 import Card from '../components/ui/Card.astro';
 import CodeSnippet from '../components/ui/CodeSnippet.astro';
 import { launchMode, downloadBaseUrl } from '../config';
+import WaitlistForm from '../components/WaitlistForm.astro';
 
 const isBeta = launchMode === 'beta';
 
@@ -56,15 +57,10 @@ const targets = [
             waitlist and we will email you the moment downloads open — nothing else, no marketing
             drip.
           </p>
-          <div class="flex flex-wrap items-center gap-4">
-            {/* Waitlist CTA — S2.3's double-opt-in newsletter form replaces this mailto. */}
-            <Button href="mailto:sales@tunnex.io?subject=Tunnex%20waitlist" variant="primary">
-              Join the waitlist
-            </Button>
-            <a href="/trial" class="text-sm font-medium text-link">
-              Start a trial request
-            </a>
-          </div>
+          <WaitlistForm />
+          <a href="/trial" class="self-start text-sm font-medium text-link">
+            Start a trial request
+          </a>
         </Card>
       </section>
     )

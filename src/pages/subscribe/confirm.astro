@@ -1,0 +1,76 @@
+---
+import { env } from 'cloudflare:workers';
+import Base from '../../layouts/Base.astro';
+import Button from '../../components/ui/Button.astro';
+import Card from '../../components/ui/Card.astro';
+import { d1SubscriberStore, peekConfirmToken } from '../../lib/newsletter.ts';
+
+// Scanner-proof confirmation page: mail scanners (SafeLinks, Proofpoint)
+// prefetch GET/HEAD — this page performs ZERO writes. The explicit POST below
+// does the atomic consume.
+export const prerender = false;
+
+const token = Astro.url.searchParams.get('token') ?? '';
+const forcedInvalid = Astro.url.searchParams.get('state') === 'invalid';
+
+let state: 'valid' | 'expired' | 'invalid' = 'invalid';
+if (!forcedInvalid && token) {
+  state = await peekConfirmToken({ store: d1SubscriberStore(env.DB) }, token);
+}
+---
+
+<Base title="Tunnex — Confirm subscription" noindex>
+  <section class="mx-auto flex max-w-6xl flex-col px-4 py-20 sm:px-6">
+    <Card class="mx-auto flex w-full max-w-md flex-col gap-4 p-8">
+      {
+        state === 'valid' && (
+          <>
+            <h1 class="text-xl font-semibold">Confirm your subscription</h1>
+            <p class="text-sm text-text-muted">
+              One click and you’re on the list for Tunnex launch news and release notes — nothing
+              else.
+            </p>
+            <form method="post" action="/api/subscribe/confirm">
+              <input type="hidden" name="token" value={token} />
+              <Button variant="primary" class="w-full">
+                Confirm subscription
+              </Button>
+            </form>
+            <p class="text-xs text-text-muted">
+              Didn’t subscribe? Just close this page — nothing happens without this confirmation.
+            </p>
+          </>
+        )
+      }
+      {
+        state === 'expired' && (
+          <>
+            <h1 class="text-xl font-semibold">This link has expired</h1>
+            <p class="text-sm text-text-muted">
+              Confirmation links are valid for 24 hours. Join the waitlist again and we’ll send a
+              fresh one.
+            </p>
+            <Button href="/download" variant="secondary" class="w-full">
+              Back to the waitlist
+            </Button>
+          </>
+        )
+      }
+      {
+        state === 'invalid' && (
+          <>
+            <h1 class="text-xl font-semibold">This link isn’t valid anymore</h1>
+            <p class="text-sm text-text-muted">
+              It may have been used already — if you just clicked Confirm, you’re all set and on the
+              list. Otherwise the link has expired or was mistyped; join the waitlist again for a
+              fresh one.
+            </p>
+            <Button href="/download" variant="secondary" class="w-full">
+              Back to the waitlist
+            </Button>
+          </>
+        )
+      }
+    </Card>
+  </section>
+</Base>
