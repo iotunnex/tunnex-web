@@ -21,7 +21,7 @@ export function renderShell(opts: {
   const footer =
     opts.customerFooter === false
       ? 'Internal notification — enterprise lead from tunnex.io/enterprise.'
-      : `Tunnex — self-hosted Zero Trust VPN. Your keys. Your servers. Your network.<br>
+      : `Tunnex — Connect everything. Trust nothing.<br>
     Questions? Reply to this email or write to sales@tunnex.io.`;
   return `<!doctype html>
 <html lang="en">
