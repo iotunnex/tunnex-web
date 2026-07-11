@@ -8,9 +8,10 @@
 # scripts/test-send.mjs). Local dev can use a Resend test-mode key.
 # RESEND_API_KEY=re_...
 
-# Cloudflare Turnstile secret key for server-side form verification (S2.2+).
-# Local dev: use the official test secret (always passes, matches the default
-# test sitekey baked into PUBLIC_TURNSTILE_SITE_KEY):
+# Cloudflare Turnstile (S2.2+). LOCAL DEV ONLY: the official always-pass test
+# pair. Deployed environments use the real widget — sitekey in wrangler.toml
+# [vars], secret via the repo/Worker secret (never these test values).
+# PUBLIC_TURNSTILE_SITE_KEY=1x00000000000000000000AA
 # TURNSTILE_SECRET=1x0000000000000000000000000000000AA
 
 # --- Optional local overrides ---

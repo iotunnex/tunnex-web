@@ -98,6 +98,13 @@ Current: **S2.2 merged — next: S2.3 (newsletter double-opt-in; MERGE GATED on 
   beta caption links verify-first docs + GitHub release fallback). Beta surfaces must show
   BOTH paths (one-liner AND download → SHA256 → inspect → run) plus the prerequisite line
   "any VPS with Docker and a public address."
+- **Email Routing consumers (S4.4 runbook additions):** switch the waitlist noscript
+  mailto from sales@ to a waitlist@/hello@ alias once Email Routing exists; the S2.4
+  SALES_NOTIFY_EMAIL lead notifications also deliver nowhere until Email Routing — ledger,
+  don't block.
+- **Turnstile production keys (S2.3 merge gate #2):** the always-pass test key must never
+  be a deployed default — real sitekey in wrangler.toml [vars], TURNSTILE_SECRET as
+  Worker secret via CI; test pair stays local-dev only (.dev.vars).
 - **Test-send HARD GATE (S2.1 merged without it):** execute scripts/test-send.mjs the
   moment Resend + mail.tunnex.io DNS land on Pawan's side; S2.3 CANNOT MERGE until the
   test-send evidence exists (its flows send real email).
