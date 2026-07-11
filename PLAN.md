@@ -41,7 +41,7 @@ prettier-plugin-astro as dev tooling.)
 
 ## Story Status (re-entry pointer — update on every merge)
 
-Current: **S1.2 merged — next: S1.3 (pricing page)**
+Current: **S1.3 merged — next: S1.4 (download page)**
 
 ---
 
