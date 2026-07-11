@@ -46,7 +46,7 @@ prettier-plugin-astro as dev tooling.)
 
 ## Story Status (re-entry pointer — update on every merge)
 
-Current: **S1.4 merged — next: S1.5 (security page)**
+Current: **S1.5 merged — next: S1.6 (docs skeleton)**
 
 ---
 
@@ -81,7 +81,8 @@ Current: **S1.4 merged — next: S1.5 (security page)**
   violations in src/.
 - **Email routing (S4.4 runbook item):** sales@tunnex.io / security@tunnex.io receive
   NOTHING until Cloudflare Email Routing is configured post-domain-purchase — the launch
-  runbook must include that step (waitlist mailto on /download depends on it).
+  runbook must include that step (waitlist mailto on /download depends on it; a disclosure
+  address that bounces is worse than none — security@ is mandatory in that setup).
 - **Migrations are append-only** (standing rule from S0.3 merge): 0001 is applied to the
   remote DB — schema changes from here are NEW migration files, never edits to applied ones.
 - **Node:** local default Node is 18 (nvm); wrangler 4 needs ≥22. `.nvmrc`=22 committed;
