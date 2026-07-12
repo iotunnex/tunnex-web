@@ -105,6 +105,14 @@ Current: **S2.2 merged — next: S2.3 (newsletter double-opt-in; MERGE GATED on 
 - **Turnstile production keys (S2.3 merge gate #2):** the always-pass test key must never
   be a deployed default — real sitekey in wrangler.toml [vars], TURNSTILE_SECRET as
   Worker secret via CI; test pair stays local-dev only (.dev.vars).
+- **Credentials move by COPY-PASTE only (standing rule, 2026-07-12):** never transcribed
+  from images/screenshots — a 0-vs-O sitekey transcription cost a day of Turnstile
+  debugging (400020). Click-to-copy in dashboards, pipe into gh secret set.
+- **Preview-host Turnstile limitation is STRUCTURAL:** workers.dev is on the Public
+  Suffix List, so iotunnex.workers.dev never covers the hash-preview subdomains and they
+  cannot be allow-listed. Standing pattern for captcha-touching stories (S2.4, trial
+  pages inherit): localhost e2e with the real key pair + production-hostname render
+  proof; preview deploys exercise everything except the live challenge.
 - **SECURITY — rotate the Turnstile secret after S2.3 merges:** the secret transited
   chat/screenshot during setup. Pawan regenerates in widget settings; then update the
   repo secret + .dev.vars and re-run the secret sync.
