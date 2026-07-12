@@ -20,7 +20,7 @@ not_found_handling = "404-page"
 LAUNCH_MODE = "prelaunch"
 # Turnstile widget sitekey (public). The always-pass TEST key is local-dev
 # only (.dev.vars) — never a deployed default.
-PUBLIC_TURNSTILE_SITE_KEY = "0x4AAAAAADz8NeQ_TUjJuy-0"
+PUBLIC_TURNSTILE_SITE_KEY = "0x4AAAAAADz8NeQ_TUjJuy-O"
 
 [observability.logs]
 enabled = true
