@@ -4,6 +4,24 @@ import cloudflare from '@astrojs/cloudflare';
 import starlight from '@astrojs/starlight';
 import tailwindcss from '@tailwindcss/vite';
 
+/**
+ * Blog posts get their h1 from frontmatter — a `# Heading` in the body would
+ * double the h1 and break the outline (and the prose CSS deliberately styles
+ * only h2/h3). Fail the build instead of shipping it.
+ */
+function remarkNoH1InBlog() {
+  return (tree, file) => {
+    if (!String(file.path ?? '').includes('src/content/blog')) return;
+    for (const node of tree.children ?? []) {
+      if (node.type === 'heading' && node.depth === 1) {
+        file.fail(
+          'Blog posts must not contain a level-1 heading — the title comes from frontmatter. Start at ##.',
+        );
+      }
+    }
+  };
+}
+
 export default defineConfig({
   site: 'https://tunnex.io',
   // Astro sessions are unused (no site login). Without this, the Cloudflare
@@ -43,6 +61,9 @@ export default defineConfig({
       sidebar: [{ label: 'Documentation', items: [{ autogenerate: { directory: 'docs' } }] }],
     }),
   ],
+  markdown: {
+    remarkPlugins: [remarkNoH1InBlog],
+  },
   env: {
     schema: {
       // prelaunch | beta — runtime value comes from wrangler.toml [vars];

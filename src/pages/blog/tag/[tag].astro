@@ -1,0 +1,73 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../../layouts/Base.astro';
+import Card from '../../../components/ui/Card.astro';
+import {
+  allTags,
+  formatPostDate,
+  isPublished,
+  readingTimeMinutes,
+  sortedPublished,
+} from '../../../lib/blog.ts';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return allTags(posts).map((tag) => ({
+    params: { tag },
+    props: {
+      posts: sortedPublished(posts.filter(isPublished).filter((p) => p.data.tags.includes(tag))),
+    },
+  }));
+}
+
+const { tag } = Astro.params;
+const { posts } = Astro.props;
+---
+
+<Base title={`Tagged ${tag} — Tunnex Blog`} description={`Tunnex blog posts tagged ${tag}.`}>
+  <section class="mx-auto flex w-full max-w-3xl flex-col gap-8 px-4 py-16 sm:px-6 md:py-20">
+    <div class="flex flex-col gap-3">
+      <p class="text-xs font-semibold tracking-wide text-text-muted uppercase">
+        <a
+          href="/blog/"
+          class="hover:text-text focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+          >Blog</a
+        >
+      </p>
+      <h1 class="text-4xl font-bold tracking-tight">
+        Tagged <span class="text-primary">{tag}</span>
+      </h1>
+      <p class="text-sm text-text-muted">{posts.length} {posts.length === 1 ? 'post' : 'posts'}</p>
+    </div>
+    <ul class="flex flex-col gap-4">
+      {
+        posts.map((post) => (
+          <li>
+            <Card class="relative transition-colors hover:border-primary/40">
+              <article class="flex flex-col gap-2">
+                <h2 class="text-xl font-semibold">
+                  <a
+                    href={`/blog/${post.id}/`}
+                    class="after:absolute after:inset-0 hover:text-link focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                  >
+                    {post.data.title}
+                  </a>
+                </h2>
+                <p class="text-sm text-text-muted">{post.data.description}</p>
+                <p class="text-xs text-text-muted">
+                  <time datetime={post.data.pubDate.toISOString()}>
+                    {formatPostDate(post.data.pubDate)}
+                  </time>
+                  {' · '}
+                  {post.data.author}
+                  {' · '}
+                  {readingTimeMinutes(post.body ?? '')} min read
+                </p>
+              </article>
+            </Card>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+</Base>
