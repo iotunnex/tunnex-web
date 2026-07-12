@@ -18,6 +18,8 @@ const PAGES = [
   '/security',
   '/enterprise',
   '/trial',
+  '/privacy',
+  '/terms',
   '/blog',
   '/blog/hello-tunnex/',
   '/blog/tag/announcements/',

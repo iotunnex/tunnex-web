@@ -184,6 +184,15 @@ Current: **S4.2 merged — next: S4.3 (legal + analytics)**
   posts 3 (offline-keys) and 2 (fail-closed) = Tunnex Team. The 4 post-2 drift trims
   are founder-reversible if he changes his mind at flip. RSS content:encoded already
   absolutizes their internal links (absolutizeHtml, tested).
+- **From S4.3 review (2026-07-12):** /security page links use color+weight with NO
+  underline (a mild 1.4.1 weakness); the legal pages + global a:focus-visible now set
+  the better underline pattern. Converge /security (and any other color-only prose
+  links) onto underline in a follow-up polish pass — not blocking launch.
+- **LEGAL LAST_UPDATED (S4.4 runbook):** privacy.astro + terms.astro carry
+  LAST_UPDATED = '12 July 2026' — set both to the actual cutover date at launch.
+- **PUBLIC_CF_ANALYTICS_TOKEN (S4.4 runbook):** empty by default so no beacon ships;
+  set it in wrangler.toml [vars] at cutover to turn on Cloudflare Web Analytics
+  (cookieless, no consent banner — already stated on /privacy).
 - **Node target (2026-07-12):** repo moves 22 → 24 (Active LTS, EOL Apr 2028).
   Node 26 deliberately NOT the target — re-evaluate after it enters LTS in Oct 2026.
 - **PROMOTION-FAILURE RECOVERY (required BEFORE the beta flip, from S3.5 sign-off):**
