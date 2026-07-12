@@ -46,7 +46,7 @@ prettier-plugin-astro as dev tooling.)
 
 ## Story Status (re-entry pointer — update on every merge)
 
-Current: **S3.4 merged — next: S3.5 (lifecycle cron + housekeeping — final EPIC 3 story)**
+Current: **S3.5 merged — EPIC 3 COMPLETE; next: S3B.1 (blog engine)**
 
 ---
 
@@ -151,6 +151,18 @@ Current: **S3.4 merged — next: S3.5 (lifecycle cron + housekeeping — final E
   contrast (1.36:1 vs the 3:1 non-text guidance, both themes, site-wide Button
   component) joins the button-height item above — resolve BOTH in the a11y/perf
   story, not before.
+- **README dev-notes (from S3.5 sign-off, 2026-07-12):** wrangler's /__scheduled test
+  endpoint is swallowed by the assets not_found_handling layer (the S2.4 trap's
+  standing pattern) — trigger crons locally via /cdn-cgi/handler/scheduled instead.
+- **BETA-FLIP RUNBOOK (S4.4 / flip procedure, from S3.5 sign-off):** flipping
+  LAUNCH_MODE is a wrangler.toml change + REDEPLOY (build-time for prerendered pages,
+  runtime-env for the cron). Document exact flip steps + post-flip verification that
+  lifecycle leg ① promoted pending_launch trials and key-delivery emails landed.
+- **PROMOTION-FAILURE RECOVERY (required BEFORE the beta flip, from S3.5 sign-off):**
+  at-most-once claims mean a failed key-delivery send is a customer-visible miss
+  signaled only by the lifecycle.promotion_failed log. Build a lightweight recovery:
+  query for claimed-but-unpromoted trials (email_events row exists, trials row still
+  pending_launch) + a manual re-send path. Not now — gate on the flip.
 
 ---
 
