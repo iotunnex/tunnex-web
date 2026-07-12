@@ -46,7 +46,7 @@ prettier-plugin-astro as dev tooling.)
 
 ## Story Status (re-entry pointer — update on every merge)
 
-Current: **S3.2 merged — next: S3.3 (trial verification, scanner-proof)**
+Current: **S3.3 merged — next: S3.4 (issuance stub + wiring)**
 
 ---
 
@@ -147,6 +147,10 @@ Current: **S3.2 merged — next: S3.3 (trial verification, scanner-proof)**
   `min-h-11` or `py-2.5` on the primary variant. (c) /trial pitch says "at beta
   launch" — accurate only for LAUNCH_MODE=prelaunch; gate on launchMode or reword
   when the flag flips.
+- **S4.1 paired a11y fixes (from S3.3 sign-off, 2026-07-12):** secondary-button border
+  contrast (1.36:1 vs the 3:1 non-text guidance, both themes, site-wide Button
+  component) joins the button-height item above — resolve BOTH in the a11y/perf
+  story, not before.
 
 ---
 
