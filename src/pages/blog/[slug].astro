@@ -1,0 +1,176 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import { formatPostDate, readingTimeMinutes, sortedPublished } from '../../lib/blog.ts';
+
+export async function getStaticPaths() {
+  const posts = sortedPublished(await getCollection('blog'));
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+---
+
+<Base title={`${post.data.title} — Tunnex Blog`} description={post.data.description}>
+  <article class="mx-auto w-full max-w-3xl px-4 py-16 sm:px-6 md:py-20">
+    <header class="flex flex-col gap-3 border-b border-border pb-8">
+      <p class="text-xs font-semibold tracking-wide text-text-muted uppercase">
+        <a
+          href="/blog/"
+          class="hover:text-text focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+          >Blog</a
+        >
+      </p>
+      <h1 class="text-4xl font-bold tracking-tight text-balance">{post.data.title}</h1>
+      <p class="text-lg text-text-muted">{post.data.description}</p>
+      <p class="text-sm text-text-muted">
+        <time datetime={post.data.pubDate.toISOString()}>{formatPostDate(post.data.pubDate)}</time>
+        {' · '}
+        {post.data.author}
+        {' · '}
+        {readingTimeMinutes(post.body ?? '')} min read
+        {
+          post.data.updatedDate && (
+            <>
+              {' · '}Updated{' '}
+              <time datetime={post.data.updatedDate.toISOString()}>
+                {formatPostDate(post.data.updatedDate)}
+              </time>
+            </>
+          )
+        }
+      </p>
+      {
+        post.data.tags.length > 0 && (
+          <ul class="flex flex-wrap gap-2">
+            {post.data.tags.map((tag) => (
+              <li>
+                <a
+                  href={`/blog/tag/${tag}/`}
+                  class="inline-flex rounded-full border border-border px-3 py-1 text-xs font-medium text-text-muted transition-colors hover:bg-surface-raised hover:text-text focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                >
+                  {tag}
+                </a>
+              </li>
+            ))}
+          </ul>
+        )
+      }
+    </header>
+    <div class="prose pt-8">
+      <Content />
+    </div>
+  </article>
+</Base>
+
+<style>
+  /* Post typography on the token system — no raw colors (token guard). */
+  .prose {
+    color: var(--t-text);
+    line-height: 1.75;
+    font-size: 1.0625rem;
+  }
+  .prose :global(h2) {
+    margin: 2.25rem 0 0.75rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -0.015em;
+  }
+  .prose :global(h3) {
+    margin: 1.75rem 0 0.5rem;
+    font-size: 1.2rem;
+    font-weight: 650;
+  }
+  .prose :global(p) {
+    margin: 0 0 1.1rem;
+  }
+  .prose :global(a) {
+    color: var(--t-link);
+    font-weight: 550;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .prose :global(a:hover) {
+    color: var(--t-link-hover);
+  }
+  .prose :global(ul),
+  .prose :global(ol) {
+    margin: 0 0 1.1rem;
+    padding-left: 1.4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+  .prose :global(ul) {
+    list-style: disc;
+  }
+  .prose :global(ol) {
+    list-style: decimal;
+  }
+  .prose :global(blockquote) {
+    margin: 1.25rem 0;
+    border-left: 3px solid var(--t-primary);
+    padding-left: 1rem;
+    color: var(--t-text-muted);
+  }
+  .prose :global(code) {
+    font-size: 0.9em;
+    background-color: var(--t-surface-raised);
+    border: 1px solid var(--t-border);
+    border-radius: 4px;
+    padding: 0.1em 0.35em;
+  }
+  /* Code blocks are Expressive Code frames (site-wide via Starlight) — map
+     its frame vars to the token system; the vars flip with the theme. */
+  .prose :global(.expressive-code) {
+    margin: 1.25rem 0;
+    --ec-frm-trmBg: var(--t-surface-raised);
+    --ec-frm-edBg: var(--t-surface-raised);
+    --ec-frm-trmTtbBg: var(--t-surface-raised);
+    --ec-brdCol: var(--t-border);
+    --ec-frm-trmTtbBrdBtmCol: var(--t-border);
+    --ec-frm-frameBoxShdCssVal: none;
+  }
+  /* Plain (non-EC) pre, e.g. from raw HTML in MDX. */
+  .prose :global(pre:not(.expressive-code pre)) {
+    margin: 1.25rem 0;
+    padding: 1rem 1.25rem;
+    border: 1px solid var(--t-border);
+    border-radius: 8px;
+    overflow-x: auto;
+    font-size: 0.875rem;
+    line-height: 1.6;
+  }
+  .prose :global(pre code) {
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: inherit;
+  }
+  .prose :global(hr) {
+    margin: 2rem 0;
+    border: 0;
+    border-top: 1px solid var(--t-border);
+  }
+  .prose :global(img) {
+    max-width: 100%;
+    border-radius: 8px;
+    margin: 1.25rem 0;
+  }
+  .prose :global(table) {
+    margin: 1.25rem 0;
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+  }
+  .prose :global(th),
+  .prose :global(td) {
+    border: 1px solid var(--t-border);
+    padding: 0.5rem 0.75rem;
+    text-align: left;
+  }
+  .prose :global(th) {
+    background-color: var(--t-surface-raised);
+  }
+</style>

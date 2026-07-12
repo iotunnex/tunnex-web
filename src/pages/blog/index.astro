@@ -1,0 +1,71 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Card from '../../components/ui/Card.astro';
+import { allTags, formatPostDate, readingTimeMinutes, sortedPublished } from '../../lib/blog.ts';
+
+const posts = sortedPublished(await getCollection('blog'));
+const tags = allTags(await getCollection('blog'));
+---
+
+<Base
+  title="Tunnex — Blog"
+  description="Engineering notes, release news, and zero-trust networking write-ups from the Tunnex team."
+>
+  <section class="mx-auto flex w-full max-w-3xl flex-col gap-8 px-4 py-16 sm:px-6 md:py-20">
+    <div class="flex flex-col gap-3">
+      <h1 class="text-4xl font-bold tracking-tight">Blog</h1>
+      <p class="text-lg text-text-muted">
+        Engineering notes, release news, and zero-trust networking write-ups.
+      </p>
+      {
+        tags.length > 0 && (
+          <ul class="flex flex-wrap gap-2 pt-1">
+            {tags.map((tag) => (
+              <li>
+                <a
+                  href={`/blog/tag/${tag}/`}
+                  class="inline-flex rounded-full border border-border px-3 py-1 text-xs font-medium text-text-muted transition-colors hover:bg-surface-raised hover:text-text focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                >
+                  {tag}
+                </a>
+              </li>
+            ))}
+          </ul>
+        )
+      }
+    </div>
+
+    <ul class="flex flex-col gap-4">
+      {
+        posts.map((post) => (
+          <li>
+            <Card class="p-6">
+              <article class="flex flex-col gap-2">
+                <h2 class="text-xl font-semibold">
+                  <a
+                    href={`/blog/${post.id}/`}
+                    class="hover:text-link focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                  >
+                    {post.data.title}
+                  </a>
+                </h2>
+                <p class="text-sm text-text-muted">{post.data.description}</p>
+                <p class="text-xs text-text-muted">
+                  <time datetime={post.data.pubDate.toISOString()}>
+                    {formatPostDate(post.data.pubDate)}
+                  </time>
+                  {' · '}
+                  {post.data.author}
+                  {' · '}
+                  {readingTimeMinutes(post.body ?? '')} min read
+                </p>
+              </article>
+            </Card>
+          </li>
+        ))
+      }
+    </ul>
+    {posts.length === 0 && <p class="text-sm text-text-muted">First post coming soon.</p>}
+  </section>
+</Base>

@@ -50,6 +50,7 @@
   btn?.addEventListener('click', () => {
     const dark = root.classList.toggle('dark');
     const mode = dark ? 'dark' : 'light';
+    root.dataset.theme = mode; // Expressive Code themes on [data-theme]
     localStorage.setItem('theme', mode);
     // Keep the Starlight docs toggle in sync — one choice, whole site.
     localStorage.setItem('starlight-theme', mode);

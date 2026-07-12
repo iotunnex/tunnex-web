@@ -17,7 +17,7 @@ const {
 ---
 
 <!doctype html>
-<html lang="en" class="dark">
+<html lang="en" class="dark" data-theme="dark">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -27,14 +27,20 @@ const {
     <link rel="icon" href="/favicon-32x32.png" sizes="32x32" type="image/png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
+    <link rel="alternate" type="application/rss+xml" title="Tunnex Blog" href="/blog/rss.xml" />
     <title>{title}</title>
     <script is:inline>
       // Pre-paint theme init: dark is the default; an explicit stored choice
       // wins (including one made on the Starlight docs pages). Runs before
-      // first paint so there is no flash or layout shift.
+      // first paint so there is no flash or layout shift. data-theme is
+      // stamped alongside the class: Expressive Code (code blocks) themes on
+      // [data-theme], the token system honors both.
       {
         const mode = localStorage.getItem('theme') ?? localStorage.getItem('starlight-theme');
-        if (mode === 'light') document.documentElement.classList.remove('dark');
+        if (mode === 'light') {
+          document.documentElement.classList.remove('dark');
+          document.documentElement.dataset.theme = 'light';
+        }
       }
     </script>
   </head>
