@@ -17,7 +17,8 @@
     "lint:tokens": "node scripts/lint-tokens.mjs",
     "test": "vitest run",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "axe": "node scripts/axe-scan.mjs"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^14.1.2",
@@ -33,6 +34,7 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.9",
+    "@axe-core/playwright": "^4.12.1",
     "@fontsource/inter": "^5.2.8",
     "@resvg/resvg-js": "^2.6.2",
     "eslint": "^10.6.0",

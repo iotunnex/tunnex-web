@@ -1,8 +1,8 @@
 ---
-import { PUBLIC_TURNSTILE_SITE_KEY } from 'astro:env/client';
 import Base from '../layouts/Base.astro';
 import Button from '../components/ui/Button.astro';
 import Card from '../components/ui/Card.astro';
+import TurnstileWidget from '../components/TurnstileWidget.astro';
 
 // S3.2: the real trial-request form (replaces the interim placeholder on the
 // same route). Static page + fetch POST — the endpoint's response is the
@@ -53,7 +53,7 @@ import Card from '../components/ui/Card.astro';
         </div>
         <noscript>
           <style>
-            #trial-form .cf-turnstile,
+            #trial-form #turnstile-widget,
             #trial-form button {
               display: none;
             }
@@ -66,8 +66,7 @@ import Card from '../components/ui/Card.astro';
             instead.
           </p>
         </noscript>
-        <div class="cf-turnstile" data-size="flexible" data-sitekey={PUBLIC_TURNSTILE_SITE_KEY}>
-        </div>
+        <TurnstileWidget />
         <Button variant="primary" class="w-full">Request trial</Button>
         <p id="trial-status" role="status" class="text-sm empty:hidden"></p>
       </form>
@@ -99,15 +98,6 @@ import Card from '../components/ui/Card.astro';
   </section>
 </Base>
 
-<script is:inline>
-  document
-    .querySelector('.cf-turnstile')
-    ?.setAttribute(
-      'data-theme',
-      document.documentElement.classList.contains('dark') ? 'dark' : 'light',
-    );
-</script>
-<script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 <script>
   // Client fallback must mirror the server's GENERIC_TRIAL_MESSAGE exactly —
   // asserting "check your inbox" would undo the anti-enumeration hedge.
