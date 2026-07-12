@@ -46,7 +46,7 @@ prettier-plugin-astro as dev tooling.)
 
 ## Story Status (re-entry pointer — update on every merge)
 
-Current: **S3B.1 merged — next: S3B.2 (blog SEO integration)**
+Current: **S3B.2 merged — next: S3B.3 (launch content — founder-review-heavy)**
 
 ---
 
