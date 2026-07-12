@@ -57,7 +57,7 @@ exports[`email templates > renders newsletter-confirm (html + text snapshot) 1`]
   </div>
   <p style="color:#4a5c74;font-size:12px;line-height:1.5;padding-top:16px;margin:0;">
     Tunnex — Connect everything. Trust nothing.<br>
-    Questions? Reply to this email or write to sales@tunnex.io.
+    Questions? Reply to this email or write to support@tunnex.io.
   </p>
 </div>
 </body>
@@ -92,7 +92,7 @@ exports[`email templates > renders trial-already-exists (html + text snapshot) 1
   </div>
   <p style="color:#4a5c74;font-size:12px;line-height:1.5;padding-top:16px;margin:0;">
     Tunnex — Connect everything. Trust nothing.<br>
-    Questions? Reply to this email or write to sales@tunnex.io.
+    Questions? Reply to this email or write to support@tunnex.io.
   </p>
 </div>
 </body>
@@ -124,7 +124,7 @@ exports[`email templates > renders trial-approved (html + text snapshot) 1`] = `
   </div>
   <p style="color:#4a5c74;font-size:12px;line-height:1.5;padding-top:16px;margin:0;">
     Tunnex — Connect everything. Trust nothing.<br>
-    Questions? Reply to this email or write to sales@tunnex.io.
+    Questions? Reply to this email or write to support@tunnex.io.
   </p>
 </div>
 </body>
@@ -156,7 +156,7 @@ exports[`email templates > renders trial-d10-reminder (html + text snapshot) 1`]
   </div>
   <p style="color:#4a5c74;font-size:12px;line-height:1.5;padding-top:16px;margin:0;">
     Tunnex — Connect everything. Trust nothing.<br>
-    Questions? Reply to this email or write to sales@tunnex.io.
+    Questions? Reply to this email or write to support@tunnex.io.
   </p>
 </div>
 </body>
@@ -189,7 +189,7 @@ exports[`email templates > renders trial-d21-followup (html + text snapshot) 1`]
   </div>
   <p style="color:#4a5c74;font-size:12px;line-height:1.5;padding-top:16px;margin:0;">
     Tunnex — Connect everything. Trust nothing.<br>
-    Questions? Reply to this email or write to sales@tunnex.io.
+    Questions? Reply to this email or write to support@tunnex.io.
   </p>
 </div>
 </body>
@@ -221,7 +221,7 @@ exports[`email templates > renders trial-expired-upgrade (html + text snapshot) 
   </div>
   <p style="color:#4a5c74;font-size:12px;line-height:1.5;padding-top:16px;margin:0;">
     Tunnex — Connect everything. Trust nothing.<br>
-    Questions? Reply to this email or write to sales@tunnex.io.
+    Questions? Reply to this email or write to support@tunnex.io.
   </p>
 </div>
 </body>
@@ -254,7 +254,7 @@ exports[`email templates > renders trial-key-delivery (html + text snapshot) 1`]
   </div>
   <p style="color:#4a5c74;font-size:12px;line-height:1.5;padding-top:16px;margin:0;">
     Tunnex — Connect everything. Trust nothing.<br>
-    Questions? Reply to this email or write to sales@tunnex.io.
+    Questions? Reply to this email or write to support@tunnex.io.
   </p>
 </div>
 </body>
@@ -289,7 +289,7 @@ exports[`email templates > renders trial-verify (html + text snapshot) 1`] = `
   </div>
   <p style="color:#4a5c74;font-size:12px;line-height:1.5;padding-top:16px;margin:0;">
     Tunnex — Connect everything. Trust nothing.<br>
-    Questions? Reply to this email or write to sales@tunnex.io.
+    Questions? Reply to this email or write to support@tunnex.io.
   </p>
 </div>
 </body>

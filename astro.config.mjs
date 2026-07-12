@@ -21,6 +21,8 @@ export default defineConfig({
     starlight({
       title: 'Tunnex Docs',
       favicon: '/favicon.svg',
+      // The site ships its own branded 404 (src/pages/404.astro).
+      disable404Route: true,
       description:
         'Tunnex documentation — install, configure, and operate your self-hosted Zero Trust VPN.',
       customCss: ['./src/styles/starlight.css'],
@@ -70,6 +72,13 @@ export default defineConfig({
         context: 'server',
         access: 'public',
         default: 'https://tunnex-site.iotunnex.workers.dev',
+      }),
+      // Turnstile widget sitekey. NO default: the deployed value comes from
+      // wrangler.toml [vars]; local form work switches to the test PAIR in
+      // .dev.vars (see .dev.vars.example).
+      PUBLIC_TURNSTILE_SITE_KEY: envField.string({
+        context: 'client',
+        access: 'public',
       }),
     },
   },

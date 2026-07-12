@@ -2,10 +2,11 @@
 interface Props {
   href?: string;
   variant?: 'primary' | 'secondary';
+  type?: 'submit' | 'button';
   class?: string;
 }
 
-const { href, variant = 'primary', class: className = '' } = Astro.props;
+const { href, variant = 'primary', type = 'submit', class: className = '' } = Astro.props;
 
 const base =
   'inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-semibold transition-colors ' +
@@ -23,7 +24,7 @@ const classes = `${base} ${variants[variant]} ${className}`;
       <slot />
     </a>
   ) : (
-    <button class={classes}>
+    <button type={type} class={classes}>
       <slot />
     </button>
   )

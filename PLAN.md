@@ -83,8 +83,8 @@ Current: **accuracy+brand round merged; S2.3 report complete, merge gated on Res
   violations in src/.
 - **Email routing (S4.4 runbook item):** sales@tunnex.io / security@tunnex.io receive
   NOTHING until Cloudflare Email Routing is configured post-domain-purchase — the launch
-  runbook must include that step (waitlist mailto on /download depends on it; a disclosure
-  address that bounces is worse than none — security@ is mandatory in that setup).
+  runbook must include that step (RESOLVED 2026-07-12 by Spacemail: sales@/security@/support@
+  live and tested — Email Routing not used).
 - **Trial length RECONCILED (2026-07-12): 14 days stands** — the platform repo's
   architecture-licensing.md said 30 and is the stale side (being fixed there). Do not
   change site copy/templates/schema.
@@ -98,6 +98,34 @@ Current: **accuracy+brand round merged; S2.3 report complete, merge gated on Res
   beta caption links verify-first docs + GitHub release fallback). Beta surfaces must show
   BOTH paths (one-liner AND download → SHA256 → inspect → run) plus the prerequisite line
   "any VPS with Docker and a public address."
+- **Inbound mail = Spacemail (2026-07-12), Email Routing STRUCK from the plan:** root
+  MX/SPF are Spacemail's; support@ staffed, sales@/security@ aliases live and tested.
+  Reply-To CONVERGED to support@tunnex.io (staffed mailbox); waitlist noscript mailto →
+  support@. S2.4 SALES_NOTIFY_EMAIL now deliverable (sales@ alias). Runbook note: add a
+  root _dmarc record (missing; Spacemail sends from root).
+- **Turnstile production keys (S2.3 merge gate #2):** the always-pass test key must never
+  be a deployed default — real sitekey in wrangler.toml [vars], TURNSTILE_SECRET as
+  Worker secret via CI; test pair stays local-dev only (.dev.vars).
+- **Credentials move by COPY-PASTE only (standing rule, 2026-07-12):** never transcribed
+  from images/screenshots — a 0-vs-O sitekey transcription cost a day of Turnstile
+  debugging (400020). Click-to-copy in dashboards, pipe into gh secret set.
+- **Preview-host Turnstile limitation is STRUCTURAL:** workers.dev is on the Public
+  Suffix List, so iotunnex.workers.dev never covers the hash-preview subdomains and they
+  cannot be allow-listed. Standing pattern for captcha-touching stories (S2.4, trial
+  pages inherit): localhost e2e with the real key pair + production-hostname render
+  proof; preview deploys exercise everything except the live challenge.
+- **SECURITY — rotate the Turnstile secret after S2.3 merges:** the secret transited
+  chat/screenshot during setup. Pawan regenerates in widget settings; then update the
+  repo secret + .dev.vars and re-run the secret sync.
+- **Mailer transport = Cloudflare Email Service (public beta, decided 2026-07-12):**
+  Workers EMAIL binding (no API key — RESEND_API_KEY lifecycle deleted; binding is the
+  credential). Docs findings: SUBDOMAIN senders supported → no-reply@mail.tunnex.io
+  STANDS; SPF/DKIM/DMARC + cf-bounce MX auto-added AND LOCKED at onboarding (manual
+  record list removed from README); bounce handling beyond Cloudflare's processing is
+  DIY → minimal hard-bounce handler = follow-up story candidate; daily quota starts
+  conservative and scales with reputation (watch for launch-day waitlist sends);
+  50 recipients/email, 5 MiB/message. Resend fallback = small transport swap (interface
+  kept transport-agnostic).
 - **Test-send HARD GATE (S2.1 merged without it):** execute scripts/test-send.mjs the
   moment Resend + mail.tunnex.io DNS land on Pawan's side; S2.3 CANNOT MERGE until the
   test-send evidence exists (its flows send real email).

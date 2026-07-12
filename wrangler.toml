@@ -18,6 +18,9 @@ not_found_handling = "404-page"
 # "prelaunch" | "beta" — see README. Flipping this is the only change
 # needed to switch site modes.
 LAUNCH_MODE = "prelaunch"
+# Turnstile widget sitekey (public). The always-pass TEST key is local-dev
+# only (.dev.vars) — never a deployed default.
+PUBLIC_TURNSTILE_SITE_KEY = "0x4AAAAAADz8NeQ_TUjJuy-O"
 
 [observability.logs]
 enabled = true
@@ -34,3 +37,10 @@ migrations_dir = "migrations"
 [[kv_namespaces]]
 binding = "RATE_LIMIT"
 id = "9b73f242b63a473981d42a105406a3fc"
+
+# Outbound transactional email — Cloudflare Email Service (public beta).
+# The binding is the credential: no API key exists anywhere.
+# NOTE: no remote=true — remote proxy sessions need Cloudflare auth, which is
+# CI-only; local dev falls back to the dev transport / local simulation.
+[[send_email]]
+name = "EMAIL"
