@@ -46,7 +46,7 @@ prettier-plugin-astro as dev tooling.)
 
 ## Story Status (re-entry pointer — update on every merge)
 
-Current: **S3.5 merged — EPIC 3 COMPLETE; next: S3B.1 (blog engine)**
+Current: **S3B.1 merged — next: S3B.2 (blog SEO integration)**
 
 ---
 
@@ -164,6 +164,14 @@ Current: **S3.5 merged — EPIC 3 COMPLETE; next: S3B.1 (blog engine)**
   Spacemail inbox (alias path proven end-to-end). Bonus verified: newsletter confirm
   landed in a Gmail INBOX with correct 24h wording + support@ footer. EPIC 4 GATE
   LIFTED — no outstanding production evidence.
+- **From S3B.1 sign-off (2026-07-12):** nav active-state (aria-current + visual
+  marker, site-wide) joins the S4.1 button items; th scope="col" rehype transform
+  goes to S3B.2. S3B.3 author notes: (a) no published post ships the get.tunnex.io
+  one-liner until the installer is live; (b) WireGuard® with the ® on first mention
+  per their trademark policy; (c) ec.config.mjs styleOverrides is the long-term home
+  for the Expressive Code token mapping.
+- **Node target (2026-07-12):** repo moves 22 → 24 (Active LTS, EOL Apr 2028).
+  Node 26 deliberately NOT the target — re-evaluate after it enters LTS in Oct 2026.
 - **PROMOTION-FAILURE RECOVERY (required BEFORE the beta flip, from S3.5 sign-off):**
   at-most-once claims mean a failed key-delivery send is a customer-visible miss
   signaled only by the lifecycle.promotion_failed log. Build a lightweight recovery:
