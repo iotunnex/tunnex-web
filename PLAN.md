@@ -46,7 +46,7 @@ prettier-plugin-astro as dev tooling.)
 
 ## Story Status (re-entry pointer — update on every merge)
 
-Current: **accuracy+brand round merged; S2.3 report complete, merge gated on Resend test-send only; next: S2.4 after S2.3**
+Current: **S2.3 merged (both gates closed) — next: S2.4 (enterprise lead form); Turnstile rotation pending**
 
 ---
 
