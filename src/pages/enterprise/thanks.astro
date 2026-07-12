@@ -1,0 +1,21 @@
+---
+import Base from '../../layouts/Base.astro';
+import Button from '../../components/ui/Button.astro';
+import Card from '../../components/ui/Card.astro';
+import Logo from '../../components/Logo.astro';
+---
+
+<Base title="Tunnex — Thanks" noindex>
+  <section
+    class="mx-auto flex min-h-[60vh] w-full max-w-6xl flex-col justify-center px-4 py-20 sm:px-6"
+  >
+    <Card class="mx-auto flex w-full max-w-md flex-col items-center gap-4 p-8 text-center">
+      <Logo variant="vertical" />
+      <h1 class="text-xl font-semibold">Got it — talk soon</h1>
+      <p class="text-sm text-text-muted">
+        Your message is with sales. A human replies within one business day.
+      </p>
+      <Button href="/" variant="secondary" class="w-full">Back to tunnex.io</Button>
+    </Card>
+  </section>
+</Base>

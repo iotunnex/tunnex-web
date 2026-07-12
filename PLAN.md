@@ -106,6 +106,12 @@ Current: **S2.3 merged (both gates closed) — next: S2.4 (enterprise lead form)
 - **Turnstile production keys (S2.3 merge gate #2):** the always-pass test key must never
   be a deployed default — real sitekey in wrangler.toml [vars], TURNSTILE_SECRET as
   Worker secret via CI; test pair stays local-dev only (.dev.vars).
+- **SSR-navigation routing (closed 2026-07-12):** the assets layer applies
+  not_found_handling to browser navigations instead of invoking the Worker — every
+  prerender=false route must be in wrangler.toml run_worker_first (CI-guarded by
+  src/lib/ssr-route-guard.test.ts). /subscribe/confirm was briefly broken on prod this
+  way; gate-2-era curl evidence predated the breakage. STANDING E2E PATTERN: all future
+  page stories verify under Sec-Fetch-Mode: navigate headers, not just curl.
 - **Credentials move by COPY-PASTE only (standing rule, 2026-07-12):** never transcribed
   from images/screenshots — a 0-vs-O sitekey transcription cost a day of Turnstile
   debugging (400020). Click-to-copy in dashboards, pipe into gh secret set.

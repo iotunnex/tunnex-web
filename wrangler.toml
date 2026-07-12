@@ -13,6 +13,11 @@ compatibility_flags = ["nodejs_compat"]
 binding = "ASSETS"
 directory = "./dist/client"
 not_found_handling = "404-page"
+# The assets layer must not swallow navigations to SSR routes: any route with
+# prerender=false MUST be listed here, or browsers get the 404 page while curl
+# gets the real response (Sec-Fetch-Mode: navigate triggers not_found_handling
+# instead of invoking the Worker).
+run_worker_first = ["/api/*", "/enterprise", "/enterprise/", "/subscribe/confirm"]
 
 [vars]
 # "prelaunch" | "beta" — see README. Flipping this is the only change
@@ -21,6 +26,8 @@ LAUNCH_MODE = "prelaunch"
 # Turnstile widget sitekey (public). The always-pass TEST key is local-dev
 # only (.dev.vars) — never a deployed default.
 PUBLIC_TURNSTILE_SITE_KEY = "0x4AAAAAADz8NeQ_TUjJuy-O"
+# Where enterprise-lead notifications land (Spacemail alias, staffed via support@).
+SALES_NOTIFY_EMAIL = "sales@tunnex.io"
 
 [observability.logs]
 enabled = true
