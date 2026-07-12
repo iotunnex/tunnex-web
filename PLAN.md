@@ -300,7 +300,6 @@ Current: **S3.1 merged — next: S3.2 (trial request endpoint)**
   subscriber tokens. **DoD:** time-travel tests for each transition; rerun idempotence
   proven; prune verified.
 
-
 ## EPIC 3B — Blog (marketing/content engine) — AFTER EPIC 3, BEFORE S4.2
 
 Locked decisions: git-based Markdown/MDX via Astro Content Collections (no CMS, PRs are
