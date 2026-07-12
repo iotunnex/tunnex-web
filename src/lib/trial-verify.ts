@@ -1,6 +1,6 @@
 import { hashToken } from './tokens.ts';
 import { jsonError } from './http/errors.ts';
-import { VERIFY_POST_RULE, checkRateLimit, type RateLimitKv } from './http/rate-limit.ts';
+import { VERIFY_POST_RULE, checkRateLimit, type KvLike } from './http/rate-limit.ts';
 import { onTrialApproved, type TrialIssuanceDeps } from './trial-issuance.ts';
 
 /**
@@ -96,7 +96,7 @@ export async function handleTrialVerify(
  * approved → /trial/approved · domain taken → ?state=exists · else ?state=invalid.
  */
 export async function processTrialVerify(
-  deps: TrialVerifyDeps & { rateLimitKv: RateLimitKv },
+  deps: TrialVerifyDeps & { rateLimitKv: KvLike },
   request: Request,
 ): Promise<Response> {
   const ip = request.headers.get('CF-Connecting-IP') ?? 'unknown';
