@@ -16,11 +16,17 @@ import { launchMode } from '../../config';
   >
     <Card class="mx-auto flex w-full max-w-md flex-col items-center gap-4 p-8 text-center">
       <Logo variant="vertical" />
-      <h1 class="text-xl font-semibold">Trial approved — you’re in early</h1>
+      <h1 class="text-xl font-semibold">
+        {
+          launchMode === 'prelaunch'
+            ? 'Trial approved — you’re in early'
+            : 'Trial approved — your key is on its way'
+        }
+      </h1>
       {
         launchMode === 'prelaunch' ? (
           <p class="text-sm text-text-muted">
-            Your 14-day Enterprise trial is reserved for your domain. Your license key lands in this
+            Your 14-day Enterprise trial is reserved for your domain. Your license key lands in your
             inbox the moment the beta opens, and your 14 days start only when the key is issued —
             being early costs you nothing.
           </p>
