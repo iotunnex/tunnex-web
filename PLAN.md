@@ -158,6 +158,12 @@ Current: **S3.5 merged — EPIC 3 COMPLETE; next: S3B.1 (blog engine)**
   LAUNCH_MODE is a wrangler.toml change + REDEPLOY (build-time for prerendered pages,
   runtime-env for the cron). Document exact flip steps + post-flip verification that
   lifecycle leg ① promoted pending_launch trials and key-delivery emails landed.
+- **S2.4 PRODUCTION EVIDENCE: CLOSED (2026-07-12, founder screenshots).** /enterprise
+  submitted on production — live Turnstile challenge passed on the ROTATED secret,
+  thanks page rendered, "New enterprise lead: Bolster" landed in the sales@tunnex.io
+  Spacemail inbox (alias path proven end-to-end). Bonus verified: newsletter confirm
+  landed in a Gmail INBOX with correct 24h wording + support@ footer. EPIC 4 GATE
+  LIFTED — no outstanding production evidence.
 - **PROMOTION-FAILURE RECOVERY (required BEFORE the beta flip, from S3.5 sign-off):**
   at-most-once claims mean a failed key-delivery send is a customer-visible miss
   signaled only by the lifecycle.promotion_failed log. Build a lightweight recovery:
