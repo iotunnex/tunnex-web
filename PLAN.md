@@ -46,7 +46,7 @@ prettier-plugin-astro as dev tooling.)
 
 ## Story Status (re-entry pointer — update on every merge)
 
-Current: **S3.3 merged — next: S3.4 (issuance stub + wiring)**
+Current: **S3.4 merged — next: S3.5 (lifecycle cron + housekeeping — final EPIC 3 story)**
 
 ---
 
