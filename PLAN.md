@@ -46,7 +46,7 @@ prettier-plugin-astro as dev tooling.)
 
 ## Story Status (re-entry pointer — update on every merge)
 
-Current: **S3B.2 merged — next: S3B.3 (launch content — founder-review-heavy)**
+Current: **S3B.3 merged — EPIC 3B COMPLETE (3 posts drafted, publish at cutover); next: S4.1 (accessibility + performance pass)**
 
 ---
 
@@ -176,11 +176,14 @@ Current: **S3B.2 merged — next: S3B.3 (launch content — founder-review-heavy
   Organization + Product JSON-LD, site-wide OG rollout. NOTE: canonical/og:image
   URLs emit absolute against https://tunnex.io — external validators fully pass
   only after the S4.4 domain cutover (structure verifiable on previews now).
-- **S4.4 runbook item — launch-post flip (from S3B.3 sign-off):** posts 1 and 3 are
-  approved VERBATIM and stay draft:true until the S4.4 cutover. Flip steps: set both
-  pubDates to the actual cutover date (same-day pair — post 1 binds them), flip
-  draft:false, deploy. Post 1 byline = Pawan Gupta; post 3 default Tunnex Team
-  (founder may switch at flip time).
+- **S4.4 runbook item — launch-post flip (from S3B.3 sign-off):** ALL THREE launch
+  posts (introducing-tunnex, why-offline-license-keys, fail-closed-receipts) are
+  approved VERBATIM and stay draft:true until the S4.4 cutover. Flip steps: set all
+  three pubDates to the actual cutover date (same-day — post 1 binds itself to post 3
+  with "starting today"), flip draft:false, deploy. Bylines: post 1 = Pawan Gupta;
+  posts 3 (offline-keys) and 2 (fail-closed) = Tunnex Team. The 4 post-2 drift trims
+  are founder-reversible if he changes his mind at flip. RSS content:encoded already
+  absolutizes their internal links (absolutizeHtml, tested).
 - **Node target (2026-07-12):** repo moves 22 → 24 (Active LTS, EOL Apr 2028).
   Node 26 deliberately NOT the target — re-evaluate after it enters LTS in Oct 2026.
 - **PROMOTION-FAILURE RECOVERY (required BEFORE the beta flip, from S3.5 sign-off):**
