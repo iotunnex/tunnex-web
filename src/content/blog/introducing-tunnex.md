@@ -2,7 +2,7 @@
 title: 'Introducing Tunnex'
 description: 'A self-hosted Zero Trust VPN built on one premise: your network should never depend on ours. Here is what we are building, and where it stands today.'
 pubDate: 2026-07-12
-author: 'Tunnex Team'
+author: 'Pawan Gupta'
 tags: ['announcements']
 draft: true
 ---

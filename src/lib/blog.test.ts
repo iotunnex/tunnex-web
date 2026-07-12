@@ -66,3 +66,17 @@ describe('authoring guards (src/content/blog)', () => {
     expect(offenders).toEqual([]);
   });
 });
+
+describe('RSS href absolutization', () => {
+  it('rewrites root-relative href/src to absolute against site', async () => {
+    const { absolutizeHtml } = await import('./blog.ts');
+    const html =
+      '<a href="/pricing">x</a><img src="/og/a.png"><a href="https://ext.example/">y</a>';
+    const out = absolutizeHtml(html, new URL('https://tunnex.io'));
+    expect(out).toBe(
+      '<a href="https://tunnex.io/pricing">x</a><img src="https://tunnex.io/og/a.png"><a href="https://ext.example/">y</a>',
+    );
+    expect(out).not.toContain('href="/');
+    expect(out).not.toContain('src="/');
+  });
+});
