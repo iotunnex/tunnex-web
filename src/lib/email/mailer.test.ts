@@ -89,7 +89,7 @@ describe('mailer', () => {
       text: 't',
     });
     expect(result.id).toBe('cf_123');
-    expect(calls[0]).toMatchObject({ headers: { 'Reply-To': REPLY_TO } });
+    expect(calls[0]).toMatchObject({ replyTo: REPLY_TO });
 
     const dev = transportFromEnv({});
     expect((await dev.send(await sample())).id).toBe('dev-1');
