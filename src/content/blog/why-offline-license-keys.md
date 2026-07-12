@@ -19,10 +19,10 @@ completely.
 ## How it works
 
 Every Tunnex binary ships with a public key. Your license is a signed
-document: the claims — domain, tier, seats, validity window — signed with the
-matching private key, which never leaves us. Your deployment verifies the
-signature locally with Ed25519 and reads the claims. That's the whole
-protocol.
+document: the claims — who the license is for, what tier, and for how long —
+signed with the matching private key, which never leaves us. Your deployment
+verifies the signature locally with Ed25519 and reads the claims. That's the
+whole protocol.
 
 What this buys you:
 
@@ -41,8 +41,8 @@ What this buys you:
 ## The trade we accepted
 
 Fully offline verification has a real cost, and we'd rather name it than hide
-it: **a key that never checks in can't be revoked remotely.** There's no
-kill message we could send — by design, there's no channel to send it on.
+it: a key that never checks in can't be revoked remotely. There's no kill
+message we could send — by design, there's no channel to send it on.
 
 Revocability has to come from somewhere, so it comes from time. License keys
 carry a validity window and are renewed rather than everlasting. A key that

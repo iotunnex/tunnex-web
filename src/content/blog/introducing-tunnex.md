@@ -23,8 +23,8 @@ plane to manage it all.
 
 The part that makes it different is _where it runs_. Everything that moves or
 protects your data — control plane, gateways, clients — runs on
-infrastructure you own. One binary on any VPS with Docker and a public
-address, and the network is yours.
+infrastructure you own. It runs on any VPS with Docker and a public address,
+and the network is yours.
 
 ## The trust-domain boundary
 
@@ -47,7 +47,7 @@ will be — that's a design constraint, not a roadmap item.
 
 The self-hosted core is free — unlimited devices, no seat math. It includes
 the control plane, gateways, desktop and CLI clients, local authentication,
-and the WireGuard® data plane. That's not a crippled demo; it's a working
+and the WireGuard data plane. That's not a crippled demo; it's a working
 private network.
 
 Enterprise is for teams that need identity, policy, and scale: SSO with
@@ -59,16 +59,17 @@ hostage.
 
 ## Where we are today
 
-Honest status: Tunnex is in the run-up to beta. The site is live, the
-[14-day Enterprise trial](/trial/) is open for requests — one per company
-domain, bound to a verified work email — and license keys go out the moment
-the beta opens. Your trial clock starts when your key is issued, not when
-you sign up, so there is no cost to being early.
+Honest status: Tunnex is in the run-up to beta. The site is live, and the
+[14-day Enterprise trial](/trial/) is open for requests. One trial per
+company domain, bound to a verified work email; license keys go out the
+moment the beta opens. Your trial clock starts when your key is issued, not
+when you sign up, so there is no cost to being early.
 
-If you'd rather just watch: the [waitlist](/download/) gets launch news and
-release notes, nothing else.
+If you'd rather just watch: the [waitlist](/download/) gets an email the
+moment downloads open — nothing else.
 
-We'll publish the engineering behind the bigger claims here — the fail-closed
-kill-switch design and the offline license model are first in line. If any of
-this is the kind of problem you think about, we'd like to hear from you:
+We'll publish the engineering behind the bigger claims here, starting today
+with [why our license keys work offline](/blog/why-offline-license-keys/);
+the fail-closed kill-switch design is next in line. If any of this is the
+kind of problem you think about, we'd like to hear from you:
 [sales@tunnex.io](mailto:sales@tunnex.io) reaches a human.
