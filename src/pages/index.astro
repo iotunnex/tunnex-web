@@ -40,9 +40,23 @@ const features: { title: string; body: string; tag?: string }[] = [
     <h1 class="max-w-3xl text-4xl font-bold tracking-tight text-balance sm:text-5xl">
       Self-hosted Zero Trust VPN.
     </h1>
-    <p class="text-xl font-medium">
+    <p class="relative text-xl font-medium" id="hero-tagline">
       Connect everything. <span class="text-primary">Trust nothing.</span>
     </p>
+    <script is:inline>
+      // Pre-paint hide for the typing reveal — prevents the flash-and-erase a
+      // deferred module would cause. Reduced-motion users never get hidden
+      // text; a failsafe restores it if the module doesn't claim the element.
+      (() => {
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        const el = document.getElementById('hero-tagline');
+        if (!el) return;
+        el.style.opacity = '0';
+        setTimeout(() => {
+          if (el.dataset.typing !== 'claimed') el.style.opacity = '';
+        }, 1500);
+      })();
+    </script>
     <p class="max-w-2xl text-text-muted">
       Tunnex gives your team WireGuard-fast private networking with single sign-on and Zero Trust
       policies — on infrastructure you run. Your network never touches ours.
@@ -50,6 +64,21 @@ const features: { title: string; body: string; tag?: string }[] = [
     <CodeSnippet label="one-command install" class="max-w-xl">
       curl -fsSL https://get.tunnex.io | sh
     </CodeSnippet>
+    <p class="max-w-xl text-sm text-text-muted">
+      Runs on any VPS with Docker and a public address.
+      {
+        isBeta ? (
+          <>
+            Prefer to verify first?{' '}
+            <a href="/docs/quickstart/" class="font-semibold text-link">
+              Download, check the SHA256, inspect, then run →
+            </a>
+          </>
+        ) : (
+          <>The installer ships with the beta.</>
+        )
+      }
+    </p>
     <CtaPair
       primaryLabel={isBeta ? 'Download' : 'Start 14-day trial'}
       primaryHref={isBeta ? '/download' : '/trial'}
@@ -127,4 +156,73 @@ const features: { title: string; body: string; tag?: string }[] = [
       />
     </div>
   </section>
+
+  <script>
+    // Hero tagline typing reveal. Once per page load. DOM-first: the full
+    // two-tone text is server-rendered (SEO + no-JS read it verbatim); the
+    // inline pre-paint script above hides it before first frame so there is
+    // no flash-and-erase. Characters are wrapped, revealed sequentially, and
+    // the ORIGINAL text nodes are restored at the end so the settled line has
+    // the exact SSR kerning. Honors prefers-reduced-motion (script no-ops and
+    // the inline failsafe never hides the text).
+    const tagline = document.getElementById('hero-tagline');
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (tagline && !reduced) {
+      tagline.dataset.typing = 'claimed';
+      const original = [...tagline.childNodes].map((n) => n.cloneNode(true));
+
+      const chars: HTMLElement[] = [];
+      const wrap = (node: Node) => {
+        if (node.nodeType === Node.TEXT_NODE) {
+          const frag = document.createDocumentFragment();
+          for (const ch of node.textContent ?? '') {
+            const span = document.createElement('span');
+            span.textContent = ch;
+            span.style.opacity = '0';
+            if (ch !== ' ') chars.push(span);
+            frag.appendChild(span);
+          }
+          node.parentNode?.replaceChild(frag, node);
+        } else {
+          [...node.childNodes].forEach(wrap);
+        }
+      };
+      [...tagline.childNodes].forEach(wrap);
+      tagline.style.opacity = '';
+
+      // Caret: solid while typing; blinks only once typing completes.
+      const caret = document.createElement('span');
+      caret.setAttribute('aria-hidden', 'true');
+      caret.style.cssText = 'position:absolute;width:2px;height:1.1em;background:var(--t-primary);';
+      tagline.appendChild(caret);
+      const style = document.createElement('style');
+      style.textContent = '@keyframes tagline-caret{50%{opacity:0}}';
+      document.head.appendChild(style);
+      const moveCaret = (el: HTMLElement) => {
+        const box = tagline.getBoundingClientRect();
+        const r = el.getBoundingClientRect();
+        caret.style.left = `${r.right - box.left}px`;
+        caret.style.top = `${r.top - box.top}px`;
+      };
+
+      let i = 0;
+      const step = () => {
+        if (i >= chars.length) {
+          caret.style.animation = 'tagline-caret 1s steps(1) infinite';
+          setTimeout(() => {
+            caret.remove();
+            // Restore the pristine SSR nodes — exact original kerning.
+            tagline.replaceChildren(...original);
+          }, 1000);
+          return;
+        }
+        const el = chars[i]!;
+        el.style.opacity = '1';
+        moveCaret(el);
+        i += 1;
+        setTimeout(step, 34);
+      };
+      setTimeout(step, 250);
+    }
+  </script>
 </Base>

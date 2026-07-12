@@ -23,6 +23,7 @@ const THEME_FILES = new Set([
   join(ROOT, 'src/assets/logo.svg'),
   join(ROOT, 'src/assets/wordmark.svg'),
   join(ROOT, 'src/assets/logo-lockup-dark.svg'),
+  join(ROOT, 'src/assets/logo-mark-simple.svg'),
 ]);
 const EXTENSIONS = /\.(astro|css|ts|tsx|js|mjs|jsx|html|svg|md|mdx)$/;
 
