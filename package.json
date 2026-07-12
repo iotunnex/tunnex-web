@@ -24,6 +24,8 @@
     "@astrojs/starlight": "^0.41.3",
     "@tailwindcss/vite": "^4.3.2",
     "astro": "^7.0.7",
+    "disposable-email-domains": "^1.0.62",
+    "psl": "^1.15.0",
     "tailwindcss": "^4.3.2",
     "zod": "^4.4.3"
   },
