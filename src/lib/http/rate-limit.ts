@@ -20,7 +20,7 @@ export const FORM_POST_RULE: RateLimitRule = { scope: 'form', limit: 5, windowSe
 /** 20/min/IP for verify POSTs (plan-set starting limit). */
 export const VERIFY_POST_RULE: RateLimitRule = { scope: 'verify', limit: 20, windowSeconds: 60 };
 
-interface KvLike {
+export interface KvLike {
   get(key: string): Promise<string | null>;
   put(key: string, value: string, options?: { expirationTtl?: number }): Promise<void>;
 }

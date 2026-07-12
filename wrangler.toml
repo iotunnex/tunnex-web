@@ -17,7 +17,14 @@ not_found_handling = "404-page"
 # prerender=false MUST be listed here, or browsers get the 404 page while curl
 # gets the real response (Sec-Fetch-Mode: navigate triggers not_found_handling
 # instead of invoking the Worker).
-run_worker_first = ["/api/*", "/enterprise", "/enterprise/", "/subscribe/confirm"]
+run_worker_first = [
+  "/api/*",
+  "/enterprise",
+  "/enterprise/",
+  "/subscribe/confirm",
+  "/trial/verify",
+  "/trial/verify/",
+]
 
 [vars]
 # "prelaunch" | "beta" — see README. Flipping this is the only change
