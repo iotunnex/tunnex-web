@@ -16,3 +16,6 @@ worker-configuration.d.ts
 
 # OS / editor
 .DS_Store
+
+# generated at build (scripts/generate-og.mjs)
+/public/og/

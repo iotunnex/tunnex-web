@@ -7,13 +7,25 @@ interface Props {
   title: string;
   description?: string;
   noindex?: boolean;
+  /** Canonical URL path (e.g. `/blog/foo/`) — emitted absolute against site. */
+  canonical?: string;
+  /** Site-relative OG image path; presence opts the page into OG/Twitter cards. */
+  ogImage?: string;
+  ogType?: 'website' | 'article';
 }
 
 const {
   title,
   description = 'Self-hosted Zero Trust VPN. Connect everything. Trust nothing.',
   noindex = false,
+  canonical,
+  ogImage,
+  ogType = 'website',
 } = Astro.props;
+
+const site = Astro.site ?? new URL('https://tunnex.io');
+const canonicalUrl = canonical ? new URL(canonical, site).href : undefined;
+const ogImageUrl = ogImage ? new URL(ogImage, site).href : undefined;
 ---
 
 <!doctype html>
@@ -28,6 +40,26 @@ const {
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
     <link rel="alternate" type="application/rss+xml" title="Tunnex Blog" href="/blog/rss.xml" />
+    {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
+    {
+      ogImageUrl && (
+        <>
+          <meta property="og:title" content={title} />
+          <meta property="og:description" content={description} />
+          <meta property="og:type" content={ogType} />
+          {canonicalUrl && <meta property="og:url" content={canonicalUrl} />}
+          <meta property="og:image" content={ogImageUrl} />
+          <meta property="og:image:width" content="1200" />
+          <meta property="og:image:height" content="630" />
+          <meta property="og:site_name" content="Tunnex" />
+          <meta name="twitter:card" content="summary_large_image" />
+          <meta name="twitter:title" content={title} />
+          <meta name="twitter:description" content={description} />
+          <meta name="twitter:image" content={ogImageUrl} />
+        </>
+      )
+    }
+    <slot name="head" />
     <title>{title}</title>
     <script is:inline>
       // Pre-paint theme init: dark is the default; an explicit stored choice

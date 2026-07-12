@@ -24,7 +24,11 @@ const { tag } = Astro.params;
 const { posts } = Astro.props;
 ---
 
-<Base title={`Tagged ${tag} — Tunnex Blog`} description={`Tunnex blog posts tagged ${tag}.`}>
+<Base
+  title={`Tagged ${tag} — Tunnex Blog`}
+  description={`Tunnex blog posts tagged ${tag}.`}
+  noindex
+>
   <section class="mx-auto flex w-full max-w-3xl flex-col gap-8 px-4 py-16 sm:px-6 md:py-20">
     <div class="flex flex-col gap-3">
       <p class="text-xs font-semibold tracking-wide text-text-muted uppercase">
