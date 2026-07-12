@@ -40,8 +40,9 @@ vendor's. We drew it deliberately, and we keep it sharp:
 
 The consequence is the property we care most about: **your VPN keeps running
 even if tunnex.io goes dark.** License checks happen offline, inside your
-deployment. There is no phone-home in your critical path, and there never
-will be — that's a design constraint, not a roadmap item.
+deployment. There is no phone-home, and no license server in your critical
+path — and there never will be. That's a design constraint, not a roadmap
+item.
 
 ## Open core, honestly drawn
 
