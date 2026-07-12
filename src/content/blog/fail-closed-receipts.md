@@ -1,6 +1,6 @@
 ---
 title: 'Designed to fail closed: the receipts'
-description: 'Our security page hedges: the kill-switch is "designed to" fail closed. This is the engineering behind that hedge — kernel-resident enforcement, a stranding bug we found the hard way, a packet-capture proof, and a Windows gap we are fixing in the open.'
+description: 'Our security page hedges: the kill-switch is "designed to" fail closed. This is the engineering behind that hedge — kernel-resident enforcement, a stranding bug we found the hard way, a packet-capture proof, and a Windows gap we are disclosing while we fix it.'
 pubDate: 2026-07-12
 author: 'Tunnex Team'
 tags: ['security', 'engineering']
@@ -40,9 +40,8 @@ act.**
 
 ## Death as enforcement
 
-At tunnel-up, before traffic flows, the helper arranges kernel-resident
-state that blocks cleartext egress — and then that state simply _persists_,
-however the process exits. On macOS this is a pf (packet filter) anchor
+At tunnel-up, the helper arranges kernel-resident state that blocks cleartext
+egress — and then that state simply _persists_, however the process exits. On macOS this is a pf (packet filter) anchor
 installed via pfctl: block all outbound except traffic to the WireGuard®
 endpoint and traffic through the tunnel interface, for IPv4 and IPv6 both.
 pf rules live in the kernel; they do not care whether our helper is running.
@@ -83,8 +82,7 @@ The fix is what we now call _bounded_ fail-closed, three mechanisms:
 That means naming a trade, plainly: after an unrecovered crash, the maximum
 cleartext-leak window is the dead-man interval. We accepted it because the
 alternative is worse — an unbounded block that bricks the host protects
-nothing on a machine whose VPN is already down, and trains users to disable
-the kill-switch entirely.
+nothing on a machine whose VPN is already down.
 
 ## The proof
 
@@ -124,8 +122,8 @@ behind.
 This is why the security page hedges. A kill-switch is a per-platform,
 adversarial engineering problem, and the honest description of our state is:
 proven on macOS with packet captures, being fixed properly on Windows, and
-tested by assuming our own code will die at the worst moment. When the
-Windows work lands, the receipts will be published the same way.
+tested by assuming our own code will die at the worst moment. The Windows
+work won't lift that gate until it passes the same packet-capture test.
 
 Found a hole in this reasoning? We'd genuinely like to know:
 [security@tunnex.io](mailto:security@tunnex.io) — a human reads every
