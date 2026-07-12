@@ -1,0 +1,108 @@
+---
+import { env } from 'cloudflare:workers';
+import Base from '../../layouts/Base.astro';
+import Button from '../../components/ui/Button.astro';
+import Card from '../../components/ui/Card.astro';
+import { d1TrialVerifyStore, peekTrialToken } from '../../lib/trial-verify.ts';
+
+// Scanner-proof verification page: mail scanners (SafeLinks, Proofpoint)
+// prefetch GET/HEAD — this page performs ZERO writes. The explicit POST below
+// does the atomic consume.
+export const prerender = false;
+
+const token = Astro.url.searchParams.get('token') ?? '';
+const forcedState = Astro.url.searchParams.get('state');
+
+let state: 'valid' | 'expired' | 'invalid' | 'exists' = 'invalid';
+let domain = '';
+if (forcedState === 'exists') {
+  state = 'exists';
+} else if (forcedState !== 'invalid' && token) {
+  const peek = await peekTrialToken({ store: d1TrialVerifyStore(env.DB) }, token);
+  state = peek.state;
+  if (peek.state === 'valid') domain = peek.domain;
+}
+const titles = {
+  valid: 'Tunnex — Confirm your trial',
+  expired: 'Tunnex — Trial link expired',
+  invalid: 'Tunnex — Trial link not valid',
+  exists: 'Tunnex — Trial already exists',
+} as const;
+---
+
+<Base title={titles[state]} noindex>
+  <section
+    class="mx-auto flex min-h-[60vh] w-full max-w-6xl flex-col justify-center px-4 py-20 sm:px-6"
+  >
+    <Card class="mx-auto flex w-full max-w-md flex-col gap-4 p-8">
+      {
+        state === 'valid' && (
+          <>
+            <h1 class="text-xl font-semibold">
+              Confirm your trial for <span class="text-primary">{domain}</span>
+            </h1>
+            <p class="text-sm text-text-muted">
+              One click reserves the 14-day Enterprise trial for {domain}. Your license key arrives
+              when the beta opens — the clock starts then, not today.
+            </p>
+            <form method="post" action="/api/trial/verify">
+              <input type="hidden" name="token" value={token} />
+              <Button variant="primary" class="w-full">
+                Confirm trial
+              </Button>
+            </form>
+            <p class="text-xs text-text-muted">
+              Didn’t request this? Just close this page — nothing happens without this confirmation.
+            </p>
+          </>
+        )
+      }
+      {
+        state === 'expired' && (
+          <>
+            <h1 class="text-xl font-semibold">This link has expired</h1>
+            <p class="text-sm text-text-muted">
+              Trial links are valid for 30 minutes. Request a fresh one and confirm from your inbox
+              — it takes under a minute.
+            </p>
+            <Button href="/trial/" variant="secondary" class="w-full">
+              Request a new link
+            </Button>
+          </>
+        )
+      }
+      {
+        state === 'invalid' && (
+          <>
+            <h1 class="text-xl font-semibold">This link isn’t valid anymore</h1>
+            <p class="text-sm text-text-muted">
+              If you just clicked Confirm, you’re all set — the approval is in your inbox. Otherwise
+              this link was already used, expired, or mistyped; request a fresh one.
+            </p>
+            <Button href="/trial/" variant="secondary" class="w-full">
+              Back to the trial page
+            </Button>
+          </>
+        )
+      }
+      {
+        state === 'exists' && (
+          <>
+            <h1 class="text-xl font-semibold">Your domain already has a trial</h1>
+            <p class="text-sm text-text-muted">
+              Someone at your company got here first — trials are one per domain. Check with your
+              team, or write to us and we’ll sort it out.
+            </p>
+            <Button
+              href="mailto:sales@tunnex.io?subject=Tunnex%20trial"
+              variant="secondary"
+              class="w-full"
+            >
+              Write to sales@tunnex.io
+            </Button>
+          </>
+        )
+      }
+    </Card>
+  </section>
+</Base>
