@@ -1,8 +1,8 @@
 ---
-import { PUBLIC_TURNSTILE_SITE_KEY } from 'astro:env/client';
 import Base from '../layouts/Base.astro';
 import Button from '../components/ui/Button.astro';
 import Card from '../components/ui/Card.astro';
+import TurnstileWidget from '../components/TurnstileWidget.astro';
 
 // Plain form POST (no JS needed for submit/errors); Turnstile itself needs
 // JS — the noscript block points to email.
@@ -110,20 +110,9 @@ const inputClasses =
             instead.
           </p>
         </noscript>
-        <div class="cf-turnstile" data-size="flexible" data-sitekey={PUBLIC_TURNSTILE_SITE_KEY}>
-        </div>
+        <TurnstileWidget />
         <Button variant="primary" class="w-full">Send to sales</Button>
       </form>
     </Card>
   </section>
 </Base>
-
-<script is:inline>
-  document
-    .querySelector('.cf-turnstile')
-    ?.setAttribute(
-      'data-theme',
-      document.documentElement.classList.contains('dark') ? 'dark' : 'light',
-    );
-</script>
-<script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>

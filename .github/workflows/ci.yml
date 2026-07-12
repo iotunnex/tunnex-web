@@ -30,6 +30,10 @@ jobs:
       - run: pnpm test
       - run: pnpm format:check
       - run: pnpm build
+      - name: Accessibility scan (axe)
+        run: |
+          pnpm exec playwright install --with-deps chromium
+          pnpm axe
 
   preview:
     # Fork PRs have no access to secrets; preview only for same-repo branches.

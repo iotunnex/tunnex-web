@@ -11,6 +11,11 @@ const links = [
   { href: '/docs', label: 'Docs' },
 ];
 const showGitHub = launchMode === 'beta';
+
+// Active-nav: the current top-level section (first path segment), so /blog/foo
+// and /docs/quickstart still light their nav item.
+const section = '/' + (Astro.url.pathname.split('/').filter(Boolean)[0] ?? '');
+const isActive = (href: string) => href === section;
 ---
 
 <header class="sticky top-0 z-40 border-b border-border bg-bg/90 backdrop-blur">
@@ -29,7 +34,13 @@ const showGitHub = launchMode === 'beta';
           <li>
             <a
               href={l.href}
-              class="text-sm text-text-muted transition-colors hover:text-text focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+              aria-current={isActive(l.href) ? 'page' : undefined}
+              class:list={[
+                'text-sm transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary',
+                isActive(l.href)
+                  ? 'font-medium text-text underline decoration-primary decoration-2 underline-offset-8'
+                  : 'text-text-muted hover:text-text',
+              ]}
             >
               {l.label}
             </a>
@@ -80,7 +91,11 @@ const showGitHub = launchMode === 'beta';
           <li>
             <a
               href={l.href}
-              class="block rounded-md px-2 py-2 text-sm text-text-muted hover:bg-surface-raised hover:text-text"
+              aria-current={isActive(l.href) ? 'page' : undefined}
+              class:list={[
+                'block rounded-md px-2 py-2 text-sm hover:bg-surface-raised hover:text-text',
+                isActive(l.href) ? 'font-medium text-text' : 'text-text-muted',
+              ]}
             >
               {l.label}
             </a>

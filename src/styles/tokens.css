@@ -54,6 +54,9 @@
   --t-surface: var(--p-neutral-0);
   --t-surface-raised: var(--p-neutral-100);
   --t-border: var(--p-neutral-200);
+  /* Interactive-control border: ≥3:1 vs surface (WCAG 1.4.11), unlike the
+     hairline --t-border used for dividers/cards. */
+  --t-border-interactive: var(--p-neutral-600);
   --t-text: var(--p-neutral-900);
   --t-text-muted: var(--p-neutral-600);
   --t-primary: var(--p-accent-600);
@@ -84,6 +87,7 @@
   --t-surface: var(--p-neutral-925);
   --t-surface-raised: var(--p-neutral-850);
   --t-border: var(--p-neutral-800);
+  --t-border-interactive: var(--p-neutral-400);
   --t-text: oklch(94.14% 0.0088 253.86); /* #E7EDF5 */
   --t-text-muted: var(--p-neutral-400);
   --t-primary: var(--p-accent-400);

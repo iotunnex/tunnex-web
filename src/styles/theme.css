@@ -19,6 +19,7 @@
   --color-surface: var(--t-surface);
   --color-surface-raised: var(--t-surface-raised);
   --color-border: var(--t-border);
+  --color-border-interactive: var(--t-border-interactive);
   --color-text: var(--t-text);
   --color-text-muted: var(--t-text-muted);
   --color-primary: var(--t-primary);

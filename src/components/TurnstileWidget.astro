@@ -1,0 +1,46 @@
+---
+import { PUBLIC_TURNSTILE_SITE_KEY } from 'astro:env/client';
+
+// Shared Cloudflare Turnstile widget (/trial + /enterprise). Explicit render
+// so the widget re-themes when the site theme toggles — implicit data-theme
+// only reads once at load, which left a stale light widget on a dark page
+// (S3.2 ledger item). The form scripts read the token from the injected
+// input[name="cf-turnstile-response"] exactly as before.
+---
+
+<div id="turnstile-widget" class="min-h-[65px]"></div>
+
+<script
+  is:inline
+  src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoad"
+  async
+  defer></script>
+<script is:inline define:vars={{ sitekey: PUBLIC_TURNSTILE_SITE_KEY }}>
+  (() => {
+    const el = document.getElementById('turnstile-widget');
+    if (!el) return;
+    let widgetId = null;
+    const theme = () => (document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+
+    const render = () => {
+      if (!window.turnstile) return;
+      if (widgetId !== null) window.turnstile.remove(widgetId);
+      widgetId = window.turnstile.render(el, { sitekey, size: 'flexible', theme: theme() });
+    };
+
+    // Called by the api.js onload param (global).
+    window.onTurnstileLoad = render;
+    // If the script was already parsed (cached), render now.
+    if (window.turnstile) render();
+
+    // Re-render on theme toggle so the widget never goes stale.
+    let last = theme();
+    new MutationObserver(() => {
+      const now = theme();
+      if (now !== last) {
+        last = now;
+        render();
+      }
+    }).observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+  })();
+</script>
