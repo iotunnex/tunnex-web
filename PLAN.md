@@ -46,7 +46,7 @@ prettier-plugin-astro as dev tooling.)
 
 ## Story Status (re-entry pointer — update on every merge)
 
-Current: **S2.4 merged — EPIC 2 complete; next: S3.1 (domain derivation + blocklists); Turnstile rotation pending**
+Current: **S3.1 merged — next: S3.2 (trial request endpoint)**
 
 ---
 
@@ -300,6 +300,35 @@ Current: **S2.4 merged — EPIC 2 complete; next: S3.1 (domain derivation + bloc
   subscriber tokens. **DoD:** time-travel tests for each transition; rerun idempotence
   proven; prune verified.
 
+
+## EPIC 3B — Blog (marketing/content engine) — AFTER EPIC 3, BEFORE S4.2
+
+Locked decisions: git-based Markdown/MDX via Astro Content Collections (no CMS, PRs are
+the editorial workflow); prerendered static routes (no run_worker_first involvement);
+full-content RSS from day one; no comments; semantic tokens only.
+
+- **S3B.1 Blog engine** — content collection schema (title, description, pubDate,
+  updatedDate, author, tags, draft, hero image optional); /blog listing (reverse-chron,
+  tag filter); post layout (typography-focused prose styling on the token system,
+  reading time, code blocks matching docs styling); draft:true excluded from build;
+  RSS at /blog/rss.xml; /blog in nav. **DoD:** sample post renders both modes; drafts
+  provably absent from output + feed; design passes.
+- **S3B.2 Blog SEO integration** — per-post meta/canonical; JSON-LD Article; OG image
+  per post (generated card: title on the brand lockup background — vertical-lockup
+  artwork is the source, consistent with the S4.2 ledger); posts in sitemap; tag pages
+  noindexed (thin content). **DoD:** validators pass; S4.2 inherits blog routes.
+- **S3B.3 Launch content (founder-review-heavy)** — 3 seed posts drafted for founder
+  review, full text in the story report like all copy: (1) "Introducing Tunnex" launch
+  announcement (positioning: self-hosted, trust-domain boundary, open core);
+  (2) technical deep-dive candidate: the fail-closed kill-switch design
+  (death-as-enforcement, the pf/WFP story — engineering credibility post); (3) "Why
+  offline license keys" (the sovereignty argument — sells Enterprise without selling).
+  **DoD:** founder copy sign-off per post; posts ship draft:false only on explicit word.
+
+Ledger alongside: /compare/tailscale and /compare/pritunl comparison pages remain a
+separate future story (S4.x or post-launch) — related to marketing but not blog posts;
+highest-SEO-ROI pages for "alternative" queries.
+
 ## EPIC 4 — Quality, SEO & Launch
 
 - **S4.1 Accessibility + performance pass** — axe (@axe-core/playwright) green on every
@@ -338,4 +367,4 @@ Current: **S2.4 merged — EPIC 2 complete; next: S3.1 (domain derivation + bloc
 
 ## Recommended Build Order
 
-EPIC 0 → 1 → 2 → 3 → 4 (launch, prelaunch mode) → parked epics on their triggers.
+EPIC 0 → 1 → 2 → 3 → 3B (blog) → 4 (launch, prelaunch mode) → parked epics on their triggers.
