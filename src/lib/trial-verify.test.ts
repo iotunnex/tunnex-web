@@ -6,6 +6,7 @@ import {
   type TrialVerifyStore,
 } from './trial-verify.ts';
 import { hashToken } from './tokens.ts';
+import { pendingLaunchIssuer } from './issuance.ts';
 
 beforeEach(() => {
   vi.spyOn(console, 'log').mockImplementation(() => {});
@@ -80,7 +81,25 @@ async function seeded(overrides?: { expiresAt?: number }) {
     expiresAt: overrides?.expiresAt ?? nowSec + 900,
   });
   const mailer = mailerSpy();
-  return { raw, hash, store, mailer, deps: { store, mailer, now } };
+  const activation = activationSpy();
+  return {
+    raw,
+    hash,
+    store,
+    mailer,
+    activation,
+    deps: { store, mailer, activation, issuer: pendingLaunchIssuer(), now },
+  };
+}
+
+function activationSpy() {
+  const calls: { domain: string; activation: Record<string, unknown> }[] = [];
+  return {
+    calls,
+    async activateTrial(domain: string, activation: Record<string, unknown>) {
+      calls.push({ domain, activation });
+    },
+  };
 }
 
 function fakeKv() {
@@ -205,7 +224,13 @@ describe('handleTrialVerify (POST consume)', () => {
       },
     };
     const mailer = mailerSpy();
-    const deps = { store: merged, mailer, now };
+    const deps = {
+      store: merged,
+      mailer,
+      activation: activationSpy(),
+      issuer: pendingLaunchIssuer(),
+      now,
+    };
     const [a, b] = await Promise.all([
       handleTrialVerify(deps, rawA, now),
       handleTrialVerify(deps, rawB, now),
@@ -246,7 +271,14 @@ describe('processTrialVerify (HTTP)', () => {
     });
     storeB.trials.push({ domain: 'acme.com', email: 'cto@acme.com' });
     const res2 = await processTrialVerify(
-      { store: storeB, mailer: mailerSpy(), now, rateLimitKv: fakeKv() },
+      {
+        store: storeB,
+        mailer: mailerSpy(),
+        activation: activationSpy(),
+        issuer: pendingLaunchIssuer(),
+        now,
+        rateLimitKv: fakeKv(),
+      },
       postRequest(rawB),
     );
     expect(res2.headers.get('location')).toBe('/trial/verify?state=exists');
