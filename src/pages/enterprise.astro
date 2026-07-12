@@ -1,0 +1,116 @@
+---
+import { PUBLIC_TURNSTILE_SITE_KEY } from 'astro:env/client';
+import Base from '../layouts/Base.astro';
+import Button from '../components/ui/Button.astro';
+import Card from '../components/ui/Card.astro';
+
+// No-JS-friendly: plain form POST; error states come back as query params.
+export const prerender = false;
+
+const state = Astro.url.searchParams.get('state');
+const stateMessage =
+  state === 'invalid'
+    ? 'Check the form — name, work email, and company are required.'
+    : state === 'captcha'
+      ? 'Captcha verification failed. Reload and try again.'
+      : state === 'rate_limited'
+        ? 'Too many requests. Try again in a minute.'
+        : null;
+
+const inputClasses =
+  'rounded-md border border-border bg-surface-raised px-3 py-2 text-sm text-text placeholder:text-text-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary';
+---
+
+<Base
+  title="Tunnex — Contact sales"
+  description="Talk to Tunnex about Enterprise: SSO, Zero Trust policies, multi-org management, and priority support."
+>
+  <section class="mx-auto grid w-full max-w-6xl gap-10 px-4 py-16 sm:px-6 md:grid-cols-2 md:py-20">
+    <div class="flex flex-col gap-4">
+      <h1 class="text-4xl font-bold tracking-tight">Talk to sales</h1>
+      <p class="max-w-md text-lg text-text-muted">
+        Tell us about your team and we’ll come back within one business day — a human, not a
+        sequence.
+      </p>
+      <ul class="flex flex-col gap-2 text-sm text-text-muted">
+        <li>· Enterprise pricing, quoted by team size</li>
+        <li>· 14-day trial access questions</li>
+        <li>· MSP / multi-org deployments</li>
+      </ul>
+      <p class="text-sm text-text-muted">
+        Prefer email? Write to
+        <a href="mailto:sales@tunnex.io" class="font-semibold text-link">sales@tunnex.io</a>.
+      </p>
+    </div>
+
+    <Card class="p-8">
+      <form method="post" action="/api/enterprise-lead" class="flex flex-col gap-4">
+        {
+          stateMessage && (
+            <p role="alert" class="rounded-md border border-error px-3 py-2 text-sm text-error">
+              {stateMessage}
+            </p>
+          )
+        }
+        <div class="flex flex-col gap-1.5">
+          <label for="lead-name" class="text-sm font-medium">Name</label>
+          <input id="lead-name" name="name" required maxlength="120" class={inputClasses} />
+        </div>
+        <div class="flex flex-col gap-1.5">
+          <label for="lead-email" class="text-sm font-medium">Work email</label>
+          <input
+            id="lead-email"
+            name="email"
+            type="email"
+            required
+            autocomplete="email"
+            placeholder="you@company.com"
+            class={inputClasses}
+          />
+        </div>
+        <div class="flex flex-col gap-1.5">
+          <label for="lead-company" class="text-sm font-medium">Company</label>
+          <input id="lead-company" name="company" required maxlength="200" class={inputClasses} />
+        </div>
+        <div class="flex flex-col gap-1.5">
+          <label for="lead-seats" class="text-sm font-medium">
+            Seats <span class="font-normal text-text-muted">(optional)</span>
+          </label>
+          <input
+            id="lead-seats"
+            name="seats"
+            type="number"
+            min="1"
+            max="1000000"
+            inputmode="numeric"
+            class={inputClasses}
+          />
+        </div>
+        <div class="flex flex-col gap-1.5">
+          <label for="lead-message" class="text-sm font-medium">
+            Message <span class="font-normal text-text-muted">(optional)</span>
+          </label>
+          <textarea
+            id="lead-message"
+            name="message"
+            rows="4"
+            maxlength="2000"
+            placeholder="What are you building, and what does your network look like?"
+            class={inputClasses}></textarea>
+        </div>
+        <div class="cf-turnstile" data-sitekey={PUBLIC_TURNSTILE_SITE_KEY}></div>
+        <Button variant="primary" class="w-full">Send to sales</Button>
+      </form>
+    </Card>
+  </section>
+</Base>
+
+<script is:inline>
+  document
+    .querySelector('.cf-turnstile')
+    ?.setAttribute(
+      'data-theme',
+      document.documentElement.classList.contains('dark') ? 'dark' : 'light',
+    );
+</script>
+<script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
