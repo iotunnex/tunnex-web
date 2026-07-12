@@ -69,6 +69,16 @@ Rules (CI-enforced by `pnpm lint:tokens`, part of `pnpm lint`):
 - Changing the brand = editing the primitive layer in `theme.css` only; zero component
   changes. `/styleguide` is the acceptance surface for theme swaps.
 
+## Trial domain rules (S3.1)
+
+One trial per company domain. The domain is DERIVED from the verified work email
+as eTLD+1 via psl — never split-on-@, never user-typed — so subdomained
+addresses collapse to the parent (a@eng.acme.com → acme.com) and blocklists are
+checked against the DERIVED domain. Free consumer providers and disposable
+domains are refused. The disposable list (disposable-email-domains) is
+inherently incomplete — accepted gap; determined abusers with custom domains are
+handled by the one-trial-per-domain UNIQUE constraint, not the blocklist.
+
 ## Data (D1 + KV)
 
 - **D1** (`DB` binding, database `tunnex-site-db`): durable data — subscribers,
