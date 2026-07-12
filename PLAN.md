@@ -46,7 +46,7 @@ prettier-plugin-astro as dev tooling.)
 
 ## Story Status (re-entry pointer — update on every merge)
 
-Current: **S2.2 merged — next: S2.3 (newsletter double-opt-in; MERGE GATED on the S2.1 test-send)**
+Current: **accuracy+brand round merged; S2.3 report complete, merge gated on Resend test-send only; next: S2.4 after S2.3**
 
 ---
 
