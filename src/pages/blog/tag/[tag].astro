@@ -37,17 +37,18 @@ const { posts } = Astro.props;
       <h1 class="text-4xl font-bold tracking-tight">
         Tagged <span class="text-primary">{tag}</span>
       </h1>
+      <p class="text-sm text-text-muted">{posts.length} {posts.length === 1 ? 'post' : 'posts'}</p>
     </div>
     <ul class="flex flex-col gap-4">
       {
         posts.map((post) => (
           <li>
-            <Card class="p-6">
+            <Card class="relative transition-colors hover:border-primary/40">
               <article class="flex flex-col gap-2">
                 <h2 class="text-xl font-semibold">
                   <a
                     href={`/blog/${post.id}/`}
-                    class="hover:text-link focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                    class="after:absolute after:inset-0 hover:text-link focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
                   >
                     {post.data.title}
                   </a>

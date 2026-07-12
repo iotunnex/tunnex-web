@@ -25,7 +25,7 @@ const tags = allTags(await getCollection('blog'));
               <li>
                 <a
                   href={`/blog/tag/${tag}/`}
-                  class="inline-flex rounded-full border border-border px-3 py-1 text-xs font-medium text-text-muted transition-colors hover:bg-surface-raised hover:text-text focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                  class="inline-flex rounded-full border border-border px-3 py-1 text-xs font-medium tracking-wide text-text-muted transition-colors hover:bg-surface-raised hover:text-text focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
                 >
                   {tag}
                 </a>
@@ -40,12 +40,12 @@ const tags = allTags(await getCollection('blog'));
       {
         posts.map((post) => (
           <li>
-            <Card class="p-6">
+            <Card class="relative transition-colors hover:border-primary/40">
               <article class="flex flex-col gap-2">
                 <h2 class="text-xl font-semibold">
                   <a
                     href={`/blog/${post.id}/`}
-                    class="hover:text-link focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                    class="after:absolute after:inset-0 hover:text-link focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
                   >
                     {post.data.title}
                   </a>

@@ -48,7 +48,7 @@ const { Content } = await render(post);
               <li>
                 <a
                   href={`/blog/tag/${tag}/`}
-                  class="inline-flex rounded-full border border-border px-3 py-1 text-xs font-medium text-text-muted transition-colors hover:bg-surface-raised hover:text-text focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                  class="inline-flex rounded-full border border-border px-3 py-1 text-xs font-medium tracking-wide text-text-muted transition-colors hover:bg-surface-raised hover:text-text focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
                 >
                   {tag}
                 </a>
@@ -69,7 +69,7 @@ const { Content } = await render(post);
   .prose {
     color: var(--t-text);
     line-height: 1.75;
-    font-size: 1.0625rem;
+    font-size: 1.125rem;
   }
   .prose :global(h2) {
     margin: 2.25rem 0 0.75rem;
@@ -80,14 +80,14 @@ const { Content } = await render(post);
   .prose :global(h3) {
     margin: 1.75rem 0 0.5rem;
     font-size: 1.2rem;
-    font-weight: 650;
+    font-weight: 600;
   }
   .prose :global(p) {
     margin: 0 0 1.1rem;
   }
   .prose :global(a) {
     color: var(--t-link);
-    font-weight: 550;
+    font-weight: 500;
     text-decoration: underline;
     text-underline-offset: 3px;
   }
@@ -132,6 +132,11 @@ const { Content } = await render(post);
     --ec-frm-trmTtbBrdBtmCol: var(--t-border);
     --ec-frm-frameBoxShdCssVal: none;
   }
+  /* bash blocks get EC's terminal frame — the empty title bar adds nothing
+     on a blog post, hide it. */
+  .prose :global(.expressive-code .frame.is-terminal .header) {
+    display: none;
+  }
   /* Plain (non-EC) pre, e.g. from raw HTML in MDX. */
   .prose :global(pre:not(.expressive-code pre)) {
     margin: 1.25rem 0;
@@ -161,12 +166,14 @@ const { Content } = await render(post);
   .prose :global(table) {
     margin: 1.25rem 0;
     width: 100%;
+    display: block;
+    overflow-x: auto;
     border-collapse: collapse;
     font-size: 0.9rem;
   }
   .prose :global(th),
   .prose :global(td) {
-    border: 1px solid var(--t-border);
+    border-bottom: 1px solid var(--t-border);
     padding: 0.5rem 0.75rem;
     text-align: left;
   }
