@@ -4,10 +4,6 @@
 
 # --- Secrets used by the site Worker ---
 
-# Resend API key for outbound email via mail.tunnex.io (S2.1 mailer +
-# scripts/test-send.mjs). Local dev can use a Resend test-mode key.
-# RESEND_API_KEY=re_...
-
 # Cloudflare Turnstile (S2.2+). The deployed sitekey lives in wrangler.toml;
 # the real secret is a Worker/repo secret. To exercise forms locally, use the
 # official always-pass TEST PAIR together (mixing real+test never verifies):

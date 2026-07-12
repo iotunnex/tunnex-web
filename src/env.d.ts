@@ -4,6 +4,7 @@
 declare namespace Cloudflare {
   interface Env {
     TURNSTILE_SECRET: string;
-    RESEND_API_KEY: string;
+    /** TEMPORARY (gate 1): gates /api/test-send; removed with the endpoint. */
+    TEST_SEND_KEY?: string;
   }
 }

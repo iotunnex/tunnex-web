@@ -21,6 +21,8 @@ export default defineConfig({
     starlight({
       title: 'Tunnex Docs',
       favicon: '/favicon.svg',
+      // The site ships its own branded 404 (src/pages/404.astro).
+      disable404Route: true,
       description:
         'Tunnex documentation — install, configure, and operate your self-hosted Zero Trust VPN.',
       customCss: ['./src/styles/starlight.css'],

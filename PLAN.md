@@ -116,6 +116,15 @@ Current: **S2.2 merged — next: S2.3 (newsletter double-opt-in; MERGE GATED on 
 - **SECURITY — rotate the Turnstile secret after S2.3 merges:** the secret transited
   chat/screenshot during setup. Pawan regenerates in widget settings; then update the
   repo secret + .dev.vars and re-run the secret sync.
+- **Mailer transport = Cloudflare Email Service (public beta, decided 2026-07-12):**
+  Workers EMAIL binding (no API key — RESEND_API_KEY lifecycle deleted; binding is the
+  credential). Docs findings: SUBDOMAIN senders supported → no-reply@mail.tunnex.io
+  STANDS; SPF/DKIM/DMARC + cf-bounce MX auto-added AND LOCKED at onboarding (manual
+  record list removed from README); bounce handling beyond Cloudflare's processing is
+  DIY → minimal hard-bounce handler = follow-up story candidate; daily quota starts
+  conservative and scales with reputation (watch for launch-day waitlist sends);
+  50 recipients/email, 5 MiB/message. Resend fallback = small transport swap (interface
+  kept transport-agnostic).
 - **Test-send HARD GATE (S2.1 merged without it):** execute scripts/test-send.mjs the
   moment Resend + mail.tunnex.io DNS land on Pawan's side; S2.3 CANNOT MERGE until the
   test-send evidence exists (its flows send real email).
