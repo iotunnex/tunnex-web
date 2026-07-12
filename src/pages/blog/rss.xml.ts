@@ -1,7 +1,7 @@
 import rss from '@astrojs/rss';
 import { getCollection } from 'astro:content';
 import type { APIRoute } from 'astro';
-import { sortedPublished } from '../../lib/blog.ts';
+import { absolutizeHtml, sortedPublished } from '../../lib/blog.ts';
 
 // Full-content feed. Drafts can never appear: items go through the same
 // sortedPublished filter as every page.
@@ -20,7 +20,7 @@ export const GET: APIRoute = async (context) => {
       link: `/blog/${post.id}/`,
       author: post.data.author,
       categories: post.data.tags,
-      content: post.rendered?.html,
+      content: post.rendered?.html && absolutizeHtml(post.rendered.html, context.site!),
     })),
   });
 };

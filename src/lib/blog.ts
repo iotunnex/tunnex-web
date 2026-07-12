@@ -39,3 +39,12 @@ export function readingTimeMinutes(markdown: string): number {
 export function formatPostDate(date: Date): string {
   return new Intl.DateTimeFormat('en-US', { dateStyle: 'long', timeZone: 'UTC' }).format(date);
 }
+
+/**
+ * Rewrite root-relative href/src attributes to absolute URLs for the
+ * full-content RSS feed — relative links break in feed readers.
+ */
+export function absolutizeHtml(html: string, site: URL | string): string {
+  const origin = String(site).replace(/\/$/, '');
+  return html.replace(/(href|src)="\//g, `$1="${origin}/`);
+}

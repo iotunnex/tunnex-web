@@ -176,6 +176,11 @@ Current: **S3B.2 merged — next: S3B.3 (launch content — founder-review-heavy
   Organization + Product JSON-LD, site-wide OG rollout. NOTE: canonical/og:image
   URLs emit absolute against https://tunnex.io — external validators fully pass
   only after the S4.4 domain cutover (structure verifiable on previews now).
+- **S4.4 runbook item — launch-post flip (from S3B.3 sign-off):** posts 1 and 3 are
+  approved VERBATIM and stay draft:true until the S4.4 cutover. Flip steps: set both
+  pubDates to the actual cutover date (same-day pair — post 1 binds them), flip
+  draft:false, deploy. Post 1 byline = Pawan Gupta; post 3 default Tunnex Team
+  (founder may switch at flip time).
 - **Node target (2026-07-12):** repo moves 22 → 24 (Active LTS, EOL Apr 2028).
   Node 26 deliberately NOT the target — re-evaluate after it enters LTS in Oct 2026.
 - **PROMOTION-FAILURE RECOVERY (required BEFORE the beta flip, from S3.5 sign-off):**
