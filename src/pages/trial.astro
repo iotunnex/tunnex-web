@@ -1,36 +1,128 @@
 ---
+import { PUBLIC_TURNSTILE_SITE_KEY } from 'astro:env/client';
 import Base from '../layouts/Base.astro';
 import Button from '../components/ui/Button.astro';
 import Card from '../components/ui/Card.astro';
 
-// INTERIM placeholder (accuracy fix): keeps every "Start 14-day trial" CTA
-// from 404ing until S3.2 ships the real request form on this same route.
+// S3.2: the real trial-request form (replaces the interim placeholder on the
+// same route). Static page + fetch POST — the endpoint's response is the
+// byte-identical generic message in every case, shown inline.
 ---
 
 <Base
-  title="Tunnex — Start your trial"
-  description="Tunnex Enterprise trial requests open shortly. Join the waitlist and be first in line."
+  title="Tunnex — Start your 14-day trial"
+  description="Request a 14-day Tunnex Enterprise trial for your company domain. One trial per domain, bound to a verified work email."
 >
-  <section
-    class="mx-auto flex min-h-[60vh] w-full max-w-6xl flex-col justify-center px-4 py-20 sm:px-6"
-  >
-    <Card class="mx-auto flex w-full max-w-md flex-col gap-4 p-8">
-      <h1 class="text-xl font-semibold">Trial requests open shortly</h1>
+  <section class="mx-auto grid w-full max-w-6xl gap-10 px-4 py-16 sm:px-6 md:grid-cols-2 md:py-20">
+    <div class="flex flex-col gap-4 self-start md:sticky md:top-24">
+      <h1 class="text-4xl font-bold tracking-tight">Start your 14-day trial</h1>
+      <p class="max-w-md text-lg text-text-muted">
+        One trial per company domain, bound to a verified work email. Request it, confirm from your
+        inbox, and your license key arrives the moment the beta opens — your 14 days start only when
+        the key is issued.
+      </p>
+      <ul class="flex flex-col gap-2 text-sm text-text-muted">
+        <li>· Everything in Enterprise: SSO, Zero Trust policies, multi-org</li>
+        <li>· No card, no sales call required</li>
+        <li>· Lapses to the free Open tier — the VPN keeps running</li>
+      </ul>
       <p class="text-sm text-text-muted">
-        The 14-day Enterprise trial works like this: request it with your work email, confirm, and
-        your license key arrives the moment the beta opens — your 14 days start only when the key is
-        issued.
+        Questions first? Write to{' '}
+        <a href="mailto:sales@tunnex.io" class="font-semibold text-link">sales@tunnex.io</a>.
       </p>
-      <p class="text-sm text-text-muted">
-        Until requests open, join the waitlist and we’ll tell you the moment they do.
-      </p>
-      <Button href="/download" variant="primary" class="w-full">Join the waitlist</Button>
-      <p class="text-xs text-text-muted">
-        In a hurry? Write to{' '}
-        <a href="mailto:sales@tunnex.io?subject=Tunnex%20trial" class="font-semibold text-link">
-          sales@tunnex.io</a
-        > and we’ll set you up directly.
-      </p>
+    </div>
+
+    <Card class="p-5 sm:p-8">
+      <form id="trial-form" class="flex flex-col gap-4" novalidate>
+        <div class="flex flex-col gap-1.5">
+          <label for="trial-email" class="text-sm font-medium">Work email</label>
+          <input
+            id="trial-email"
+            name="email"
+            type="email"
+            required
+            autocomplete="email"
+            placeholder="you@company.com"
+            aria-describedby="trial-status"
+            class="rounded-md border border-border bg-surface-raised px-3 py-2.5 text-base text-text placeholder:text-text-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary sm:text-sm"
+          />
+          <p class="text-xs text-text-muted">
+            The trial binds to your company domain — consumer and disposable addresses won’t work.
+          </p>
+        </div>
+        <noscript>
+          <p class="text-sm text-text-muted">
+            The captcha needs JavaScript. Without it, email
+            <a href="mailto:sales@tunnex.io?subject=Tunnex%20trial" class="font-semibold text-link">
+              sales@tunnex.io
+            </a>
+            and we’ll set you up directly.
+          </p>
+        </noscript>
+        <div class="cf-turnstile" data-sitekey={PUBLIC_TURNSTILE_SITE_KEY}></div>
+        <Button variant="primary" class="w-full">Request trial link</Button>
+        <p
+          id="trial-status"
+          role="status"
+          aria-live="polite"
+          class="min-h-5 text-sm text-text-muted"
+        >
+        </p>
+      </form>
     </Card>
   </section>
 </Base>
+
+<script is:inline>
+  document
+    .querySelector('.cf-turnstile')
+    ?.setAttribute(
+      'data-theme',
+      document.documentElement.classList.contains('dark') ? 'dark' : 'light',
+    );
+</script>
+<script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+<script>
+  const form = document.getElementById('trial-form') as HTMLFormElement | null;
+  const status = document.getElementById('trial-status');
+
+  form?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    if (!status) return;
+
+    const emailInput = form.elements.namedItem('email') as HTMLInputElement;
+    const email = emailInput.value;
+    const turnstileToken =
+      (form.querySelector('input[name="cf-turnstile-response"]') as HTMLInputElement | null)
+        ?.value ?? '';
+
+    if (!email) {
+      emailInput.setAttribute('aria-invalid', 'true');
+      status.textContent = 'Enter your work email first.';
+      return;
+    }
+    emailInput.removeAttribute('aria-invalid');
+    if (!turnstileToken) {
+      status.textContent = 'Complete the captcha, then try again.';
+      return;
+    }
+
+    status.textContent = 'Sending…';
+    try {
+      const res = await fetch('/api/trial/request', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ email, turnstileToken }),
+      });
+      const body = (await res.json()) as { message?: string; error?: { message?: string } };
+      status.textContent = res.ok
+        ? (body.message ?? 'Check your inbox for the verification link.')
+        : (body.error?.message ?? 'Something went wrong. Try again shortly.');
+      if (res.ok) form.reset();
+      // @ts-expect-error Turnstile global from the widget script
+      if (res.ok && window.turnstile) window.turnstile.reset();
+    } catch {
+      status.textContent = 'Network error. Try again shortly.';
+    }
+  });
+</script>
