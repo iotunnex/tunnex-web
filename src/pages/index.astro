@@ -34,7 +34,32 @@ const features: { title: string; body: string; tag?: string }[] = [
 ];
 ---
 
-<Base title="Tunnex — Self-hosted Zero Trust VPN">
+<Base
+  title="Tunnex — Self-hosted Zero Trust VPN"
+  description="WireGuard-fast private networking with SSO and Zero Trust policies, on infrastructure you run. The free Open tier is unlimited; Enterprise adds identity, policy, and scale."
+>
+  <script
+    type="application/ld+json"
+    is:inline
+    slot="head"
+    set:html={JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'Product',
+      name: 'Tunnex',
+      description:
+        'Self-hosted Zero Trust VPN with SSO, Zero Trust policies, and multi-org management.',
+      brand: { '@type': 'Brand', name: 'Tunnex' },
+      applicationCategory: 'SecurityApplication',
+      offers: [
+        { '@type': 'Offer', name: 'Open', price: '0', priceCurrency: 'USD' },
+        {
+          '@type': 'Offer',
+          name: 'Enterprise',
+          priceSpecification: { '@type': 'PriceSpecification', priceCurrency: 'USD' },
+        },
+      ],
+    })}
+  />
   <!-- Hero -->
   <section class="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-20 sm:px-6 md:py-28">
     <h1 class="max-w-3xl text-4xl font-bold tracking-tight text-balance sm:text-5xl">

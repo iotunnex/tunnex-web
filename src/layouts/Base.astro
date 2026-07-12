@@ -24,8 +24,25 @@ const {
 } = Astro.props;
 
 const site = Astro.site ?? new URL('https://tunnex.io');
-const canonicalUrl = canonical ? new URL(canonical, site).href : undefined;
-const ogImageUrl = ogImage ? new URL(ogImage, site).href : undefined;
+
+// Site-wide SEO defaults (S4.2): indexable pages get a canonical (their clean
+// path, no query) and the default OG card automatically; explicit props still
+// win (blog posts pass their own). noindex pages get neither — no canonical to
+// a token URL, no card for a utility page.
+const resolvedCanonical = canonical ?? (noindex ? undefined : Astro.url.pathname);
+const resolvedOgImage = ogImage ?? (noindex ? undefined : '/og/default.png');
+const canonicalUrl = resolvedCanonical ? new URL(resolvedCanonical, site).href : undefined;
+const ogImageUrl = resolvedOgImage ? new URL(resolvedOgImage, site).href : undefined;
+
+const orgJsonLd = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'Tunnex',
+  url: site.href,
+  description: 'Self-hosted Zero Trust VPN.',
+  logo: new URL('/icon-512.png', site).href,
+  email: 'sales@tunnex.io',
+});
 ---
 
 <!doctype html>
@@ -59,6 +76,7 @@ const ogImageUrl = ogImage ? new URL(ogImage, site).href : undefined;
         </>
       )
     }
+    <script type="application/ld+json" set:html={orgJsonLd} is:inline />
     <slot name="head" />
     <title>{title}</title>
     <script is:inline>

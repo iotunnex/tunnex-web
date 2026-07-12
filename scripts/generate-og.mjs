@@ -137,6 +137,13 @@ function blogPosts() {
     .filter((p) => !p.draft && p.title);
 }
 
+// Site-wide default card (S4.2) — the brand line, for any indexable page
+// that doesn't supply its own OG image.
+await renderPng(
+  card({ title: 'Connect everything. Trust nothing.', eyebrow: 'Self-hosted Zero Trust VPN' }),
+  join(root, 'public/og/default.png'),
+);
+
 const outDir = join(root, 'public/og/blog');
 await renderPng(
   card({
