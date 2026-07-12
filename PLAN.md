@@ -46,7 +46,7 @@ prettier-plugin-astro as dev tooling.)
 
 ## Story Status (re-entry pointer — update on every merge)
 
-Current: **S2.3 merged (both gates closed) — next: S2.4 (enterprise lead form); Turnstile rotation pending**
+Current: **S2.4 merged — EPIC 2 complete; next: S3.1 (domain derivation + blocklists); Turnstile rotation pending**
 
 ---
 
