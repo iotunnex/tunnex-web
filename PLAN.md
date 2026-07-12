@@ -46,7 +46,7 @@ prettier-plugin-astro as dev tooling.)
 
 ## Story Status (re-entry pointer — update on every merge)
 
-Current: **S3B.3 merged — EPIC 3B COMPLETE (3 posts drafted, publish at cutover); next: S4.1 (accessibility + performance pass)**
+Current: **S4.1 merged — next: S4.2 (SEO + meta, site-wide)**
 
 ---
 
