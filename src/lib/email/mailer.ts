@@ -46,7 +46,7 @@ export function bindingTransport(binding: SendEmail): EmailTransport {
           subject: message.subject,
           html: message.html,
           text: message.text,
-          headers: { 'Reply-To': message.replyTo },
+          replyTo: message.replyTo,
         })) ?? {};
       return { id: response.messageId ?? 'unknown' };
     },
