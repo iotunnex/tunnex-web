@@ -46,7 +46,7 @@ prettier-plugin-astro as dev tooling.)
 
 ## Story Status (re-entry pointer — update on every merge)
 
-Current: **S3.1 merged — next: S3.2 (trial request endpoint)**
+Current: **S3.2 merged — next: S3.3 (trial verification, scanner-proof)**
 
 ---
 
@@ -140,6 +140,13 @@ Current: **S3.1 merged — next: S3.2 (trial request endpoint)**
   remote DB — schema changes from here are NEW migration files, never edits to applied ones.
 - **Node:** local default Node is 18 (nvm); wrangler 4 needs ≥22. `.nvmrc`=22 committed;
   developer machines should `nvm install 22`.
+- **S4.x candidates (from S3.2 sign-off, 2026-07-12):** (a) Turnstile widget theme goes
+  stale if the user toggles the site theme after load — shared /trial + /enterprise;
+  fix = re-render widget on theme change or accept-and-document. (b) Button height
+  ~36px — passes WCAG AA (2.2 AA needs 24px) but under 44px iOS/Android guidance;
+  `min-h-11` or `py-2.5` on the primary variant. (c) /trial pitch says "at beta
+  launch" — accurate only for LAUNCH_MODE=prelaunch; gate on launchMode or reword
+  when the flag flips.
 
 ---
 
