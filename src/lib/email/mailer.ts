@@ -12,7 +12,7 @@ import { render, type EmailContext, type EmailKind, type TemplateDataMap } from 
  */
 
 export const TRANSACTIONAL_FROM = 'Tunnex <no-reply@mail.tunnex.io>';
-export const REPLY_TO = 'sales@tunnex.io';
+export const REPLY_TO = 'support@tunnex.io';
 
 export interface OutboundEmail {
   from: string;

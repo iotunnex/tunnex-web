@@ -22,7 +22,7 @@ export function renderShell(opts: {
     opts.customerFooter === false
       ? 'Internal notification — enterprise lead from tunnex.io/enterprise.'
       : `Tunnex — Connect everything. Trust nothing.<br>
-    Questions? Reply to this email or write to sales@tunnex.io.`;
+    Questions? Reply to this email or write to support@tunnex.io.`;
   return `<!doctype html>
 <html lang="en">
 <head>

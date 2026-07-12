@@ -151,11 +151,16 @@ is CI-only.
 ### DNS
 
 All sending records (SPF, DKIM, DMARC, and the `cf-bounce` MX for bounce processing)
-are added automatically — and locked — when the domain is onboarded to Email Service
-in the Cloudflare dashboard. There is no manual record list to maintain. Inbound
-(`sales@` / `security@`) still needs Email Routing, configured in the S4.4 runbook.
-Bounce handling beyond Cloudflare's own processing is DIY — a minimal hard-bounce
-handler is a ledgered follow-up story candidate.
+were added automatically — and locked — when `mail.tunnex.io` was onboarded to Email
+Service. There is no manual record list to maintain. Inbound mail is **Spacemail**
+(root MX `mx1/mx2.spacemail.com`, root SPF `include:spf.spacemail.com`) with
+`support@` staffed and `sales@`/`security@` aliases — Cloudflare Email Routing is NOT
+used. Verified zone set (2026-07-12): Spacemail MX+SPF on the root;
+`cf-bounce.mail.tunnex.io` MX → `route1/2/3.mx.cloudflare.net`;
+`_dmarc.mail.tunnex.io` `p=reject`. Recommended follow-up: add a root `_dmarc`
+record (Spacemail sends from the root). Bounce handling beyond Cloudflare's own
+processing is DIY — a minimal hard-bounce handler is a ledgered follow-up story
+candidate.
 
 ### Test sends
 

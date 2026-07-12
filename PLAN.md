@@ -83,8 +83,8 @@ Current: **S2.2 merged — next: S2.3 (newsletter double-opt-in; MERGE GATED on 
   violations in src/.
 - **Email routing (S4.4 runbook item):** sales@tunnex.io / security@tunnex.io receive
   NOTHING until Cloudflare Email Routing is configured post-domain-purchase — the launch
-  runbook must include that step (waitlist mailto on /download depends on it; a disclosure
-  address that bounces is worse than none — security@ is mandatory in that setup).
+  runbook must include that step (RESOLVED 2026-07-12 by Spacemail: sales@/security@/support@
+  live and tested — Email Routing not used).
 - **Trial length RECONCILED (2026-07-12): 14 days stands** — the platform repo's
   architecture-licensing.md said 30 and is the stale side (being fixed there). Do not
   change site copy/templates/schema.
@@ -98,10 +98,11 @@ Current: **S2.2 merged — next: S2.3 (newsletter double-opt-in; MERGE GATED on 
   beta caption links verify-first docs + GitHub release fallback). Beta surfaces must show
   BOTH paths (one-liner AND download → SHA256 → inspect → run) plus the prerequisite line
   "any VPS with Docker and a public address."
-- **Email Routing consumers (S4.4 runbook additions):** switch the waitlist noscript
-  mailto from sales@ to a waitlist@/hello@ alias once Email Routing exists; the S2.4
-  SALES_NOTIFY_EMAIL lead notifications also deliver nowhere until Email Routing — ledger,
-  don't block.
+- **Inbound mail = Spacemail (2026-07-12), Email Routing STRUCK from the plan:** root
+  MX/SPF are Spacemail's; support@ staffed, sales@/security@ aliases live and tested.
+  Reply-To CONVERGED to support@tunnex.io (staffed mailbox); waitlist noscript mailto →
+  support@. S2.4 SALES_NOTIFY_EMAIL now deliverable (sales@ alias). Runbook note: add a
+  root _dmarc record (missing; Spacemail sends from root).
 - **Turnstile production keys (S2.3 merge gate #2):** the always-pass test key must never
   be a deployed default — real sitekey in wrangler.toml [vars], TURNSTILE_SECRET as
   Worker secret via CI; test pair stays local-dev only (.dev.vars).
