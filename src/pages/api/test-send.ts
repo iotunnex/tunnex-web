@@ -5,8 +5,8 @@
 import type { APIRoute } from 'astro';
 import { env } from 'cloudflare:workers';
 import { z } from 'zod';
-import { createMailer, transportFromEnv } from '../../lib/email/mailer.ts';
-import type { EmailKind, TemplateDataMap } from '../../lib/email/templates.ts';
+import { REPLY_TO, TRANSACTIONAL_FROM, transportFromEnv } from '../../lib/email/mailer.ts';
+import { render, type EmailKind, type TemplateDataMap } from '../../lib/email/templates.ts';
 import { jsonError, jsonOk } from '../../lib/http/errors.ts';
 import { emailLinkBaseUrl } from '../../config';
 
@@ -49,15 +49,27 @@ export const POST: APIRoute = async ({ request }) => {
   const parsed = input.safeParse(await request.json().catch(() => null));
   if (!parsed.success) return jsonError(400, 'invalid_request', 'Send { "to": email }.');
 
-  const mailer = createMailer({ transport: transportFromEnv(env), baseUrl: emailLinkBaseUrl });
+  // Uses the transport directly so the RAW binding error surfaces in the
+  // response (this endpoint is key-gated and temporary).
+  const transport = transportFromEnv(env);
   const results: { kind: string; id?: string; error?: string }[] = [];
   for (const kind of Object.keys(samples) as EmailKind[]) {
+    const { subject, html, text } = render(kind, samples[kind] as never, {
+      baseUrl: emailLinkBaseUrl,
+    });
     try {
-      const { id } = await mailer.send(kind, parsed.data.to, samples[kind] as never);
+      const { id } = await transport.send({
+        from: TRANSACTIONAL_FROM,
+        replyTo: REPLY_TO,
+        to: parsed.data.to,
+        subject,
+        html,
+        text,
+      });
       results.push({ kind, id });
     } catch (error) {
-      results.push({ kind, error: error instanceof Error ? error.message : 'failed' });
+      results.push({ kind, error: error instanceof Error ? error.message : String(error) });
     }
   }
-  return jsonOk({ results });
+  return jsonOk({ results, bindingPresent: 'EMAIL' in env && Boolean(env.EMAIL) });
 };
