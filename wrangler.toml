@@ -5,6 +5,13 @@
 name = "tunnex-site"
 compatibility_date = "2026-07-01"
 compatibility_flags = ["nodejs_compat"]
+# Custom entry: the adapter's fetch handler + the lifecycle cron's scheduled
+# handler (the adapter uses this instead of its default entry).
+main = "src/worker.ts"
+
+# Daily lifecycle run (03:17 UTC — off the top-of-hour stampede).
+[triggers]
+crons = ["17 3 * * *"]
 
 # The build generates the deployable config (dist/client/wrangler.json) plus a
 # .wrangler/deploy/config.json redirect — `wrangler dev`/`deploy` after
