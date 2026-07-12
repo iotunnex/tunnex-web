@@ -2,6 +2,7 @@
 import { defineConfig, envField, sessionDrivers } from 'astro/config';
 import cloudflare from '@astrojs/cloudflare';
 import starlight from '@astrojs/starlight';
+import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 
 /**
@@ -22,6 +23,23 @@ function remarkNoH1InBlog() {
   };
 }
 
+/** Add scope="col" to header-row th elements in rendered markdown tables. */
+function rehypeThScope() {
+  const visit = (node) => {
+    if (node.tagName === 'thead') {
+      for (const row of node.children ?? []) {
+        for (const cell of row.children ?? []) {
+          if (cell.tagName === 'th') {
+            cell.properties = { ...cell.properties, scope: 'col' };
+          }
+        }
+      }
+    }
+    for (const child of node.children ?? []) visit(child);
+  };
+  return (tree) => visit(tree);
+}
+
 export default defineConfig({
   site: 'https://tunnex.io',
   // Astro sessions are unused (no site login). Without this, the Cloudflare
@@ -36,6 +54,20 @@ export default defineConfig({
     },
   }),
   integrations: [
+    // Minimal sitemap pulled forward from S4.2 (posts must be indexable now);
+    // S4.2 inherits and extends (robots.txt, site-wide canonicals, JSON-LD).
+    sitemap({
+      filter: (page) =>
+        ![
+          '/styleguide/',
+          '/trial/verify/',
+          '/trial/approved/',
+          '/subscribe/confirm/',
+          '/subscribe/confirmed/',
+          '/enterprise/thanks/',
+          '/404/',
+        ].some((path) => page.endsWith(path)) && !page.includes('/blog/tag/'),
+    }),
     starlight({
       title: 'Tunnex Docs',
       favicon: '/favicon.svg',
@@ -63,6 +95,7 @@ export default defineConfig({
   ],
   markdown: {
     remarkPlugins: [remarkNoH1InBlog],
+    rehypePlugins: [rehypeThScope],
   },
   env: {
     schema: {

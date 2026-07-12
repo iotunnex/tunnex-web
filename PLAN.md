@@ -170,6 +170,12 @@ Current: **S3B.1 merged — next: S3B.2 (blog SEO integration)**
   one-liner until the installer is live; (b) WireGuard® with the ® on first mention
   per their trademark policy; (c) ec.config.mjs styleOverrides is the long-term home
   for the Expressive Code token mapping.
+- **S4.2 inherits blog routes + the minimal sitemap (from S3B.2):** @astrojs/sitemap
+  landed in S3B.2 (posts indexable now; noindexed/utility/tag pages filtered).
+  S4.2 keeps: robots.txt (point at /sitemap-index.xml), site-wide canonicals,
+  Organization + Product JSON-LD, site-wide OG rollout. NOTE: canonical/og:image
+  URLs emit absolute against https://tunnex.io — external validators fully pass
+  only after the S4.4 domain cutover (structure verifiable on previews now).
 - **Node target (2026-07-12):** repo moves 22 → 24 (Active LTS, EOL Apr 2028).
   Node 26 deliberately NOT the target — re-evaluate after it enters LTS in Oct 2026.
 - **PROMOTION-FAILURE RECOVERY (required BEFORE the beta flip, from S3.5 sign-off):**
