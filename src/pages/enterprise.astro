@@ -4,7 +4,8 @@ import Base from '../layouts/Base.astro';
 import Button from '../components/ui/Button.astro';
 import Card from '../components/ui/Card.astro';
 
-// No-JS-friendly: plain form POST; error states come back as query params.
+// Plain form POST (no JS needed for submit/errors); Turnstile itself needs
+// JS — the noscript block points to email.
 export const prerender = false;
 
 const state = Astro.url.searchParams.get('state');
@@ -12,21 +13,21 @@ const stateMessage =
   state === 'invalid'
     ? 'Check the form — name, work email, and company are required.'
     : state === 'captcha'
-      ? 'Captcha verification failed. Reload and try again.'
+      ? 'Captcha check didn’t go through. Try again, or email sales@tunnex.io.'
       : state === 'rate_limited'
-        ? 'Too many requests. Try again in a minute.'
+        ? 'Too many requests. Try again in a minute, or email sales@tunnex.io.'
         : null;
 
 const inputClasses =
-  'rounded-md border border-border bg-surface-raised px-3 py-2 text-sm text-text placeholder:text-text-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary';
+  'rounded-md border border-border bg-surface-raised px-3 py-2.5 text-base text-text placeholder:text-text-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary sm:text-sm';
 ---
 
 <Base
-  title="Tunnex — Contact sales"
+  title={stateMessage ? 'Error — Tunnex — Contact sales' : 'Tunnex — Contact sales'}
   description="Talk to Tunnex about Enterprise: SSO, Zero Trust policies, multi-org management, and priority support."
 >
   <section class="mx-auto grid w-full max-w-6xl gap-10 px-4 py-16 sm:px-6 md:grid-cols-2 md:py-20">
-    <div class="flex flex-col gap-4">
+    <div class="flex flex-col gap-4 self-start md:sticky md:top-24">
       <h1 class="text-4xl font-bold tracking-tight">Talk to sales</h1>
       <p class="max-w-md text-lg text-text-muted">
         Tell us about your team and we’ll come back within one business day — a human, not a
@@ -34,20 +35,25 @@ const inputClasses =
       </p>
       <ul class="flex flex-col gap-2 text-sm text-text-muted">
         <li>· Enterprise pricing, quoted by team size</li>
-        <li>· 14-day trial access questions</li>
+        <li>· Questions about the 14-day trial</li>
         <li>· MSP / multi-org deployments</li>
       </ul>
       <p class="text-sm text-text-muted">
-        Prefer email? Write to
+        Prefer email? Write to{' '}
         <a href="mailto:sales@tunnex.io" class="font-semibold text-link">sales@tunnex.io</a>.
       </p>
     </div>
 
-    <Card class="p-8">
+    <Card class="p-5 sm:p-8">
       <form method="post" action="/api/enterprise-lead" class="flex flex-col gap-4">
         {
           stateMessage && (
-            <p role="alert" class="rounded-md border border-error px-3 py-2 text-sm text-error">
+            <p
+              role="alert"
+              tabindex="-1"
+              autofocus
+              class="rounded-md border border-error bg-error/10 px-3 py-2 text-sm font-medium text-error"
+            >
               {stateMessage}
             </p>
           )
@@ -79,10 +85,9 @@ const inputClasses =
           <input
             id="lead-seats"
             name="seats"
-            type="number"
-            min="1"
-            max="1000000"
+            type="text"
             inputmode="numeric"
+            pattern="[0-9]*"
             class={inputClasses}
           />
         </div>
@@ -98,6 +103,13 @@ const inputClasses =
             placeholder="What are you building, and what does your network look like?"
             class={inputClasses}></textarea>
         </div>
+        <noscript>
+          <p class="text-sm text-text-muted">
+            The captcha needs JavaScript. Without it, email
+            <a href="mailto:sales@tunnex.io" class="font-semibold text-link">sales@tunnex.io</a>
+            instead.
+          </p>
+        </noscript>
         <div class="cf-turnstile" data-sitekey={PUBLIC_TURNSTILE_SITE_KEY}></div>
         <Button variant="primary" class="w-full">Send to sales</Button>
       </form>
