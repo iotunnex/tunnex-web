@@ -1,0 +1,102 @@
+---
+import Base from '../layouts/Base.astro';
+
+// S4.3: honest placeholder terms — short, accurate, no fabricated boilerplate.
+// Set LAST_UPDATED to the cutover date at launch (S4.4 runbook).
+const LAST_UPDATED = '12 July 2026';
+---
+
+<Base
+  title="Tunnex — Terms"
+  description="Plain-language terms for using the tunnex.io website and pre-launch software."
+>
+  <section class="mx-auto flex w-full max-w-2xl flex-col gap-6 px-4 py-16 sm:px-6 md:py-20">
+    <div class="flex flex-col gap-3">
+      <h1 class="text-4xl font-bold tracking-tight">Terms</h1>
+      <p class="text-sm text-text-muted">Last updated: {LAST_UPDATED}</p>
+    </div>
+
+    <div
+      class="rounded-md border border-l-4 border-warning/40 border-l-warning bg-warning/10 px-4 py-3 text-sm text-text"
+      role="note"
+    >
+      <strong>Pre-launch document, pending legal review.</strong> These terms are deliberately short and
+      honest. A full, lawyer-reviewed agreement will replace them before any paid transaction. We won't
+      pretend to jurisdiction, arbitration, or liability language we haven't had drafted.
+    </div>
+
+    <div class="legal flex flex-col gap-6">
+      <section class="flex flex-col gap-2">
+        <h2>Using this site</h2>
+        <p>
+          You're welcome to read tunnex.io, join the waitlist, request a trial, and contact us.
+          Please don't abuse the forms, attempt to break the site, or use it to send others
+          unsolicited mail. We may rate-limit or block traffic that does.
+        </p>
+      </section>
+
+      <section class="flex flex-col gap-2">
+        <h2>Pre-launch software</h2>
+        <p>
+          Tunnex is in the run-up to its beta. Anything we describe here is offered as-is, with no
+          warranty, while we're still building. Don't rely on pre-launch software for anything you
+          can't afford to have break. When the beta ships, its own license terms apply to the
+          software itself.
+        </p>
+      </section>
+
+      <section class="flex flex-col gap-2">
+        <h2>Our content and marks</h2>
+        <p>
+          The Tunnex name, logo, and the words and images on this site are ours. WireGuard® is a
+          registered trademark of Jason A. Donenfeld. You can link to us and quote us fairly; please
+          don't pass our brand off as your own.
+        </p>
+      </section>
+
+      <section class="flex flex-col gap-2">
+        <h2>Changes</h2>
+        <p>
+          We'll update these terms as Tunnex grows toward launch, and we'll replace them with a
+          proper agreement before we charge anyone. The "last updated" date above tells you when
+          they last changed.
+        </p>
+      </section>
+
+      <section class="flex flex-col gap-2">
+        <h2>Contact</h2>
+        <p>
+          Questions about these terms? <a href="mailto:support@tunnex.io">support@tunnex.io</a>.
+        </p>
+      </section>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .legal {
+    line-height: 1.7;
+    color: var(--t-text);
+  }
+  .legal :global(h2) {
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .legal :global(a) {
+    color: var(--t-link);
+    font-weight: 500;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .legal :global(a:hover) {
+    color: var(--t-link-hover);
+  }
+  .legal :global(p) {
+    color: var(--t-text-muted);
+  }
+  .legal :global(strong) {
+    color: var(--t-text);
+    font-weight: 600;
+  }
+</style>

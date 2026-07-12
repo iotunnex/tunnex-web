@@ -134,6 +134,14 @@ export default defineConfig({
         context: 'client',
         access: 'public',
       }),
+      // Cloudflare Web Analytics beacon token (cookieless). Empty by default —
+      // the snippet only ships once the token is set (wrangler.toml [vars] at
+      // the S4.4 cutover). No token → no beacon, no broken request.
+      PUBLIC_CF_ANALYTICS_TOKEN: envField.string({
+        context: 'client',
+        access: 'public',
+        default: '',
+      }),
     },
   },
   vite: {
