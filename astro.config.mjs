@@ -128,7 +128,7 @@ export default defineConfig({
       EMAIL_LINK_BASE_URL: envField.string({
         context: 'server',
         access: 'public',
-        default: 'https://tunnex-site.iotunnex.workers.dev',
+        default: 'https://tunnex.io',
       }),
       // Turnstile widget sitekey. NO default: the deployed value comes from
       // wrangler.toml [vars]; local form work switches to the test PAIR in

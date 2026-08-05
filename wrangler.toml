@@ -48,6 +48,7 @@ LAUNCH_MODE = "prelaunch"
 PUBLIC_TURNSTILE_SITE_KEY = "0x4AAAAAADz8NeQ_TUjJuy-O"
 # Where enterprise-lead notifications land (Spacemail alias, staffed via support@).
 SALES_NOTIFY_EMAIL = "sales@tunnex.io"
+EMAIL_LINK_BASE_URL = "https://tunnex.io"
 
 [observability.logs]
 enabled = true
