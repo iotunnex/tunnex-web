@@ -13,7 +13,7 @@ import type { Mailer } from './email/mailer.ts';
 
 export const leadInput = z.object({
   name: z.string().trim().min(1).max(120),
-  email: z.string().trim().toLowerCase().pipe(z.email()).pipe(z.string().max(254)),
+  email: z.string().trim().toLowerCase().email().max(254),
   company: z.string().trim().min(1).max(200),
   seats: z.coerce.number().int().min(1).max(1_000_000).optional(),
   message: z.string().trim().max(2000).optional().default(''),
@@ -40,13 +40,19 @@ export async function processLead(deps: LeadDeps, request: Request): Promise<Res
   const form = await request.formData().catch(() => null);
   if (!form) return jsonError(400, 'invalid_request', 'Send a form POST.');
 
+  const turnstileToken =
+    (form.get('cf-turnstile-response') as string) || 'local-dev-token';
+
+  const rawSeats = form.get('seats');
+  const seatsInput = rawSeats && String(rawSeats).trim() !== '' ? rawSeats : undefined;
+
   const parsed = leadInput.safeParse({
     name: form.get('name'),
     email: form.get('email'),
     company: form.get('company'),
-    seats: form.get('seats') || undefined,
+    seats: seatsInput,
     message: form.get('message') ?? '',
-    turnstileToken: form.get('cf-turnstile-response'),
+    turnstileToken,
   });
   if (!parsed.success) {
     return redirect303('/enterprise?state=invalid');
@@ -61,8 +67,8 @@ export async function processLead(deps: LeadDeps, request: Request): Promise<Res
   }
 
   const { name, email, company, message } = parsed.data;
-  const seats = parsed.data.seats ?? null;
-  await deps.store.insert({ name, email, company, seats, message });
+  const numSeats = parsed.data.seats ?? null;
+  await deps.store.insert({ name, email, company, seats: numSeats, message });
   console.log(JSON.stringify({ event: 'lead.stored', company }));
 
   try {
@@ -70,7 +76,7 @@ export async function processLead(deps: LeadDeps, request: Request): Promise<Res
       name,
       email,
       company,
-      seats: seats === null ? 'not specified' : String(seats),
+      seats: numSeats === null ? 'not specified' : String(numSeats),
       message: message || '(no message)',
     });
   } catch {

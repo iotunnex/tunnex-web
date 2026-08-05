@@ -9,11 +9,11 @@ interface Props {
 const { href, variant = 'primary', type = 'submit', class: className = '' } = Astro.props;
 
 const base =
-  'inline-flex min-h-11 items-center justify-center rounded-md px-4 py-2 text-sm font-semibold transition-colors ' +
-  'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary';
+  't-btn inline-flex min-h-11 items-center justify-center rounded-[9px] px-5 py-3 text-sm font-semibold transition-all cursor-pointer ' +
+  'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white';
 const variants = {
-  primary: 'bg-primary text-primary-fg hover:bg-primary-hover',
-  secondary: 'border border-border-interactive text-text hover:bg-surface-raised',
+  primary: 't-prim text-text',
+  secondary: 't-sec text-text',
 };
 const classes = `${base} ${variants[variant]} ${className}`;
 ---

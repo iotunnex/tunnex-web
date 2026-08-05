@@ -34,7 +34,7 @@
 
         <!-- Official TUNNEX Wordmark SVG -->
         <img
-          src="/assets/tunnex-wordmark.svg"
+          src="/assets/tunnex-wordmark-light.svg"
           id="tnx-toggle-wordmark"
           alt="TUNNEX"
           class="h-[15px] w-auto block transition-opacity duration-300 opacity-100"
@@ -52,9 +52,9 @@
     </div>
 
     <!-- Diagram Canvas Container -->
-    <div class="w-full">
+    <div class="w-full min-w-0 max-w-full overflow-hidden">
       <!-- WITH TUNNEX SVG DIAGRAM (Default Visible) -->
-      <div id="tnx-diagram-on" class="t-diag block w-full">
+      <div id="tnx-diagram-on" class="t-diag block w-full min-w-0 max-w-full overflow-x-auto">
         <svg
           viewBox="0 0 1000 560"
           role="img"
@@ -302,7 +302,7 @@
       </div>
 
       <!-- WITHOUT TUNNEX SVG DIAGRAM (Hidden by Default) -->
-      <div id="tnx-diagram-off" class="t-diag hidden w-full">
+      <div id="tnx-diagram-off" class="t-diag hidden w-full min-w-0 max-w-full overflow-x-auto">
         <svg
           viewBox="0 0 1000 560"
           role="img"

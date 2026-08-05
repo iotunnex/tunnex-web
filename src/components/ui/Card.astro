@@ -6,6 +6,8 @@ interface Props {
 const { class: className = '' } = Astro.props;
 ---
 
-<div class={`rounded-lg border border-border bg-surface p-6 ${className}`}>
+<div
+  class={`t-card rounded-[14px] border border-border bg-surface shadow-[0_10px_30px_rgba(0,0,0,0.3)] p-6 ${className}`}
+>
   <slot />
 </div>

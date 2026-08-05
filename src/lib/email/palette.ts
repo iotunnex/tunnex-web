@@ -3,11 +3,12 @@
 // literal colors; this file is the narrow token-guard exclusion for that
 // (values mirror the light-mode semantic tokens in src/styles/tokens.css).
 export const EMAIL = {
-  bg: '#f7fafc',
-  surface: '#ffffff',
-  border: '#d3dee9',
-  text: '#132032',
-  textMuted: '#4a5c74',
-  primary: '#0e7490',
-  primaryFg: '#ffffff',
+  bg: '#0A0A0A',
+  surface: '#141414',
+  border: '#2E2E2E',
+  text: '#EDEDEB',
+  textMuted: '#A9A9A6',
+  primary: '#B03A45',
+  primaryFg: '#FFFFFF',
+  white: '#FFFFFF',
 } as const;

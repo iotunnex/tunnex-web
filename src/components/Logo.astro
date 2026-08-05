@@ -23,7 +23,7 @@ const wordmarkLight = wordmarkLightSvg.replace(
     <span
       class={`inline-flex flex-col items-center gap-4 ${className.replace(/h-\S+/, '')}`.trim()}
     >
-      <span class="t-logo-sheen inline-flex size-16 items-center justify-center rounded-[14px] bg-[#0A0A0A] p-2 shadow-[0_6px_18px_rgba(255,255,255,0.14)] overflow-hidden">
+      <span class="inline-flex size-16 items-center justify-center bg-transparent p-1 overflow-hidden">
         <Fragment set:html={logoHtml} />
       </span>
       <Fragment set:html={wordmarkDark + wordmarkLight} />
@@ -32,7 +32,7 @@ const wordmarkLight = wordmarkLightSvg.replace(
     <Fragment set:html={wordmarkDark + wordmarkLight} />
   ) : (
     <span class={`inline-flex items-center gap-3 ${className.replace(/h-\S+/, '')}`.trim()}>
-      <span class="t-logo-sheen inline-flex size-7 items-center justify-center rounded-[9px] bg-[#0A0A0A] p-1 shadow-[0_6px_18px_rgba(255,255,255,0.14)] overflow-hidden flex-none">
+      <span class="inline-flex size-7 items-center justify-center bg-transparent p-0 overflow-hidden flex-none">
         <Fragment set:html={logoHtml} />
       </span>
       <Fragment set:html={wordmarkDark + wordmarkLight} />
@@ -42,17 +42,17 @@ const wordmarkLight = wordmarkLightSvg.replace(
 
 <style is:global>
   .logo-variant-dark {
-    display: none;
+    display: block;
   }
   .dark .logo-variant-dark,
   [data-theme='dark'] .logo-variant-dark {
-    display: block;
+    display: none;
   }
   .logo-variant-light {
-    display: block;
+    display: none;
   }
   .dark .logo-variant-light,
   [data-theme='dark'] .logo-variant-light {
-    display: none;
+    display: block;
   }
 </style>

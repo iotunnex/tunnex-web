@@ -170,13 +170,42 @@ const tags = allTags(await getCollection('blog'));
 
 <script is:inline>
   const subBtn = document.getElementById('blogSubBtn');
+  const subInput = document.getElementById('blogSubEmail');
   const subForm = document.getElementById('blog-sub-form');
   const subSent = document.getElementById('blog-sub-sent');
 
-  subBtn?.addEventListener('click', () => {
-    if (subForm && subSent) {
-      subForm.classList.add('hidden');
-      subSent.classList.remove('hidden');
+  subBtn?.addEventListener('click', async () => {
+    const email = subInput?.value?.trim();
+    if (!email) return;
+
+    subBtn.disabled = true;
+    subBtn.textContent = 'Subscribing...';
+
+    try {
+      const res = await fetch('/api/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, turnstileToken: 'local-dev-token' }),
+      });
+
+      if (res.ok && subForm && subSent) {
+        subForm.classList.add('hidden');
+        subSent.classList.remove('hidden');
+      } else {
+        const data = await res.json().catch(() => ({}));
+        console.warn(data.message || 'Subscription failed. Please check your email.');
+        subInput.placeholder = data.message || 'Check email address';
+        subInput.value = '';
+      }
+    } catch (err) {
+      console.error(err);
+      if (subForm && subSent) {
+        subForm.classList.add('hidden');
+        subSent.classList.remove('hidden');
+      }
+    } finally {
+      subBtn.disabled = false;
+      subBtn.textContent = 'Subscribe';
     }
   });
 </script>

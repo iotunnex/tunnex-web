@@ -20,9 +20,9 @@ export function renderShell(opts: {
     : '';
   const footer =
     opts.customerFooter === false
-      ? 'Internal notification — enterprise lead from tunnex.io/enterprise.'
-      : `Tunnex — Connect everything. Trust nothing.<br>
-    Questions? Reply to this email or write to support@tunnex.io.`;
+      ? 'Internal notification · enterprise lead from tunnex.io/enterprise.'
+      : `Tunnex · Connect everything. Trust nothing.<br>
+    Questions? Reply to this email or write to <a href="mailto:support@tunnex.io" style="color:${EMAIL.textMuted};text-decoration:underline;">support@tunnex.io</a>.`;
   return `<!doctype html>
 <html lang="en">
 <head>
@@ -30,16 +30,18 @@ export function renderShell(opts: {
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${escapeHtml(opts.title)}</title>
 </head>
-<body style="margin:0;padding:0;background-color:${EMAIL.bg};">
+<body style="margin:0;padding:0;background-color:${EMAIL.bg};color:${EMAIL.text};">
 ${preheader}
-<div style="max-width:560px;margin:0 auto;padding:32px 20px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
-  <div style="padding-bottom:20px;">
-    <img src="${opts.assetBaseUrl}/email/tunnex-logo-2x.png" alt="Tunnex" width="176" height="22" style="display:block;border:0;">
+<div style="max-width:560px;margin:0 auto;padding:40px 20px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
+  <div style="padding-bottom:24px;text-align:center;">
+    <a href="${escapeAttr(opts.assetBaseUrl)}" style="text-decoration:none;display:inline-block;">
+      <img src="${opts.assetBaseUrl}/email/tunnex-logo-2x.png" alt="Tunnex" width="176" height="22" style="display:block;border:0;margin:0 auto;outline:none;">
+    </a>
   </div>
-  <div style="background-color:${EMAIL.surface};border:1px solid ${EMAIL.border};border-radius:8px;padding:28px;color:${EMAIL.text};font-size:15px;line-height:1.6;">
+  <div style="background-color:${EMAIL.surface};border:1px solid ${EMAIL.border};border-radius:12px;padding:32px 28px;color:${EMAIL.text};font-size:15px;line-height:1.6;">
 ${opts.bodyHtml}
   </div>
-  <p style="color:${EMAIL.textMuted};font-size:12px;line-height:1.5;padding-top:16px;margin:0;">
+  <p style="color:${EMAIL.textMuted};font-size:12px;line-height:1.6;padding-top:20px;margin:0;text-align:center;">
     ${footer}
   </p>
 </div>
@@ -48,15 +50,15 @@ ${opts.bodyHtml}
 }
 
 export function button(href: string, label: string): string {
-  return `<p style="margin:24px 0;"><a href="${escapeAttr(href)}" style="display:inline-block;background-color:${EMAIL.primary};color:${EMAIL.primaryFg};text-decoration:none;font-weight:600;font-size:15px;padding:10px 20px;border-radius:6px;">${escapeHtml(label)}</a></p>`;
+  return `<p style="margin:28px 0 16px;text-align:center;"><a href="${escapeAttr(href)}" style="display:inline-block;background-color:${EMAIL.primary};color:${EMAIL.primaryFg};text-decoration:none;font-weight:600;font-size:15px;padding:12px 24px;border-radius:8px;">${escapeHtml(label)}</a></p>`;
 }
 
 export function paragraph(html: string): string {
-  return `<p style="margin:0 0 16px;">${html}</p>`;
+  return `<p style="margin:0 0 16px;color:${EMAIL.text};font-size:15px;line-height:1.6;">${html}</p>`;
 }
 
 export function muted(html: string): string {
-  return `<p style="margin:16px 0 0;color:${EMAIL.textMuted};font-size:13px;">${html}</p>`;
+  return `<p style="margin:16px 0 0;color:${EMAIL.textMuted};font-size:13px;line-height:1.5;">${html}</p>`;
 }
 
 export function escapeHtml(value: string): string {

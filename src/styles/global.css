@@ -10,6 +10,13 @@ html {
   background-color: var(--color-bg);
   color: var(--color-text);
   scrollbar-gutter: stable;
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
+body {
+  overflow-x: hidden;
+  max-width: 100vw;
 }
 
 /* Site-wide keyboard focus for links (S4.3): components with their own

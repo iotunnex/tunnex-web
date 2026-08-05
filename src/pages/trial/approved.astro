@@ -4,41 +4,39 @@ import Button from '../../components/ui/Button.astro';
 import Card from '../../components/ui/Card.astro';
 import Logo from '../../components/Logo.astro';
 import { launchMode } from '../../config';
-
-// Static success page for the verify POST redirect. Copy is gated on
-// LAUNCH_MODE at build: prelaunch promises the key at beta; once the flag
-// flips, S3.4's issuance path delivers the key immediately.
 ---
 
-<Base title="Tunnex — Trial approved" noindex>
+<Base title="Tunnex · Trial approved" noindex>
   <section
-    class="mx-auto flex min-h-[60vh] w-full max-w-6xl flex-col justify-center px-4 py-20 sm:px-6"
+    class="mx-auto flex min-h-[65vh] w-full max-w-6xl flex-col items-center justify-center px-4 py-20 sm:px-6"
   >
-    <Card class="mx-auto flex w-full max-w-md flex-col items-center gap-4 p-8 text-center">
-      <Logo variant="vertical" />
-      <h1 class="text-xl font-semibold">
+    <Card class="mx-auto flex w-full max-w-md flex-col items-center gap-5 p-8 text-center">
+      <Logo variant="vertical" class="h-5" />
+      <h1 class="font-sans font-semibold text-[20px] text-text tracking-tight">
         {
           launchMode === 'prelaunch'
-            ? 'Trial approved — you’re in early'
-            : 'Trial approved — your key is on its way'
+            ? 'Trial approved · you’re in early'
+            : 'Trial approved · your key is on its way'
         }
       </h1>
       {
         launchMode === 'prelaunch' ? (
-          <p class="text-sm text-text-muted">
+          <p class="font-sans font-normal text-[14px] leading-[1.6] text-text-muted">
             Your 14-day Enterprise trial is reserved for your domain. Your license key lands in your
             inbox the moment the beta opens, and your 14 days start only when the key is issued —
             being early costs you nothing.
           </p>
         ) : (
-          <p class="text-sm text-text-muted">
+          <p class="font-sans font-normal text-[14px] leading-[1.6] text-text-muted">
             Your 14-day Enterprise trial is reserved for your domain. Your license key is on its way
             to your inbox — your 14 days start when it’s issued.
           </p>
         )
       }
-      <p class="text-xs text-text-muted">The approval email in your inbox has the details.</p>
-      <Button href="/docs/" variant="secondary" class="w-full">Read the docs meanwhile</Button>
+      <p class="font-mono font-medium text-[11.5px] text-text-muted">
+        The approval email in your inbox has the details.
+      </p>
+      <Button href="/docs/" variant="secondary" class="w-full mt-2">Read the docs meanwhile</Button>
     </Card>
   </section>
 </Base>

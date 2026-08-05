@@ -198,14 +198,14 @@ const renderers: Renderers = {
     html: shell(
       'Confirm your Tunnex updates subscription',
       ctx,
-      paragraph('One click and you’re on the list — launch news and release notes, nothing else.') +
+      paragraph('One click and you’re on the list · launch news and release notes, nothing else.') +
         button(confirmUrl, 'Confirm subscription') +
         muted(
           'This link is valid for 24 hours and can be used once. If you didn’t subscribe, ignore this email and you won’t hear from us.',
         ),
     ),
     text: [
-      'One click and you’re on the list — launch news and release notes, nothing else.',
+      'One click and you’re on the list · launch news and release notes, nothing else.',
       '',
       'Confirm here (valid 24 hours, single use):',
       confirmUrl,

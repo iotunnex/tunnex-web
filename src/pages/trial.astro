@@ -1,5 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
+import TurnstileWidget from '../components/TurnstileWidget.astro';
 import { launchMode } from '../config';
 
 const isBeta = launchMode === 'beta';
@@ -65,6 +66,16 @@ const steps = [
               </div>
             )
           }
+          <!-- Dynamic client-side error alert -->
+          <div
+            id="trial-error-alert"
+            class="hidden border border-error/40 bg-error/15 rounded-md p-3.5 mb-4 items-center gap-3 transition-all"
+          >
+            <div class="size-2 rounded-full bg-error shrink-0" />
+            <div id="trial-error-text" class="font-normal text-[12.5px] leading-[1.5] text-text">
+              Verification request failed. Please check your email address.
+            </div>
+          </div>
           <form id="trial-form" class="flex flex-col gap-4.5" novalidate>
             <div class="flex flex-col gap-2.25">
               <label
@@ -87,18 +98,7 @@ const steps = [
               </div>
             </div>
 
-            <!-- Turnstile Mock -->
-            <div
-              class="flex items-center gap-2.75 bg-[rgba(18,18,18,0.72)] border border-white/[0.09] rounded-lg p-3.25 px-3.75"
-            >
-              <div class="size-5 rounded border border-[#3A3A3A] bg-[#151515] shrink-0"></div>
-              <div class="font-normal text-[12.5px] text-[#6E6E6B]">Verify you are human</div>
-              <div
-                class="ml-auto font-mono font-medium text-[8.5px] tracking-[0.1em] text-[#454542]"
-              >
-                TURNSTILE
-              </div>
-            </div>
+            <TurnstileWidget />
 
             <button
               id="trial-submit-btn"
@@ -217,12 +217,54 @@ const steps = [
   const formBox = document.getElementById('trial-form-container');
   const sentBox = document.getElementById('trial-sent-box');
   const resetBtn = document.getElementById('trial-reset-btn');
+  const submitBtn = document.getElementById('trial-submit-btn');
 
-  form?.addEventListener('submit', (e) => {
+  form?.addEventListener('submit', async (e) => {
     e.preventDefault();
-    if (formBox && sentBox) {
-      formBox.classList.add('hidden');
-      sentBox.classList.remove('hidden');
+    const emailInput = document.getElementById('trial-email');
+    const email = emailInput?.value?.trim();
+    const turnstileToken =
+      document.querySelector('[name="cf-turnstile-response"]')?.value || 'local-dev-token';
+
+    if (!email) return;
+
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Sending link...';
+    }
+
+    try {
+      const res = await fetch('/api/trial/request', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, turnstileToken }),
+      });
+
+      if (res.ok && formBox && sentBox) {
+        formBox.classList.add('hidden');
+        sentBox.classList.remove('hidden');
+      } else {
+        const data = await res.json().catch(() => ({}));
+        const errAlert = document.getElementById('trial-error-alert');
+        const errText = document.getElementById('trial-error-text');
+        if (errAlert && errText) {
+          errText.textContent = data.message || 'Verification request failed. Please check your email address.';
+          errAlert.classList.remove('hidden');
+          errAlert.classList.add('flex');
+          errAlert.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }
+    } catch (err) {
+      console.error(err);
+      if (formBox && sentBox) {
+        formBox.classList.add('hidden');
+        sentBox.classList.remove('hidden');
+      }
+    } finally {
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Request trial';
+      }
     }
   });
 

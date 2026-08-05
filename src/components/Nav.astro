@@ -1,5 +1,6 @@
 ---
 import { launchMode } from '../config';
+import Logo from './Logo.astro';
 
 const links = [
   { href: '/', label: 'Home' },
@@ -32,17 +33,9 @@ const isActive = (href: string) => {
     <a
       href="/"
       aria-label="Tunnex — Home"
-      class="flex items-center gap-2.5 group focus-visible:outline-none"
+      class="inline-flex items-center group focus-visible:outline-none"
     >
-      <!-- 30px Logo Lozenge -->
-      <div
-        class="t-logo-sheen flex size-[30px] items-center justify-center rounded-[9px] bg-[#0A0A0A] p-[5px] shadow-[0_6px_18px_rgba(255,255,255,0.14)] overflow-hidden transition-transform duration-200 group-hover:scale-105"
-      >
-        <img src="/assets/tunnex-logo.svg" alt="Tunnex" class="size-full object-contain block" />
-      </div>
-
-      <!-- Wordmark SVG at height 13px -->
-      <img src="/assets/tunnex-wordmark.svg" alt="TUNNEX" class="h-[13px] w-auto block" />
+      <Logo variant="lockup" class="h-4 w-auto" />
     </a>
 
     <!-- Desktop Navigation Links (Hidden under 960px) -->
@@ -114,9 +107,9 @@ const isActive = (href: string) => {
   <!-- Mobile Dropdown Panel -->
   <div
     id="nav-menu"
-    class="hidden absolute top-[64px] left-0 w-full border-b border-[#2E2E2E] bg-[#0E0E0E] px-6 py-6 shadow-[0_30px_60px_rgba(0,0,0,0.95)] backdrop-blur-2xl z-[100]"
+    class="hidden fixed inset-x-0 top-[64px] h-[calc(100dvh-64px)] border-b border-[#2E2E2E] bg-[#0E0E0E] px-6 py-6 shadow-[0_30px_60px_rgba(0,0,0,0.95)] backdrop-blur-2xl z-[100] overflow-y-auto flex flex-col justify-between"
   >
-    <ul class="flex flex-col gap-1.5">
+    <ul class="flex flex-col gap-2">
       {
         links.map((l) => (
           <li>
@@ -124,7 +117,7 @@ const isActive = (href: string) => {
               href={l.href}
               aria-current={isActive(l.href) ? 'page' : undefined}
               class:list={[
-                'block rounded-[9px] px-3.5 py-3 text-[15.5px] font-medium text-[#C9C9C4] hover:bg-white/[0.06] hover:text-white transition-colors',
+                'block rounded-[10px] px-4 py-3.5 text-[17px] font-medium text-[#C9C9C4] hover:bg-white/[0.06] hover:text-white transition-colors',
                 isActive(l.href) ? 'bg-white/[0.08] text-white font-semibold' : '',
               ]}
             >
@@ -134,10 +127,10 @@ const isActive = (href: string) => {
         ))
       }
     </ul>
-    <div class="mt-5 pt-4 border-t border-white/10 flex flex-col gap-3">
+    <div class="mt-8 pt-5 border-t border-white/10 flex flex-col gap-3 pb-8">
       <a
         href={isBeta ? '/download' : '/trial'}
-        class="t-btn t-prim block w-full rounded-[9px] py-3.5 text-center text-[14.5px] font-semibold text-[#F7F5F5] shadow-lg"
+        class="t-btn t-prim block w-full rounded-[10px] py-4 text-center text-[15px] font-semibold text-[#F7F5F5] shadow-lg"
       >
         {isBeta ? 'Download' : 'Start 14-day trial'}
       </a>
@@ -150,25 +143,26 @@ const isActive = (href: string) => {
   const menu = document.getElementById('nav-menu');
 
   if (btn && menu) {
-    btn.addEventListener('click', () => {
+    const toggleMenu = (open?: boolean) => {
       const isHidden = menu.classList.contains('hidden');
-      if (isHidden) {
+      const shouldOpen = open !== undefined ? open : isHidden;
+      if (shouldOpen) {
         menu.classList.remove('hidden');
         btn.setAttribute('aria-expanded', 'true');
         btn.setAttribute('aria-label', 'Close menu');
+        document.body.style.overflow = 'hidden';
       } else {
         menu.classList.add('hidden');
         btn.setAttribute('aria-expanded', 'false');
         btn.setAttribute('aria-label', 'Open menu');
+        document.body.style.overflow = '';
       }
-    });
+    };
+
+    btn.addEventListener('click', () => toggleMenu());
 
     menu.querySelectorAll('a').forEach((link) => {
-      link.addEventListener('click', () => {
-        menu.classList.add('hidden');
-        btn.setAttribute('aria-expanded', 'false');
-        btn.setAttribute('aria-label', 'Open menu');
-      });
+      link.addEventListener('click', () => toggleMenu(false));
     });
   }
 </script>

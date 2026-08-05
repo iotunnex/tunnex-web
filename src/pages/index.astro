@@ -38,10 +38,14 @@ const isBeta = launchMode === 'beta';
   />
 
   <!-- Section 1: Hero -->
-  <section class="mx-auto max-w-[1560px] px-6 py-16 md:px-12 md:py-[104px]">
-    <div class="t-rise grid items-center gap-12 md:grid-cols-[0.78fr_1.22fr] md:gap-[96px]">
+  <section
+    class="mx-auto max-w-[1560px] px-4 sm:px-6 py-10 md:px-12 md:py-[104px] overflow-hidden w-full"
+  >
+    <div
+      class="t-rise grid items-center gap-10 md:grid-cols-[0.78fr_1.22fr] md:gap-[96px] min-w-0 w-full"
+    >
       <!-- Left Column: Copy & CTAs -->
-      <div class="flex flex-col gap-[22px]">
+      <div class="flex flex-col gap-[22px] min-w-0 w-full">
         <!-- Status Pill -->
         <div>
           <div
@@ -55,33 +59,33 @@ const isBeta = launchMode === 'beta';
         </div>
 
         <!-- H1 & Sub-headline -->
-        <div>
-          <h1 class="tnx-h1 text-balance">Self-hosted Zero&nbsp;Trust VPN.</h1>
+        <div class="min-w-0 w-full">
+          <h1 class="tnx-h1 text-pretty">Self-hosted Zero&nbsp;Trust VPN.</h1>
           <p class="tnx-h1-sub mt-1">
             Connect everything. <span class="text-[#EDEDEB]">Trust nothing.</span>
           </p>
         </div>
 
         <!-- One-command Install Row -->
-        <div class="flex flex-col gap-2 max-w-xl">
+        <div class="flex flex-col gap-2 max-w-xl min-w-0 w-full">
           <div
             class="font-mono text-[9px] font-semibold tracking-[0.18em] text-[#5E5E5B] uppercase"
           >
             ONE-COMMAND INSTALL
           </div>
           <div
-            class="flex items-center justify-between rounded-[7px] border border-[#2E2E2E] bg-[#101010] px-[14px] py-[13px]"
+            class="flex items-center justify-between rounded-[7px] border border-[#2E2E2E] bg-[#101010] px-3.5 py-3 min-w-0 w-full max-w-full"
           >
             <div
-              class="flex items-center gap-2 font-mono text-[13px] text-[#D6D6D2] overflow-x-auto"
+              class="flex items-center gap-2 font-mono text-[11.5px] sm:text-[13px] text-[#D6D6D2] overflow-x-auto min-w-0 flex-1 pr-1"
             >
-              <span class="text-[#5E5E5B]">$</span>
-              <span>curl -fsSL https://get.tunnex.io | sh</span>
+              <span class="text-[#5E5E5B] shrink-0">$</span>
+              <span class="whitespace-nowrap">curl -fsSL https://get.tunnex.io | sh</span>
             </div>
             <button
               id="hero-copy-btn"
               type="button"
-              class="t-btn t-sec ml-3 shrink-0 rounded-[6px] px-2.5 py-1 font-mono text-[11px] text-[#C9C9C4] hover:text-white"
+              class="t-btn t-sec ml-2 shrink-0 rounded-[6px] px-2.5 py-1 font-mono text-[11px] text-[#C9C9C4] hover:text-white"
             >
               COPY
             </button>
@@ -104,16 +108,16 @@ const isBeta = launchMode === 'beta';
         </div>
 
         <!-- CTAs -->
-        <div class="t-cta flex items-center gap-3 pt-2">
+        <div class="t-cta flex items-center gap-3 pt-2 flex-wrap sm:flex-nowrap min-w-0 w-full">
           <a
             href={isBeta ? '/download' : '/trial'}
-            class="t-btn t-prim rounded-[99px] px-[22px] py-[14px] text-[14px] font-semibold text-[#F7F5F5]"
+            class="t-btn t-prim rounded-[99px] px-[22px] py-[14px] text-[14px] font-semibold text-[#F7F5F5] text-center max-[480px]:w-full"
           >
             {isBeta ? 'Download' : 'Start 14-day trial'}
           </a>
           <a
             href="/docs"
-            class="t-btn t-sec rounded-[99px] px-[22px] py-[14px] text-[14px] font-semibold text-[#EDEDEB]"
+            class="t-btn t-sec rounded-[99px] px-[22px] py-[14px] text-[14px] font-semibold text-[#EDEDEB] text-center max-[480px]:w-full"
           >
             Read the docs
           </a>
@@ -121,7 +125,7 @@ const isBeta = launchMode === 'beta';
       </div>
 
       <!-- Right Column: Access Plane Diagram -->
-      <div>
+      <div class="min-w-0 w-full overflow-x-auto">
         <AccessPlaneDiagram />
       </div>
     </div>

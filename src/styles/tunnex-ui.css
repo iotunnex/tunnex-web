@@ -154,12 +154,13 @@ textarea:focus {
 
 /* ---------- 11. TYPE SCALE ---------------------------------------------- */
 .tnx-h1 {
-  font: 600 clamp(38px, 5.2vw, 64px)/1.03 var(--tnx-sans);
+  font: 600 clamp(28px, 6.8vw, 64px)/1.06 var(--tnx-sans);
   color: var(--tnx-ink-max);
   letter-spacing: -0.03em;
+  word-break: break-word;
 }
 .tnx-h1-sub {
-  font: 300 clamp(24px, 3vw, 34px)/1.2 var(--tnx-sans);
+  font: 300 clamp(18px, 4.2vw, 34px)/1.25 var(--tnx-sans);
   color: var(--tnx-ink-sub);
   letter-spacing: -0.02em;
 }
@@ -617,16 +618,18 @@ textarea:focus {
 }
 
 /* ---------- 17. WIDE DIAGRAM ------------------------------------------- */
-/* Diagrams are authored at a fixed viewBox and must never be squeezed on
-   phones — they scroll horizontally instead. */
 .t-diag {
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
 }
-@media (max-width: 760px) {
-  .t-diag > svg {
-    min-width: 760px;
-  }
+.t-diag > svg {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  height: auto !important;
+  display: block;
 }
 
 /* ---------- 18. BREAKPOINTS -------------------------------------------- */

@@ -81,6 +81,17 @@ const icons: Record<string, string> = {
             </div>
 
             <div class="flex flex-col gap-2.25 mt-1" id="dl-waitlist-form">
+              <!-- Error alert banner -->
+              <div
+                id="dl-waitlist-error"
+                class="hidden border border-error/40 bg-error/15 rounded-md p-3 items-center gap-2.5 transition-all"
+              >
+                <div class="size-2 rounded-full bg-error shrink-0" />
+                <div id="dl-waitlist-error-text" class="font-normal text-[12.5px] text-text">
+                  Subscription failed. Please check your email.
+                </div>
+              </div>
+
               <label
                 for="tnxWaitDl"
                 class="font-mono font-semibold text-[9px] tracking-[0.16em] text-[#5E5E5B] uppercase"

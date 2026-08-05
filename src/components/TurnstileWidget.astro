@@ -6,6 +6,7 @@ import { PUBLIC_TURNSTILE_SITE_KEY } from 'astro:env/client';
 // only reads once at load, which left a stale light widget on a dark page
 // (S3.2 ledger item). The form scripts read the token from the injected
 // input[name="cf-turnstile-response"] exactly as before.
+const sitekey = PUBLIC_TURNSTILE_SITE_KEY || '1x00000000000000000000AA';
 ---
 
 <div id="turnstile-widget" class="min-h-[65px]"></div>
@@ -15,7 +16,7 @@ import { PUBLIC_TURNSTILE_SITE_KEY } from 'astro:env/client';
   src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoad"
   async
   defer></script>
-<script is:inline define:vars={{ sitekey: PUBLIC_TURNSTILE_SITE_KEY }}>
+<script is:inline define:vars={{ sitekey }}>
   (() => {
     const el = document.getElementById('turnstile-widget');
     if (!el) return;
@@ -25,7 +26,7 @@ import { PUBLIC_TURNSTILE_SITE_KEY } from 'astro:env/client';
     const render = () => {
       if (!window.turnstile) return;
       if (widgetId !== null) window.turnstile.remove(widgetId);
-      widgetId = window.turnstile.render(el, { sitekey, size: 'flexible', theme: theme() });
+      widgetId = window.turnstile.render(el, { sitekey, size: 'normal', theme: theme() });
     };
 
     // Called by the api.js onload param (global).

@@ -3,6 +3,7 @@ import { env } from 'cloudflare:workers';
 import Base from '../../layouts/Base.astro';
 import Button from '../../components/ui/Button.astro';
 import Card from '../../components/ui/Card.astro';
+import Logo from '../../components/Logo.astro';
 import { d1TrialVerifyStore, peekTrialToken } from '../../lib/trial-verify.ts';
 import { launchMode } from '../../config';
 
@@ -24,43 +25,44 @@ if (forcedState === 'exists') {
   if (peek.state === 'valid') domain = peek.domain;
 }
 const titles = {
-  valid: 'Tunnex — Confirm your trial',
-  expired: 'Tunnex — Trial link expired',
-  invalid: 'Tunnex — Trial link not valid',
-  exists: 'Tunnex — Trial already exists',
+  valid: 'Tunnex · Confirm your trial',
+  expired: 'Tunnex · Trial link expired',
+  invalid: 'Tunnex · Trial link not valid',
+  exists: 'Tunnex · Trial already exists',
 } as const;
 ---
 
 <Base title={titles[state]} noindex>
   <section
-    class="mx-auto flex min-h-[60vh] w-full max-w-6xl flex-col justify-center px-4 py-20 sm:px-6"
+    class="mx-auto flex min-h-[65vh] w-full max-w-6xl flex-col items-center justify-center px-4 py-20 sm:px-6"
   >
-    <Card class="mx-auto flex w-full max-w-md flex-col gap-4 p-8">
+    <Card class="mx-auto flex w-full max-w-md flex-col items-center gap-5 p-8 text-center">
+      <Logo variant="vertical" class="h-5" />
       {
         state === 'valid' && (
           <>
-            <h1 class="text-xl font-semibold break-words">
-              Confirm your trial for <span class="text-primary">{domain}</span>
+            <h1 class="font-sans font-semibold text-[20px] text-text tracking-tight break-words">
+              Confirm your trial for <span class="text-text underline decoration-primary">{domain}</span>
             </h1>
             {launchMode === 'prelaunch' ? (
-              <p class="text-sm text-text-muted">
+              <p class="font-sans font-normal text-[14px] leading-[1.6] text-text-muted">
                 One click reserves the 14-day Enterprise trial for {domain}. Your license key
-                arrives when the beta opens — the clock starts then, not today.
+                arrives when the beta opens · the clock starts then, not today.
               </p>
             ) : (
-              <p class="text-sm text-text-muted">
+              <p class="font-sans font-normal text-[14px] leading-[1.6] text-text-muted">
                 One click starts the 14-day Enterprise trial for {domain}. Your license key goes
-                straight to your inbox — the 14 days start when it’s issued.
+                straight to your inbox · the 14 days start when it’s issued.
               </p>
             )}
-            <form method="post" action="/api/trial/verify">
+            <form method="post" action="/api/trial/verify" class="w-full mt-2">
               <input type="hidden" name="token" value={token} />
               <Button variant="primary" class="w-full">
                 Confirm trial
               </Button>
             </form>
-            <p class="text-xs text-text-muted">
-              Didn’t request this? Just close this page — nothing happens without this confirmation.
+            <p class="font-mono font-medium text-[11.5px] text-text-muted">
+              Didn’t request this? Just close this page · nothing happens without this confirmation.
             </p>
           </>
         )
@@ -68,12 +70,12 @@ const titles = {
       {
         state === 'expired' && (
           <>
-            <h1 class="text-xl font-semibold">This link has expired</h1>
-            <p class="text-sm text-text-muted">
+            <h1 class="font-sans font-semibold text-[20px] text-text tracking-tight">This link has expired</h1>
+            <p class="font-sans font-normal text-[14px] leading-[1.6] text-text-muted">
               Trial links are valid for 30 minutes. Request a fresh one and confirm from your inbox
-              — it takes under a minute.
+              · it takes under a minute.
             </p>
-            <Button href="/trial/" variant="secondary" class="w-full">
+            <Button href="/trial/" variant="secondary" class="w-full mt-2">
               Request a new link
             </Button>
           </>
@@ -82,13 +84,13 @@ const titles = {
       {
         state === 'invalid' && (
           <>
-            <h1 class="text-xl font-semibold">This link isn’t valid anymore</h1>
-            <p class="text-sm text-text-muted">
-              If you just clicked Confirm, you’re all set — the approval email is on its way to your
-              inbox. Otherwise this link was already used, expired, or mistyped — head back to the
+            <h1 class="font-sans font-semibold text-[20px] text-text tracking-tight">This link isn’t valid anymore</h1>
+            <p class="font-sans font-normal text-[14px] leading-[1.6] text-text-muted">
+              If you just clicked Confirm, you’re all set · the approval email is on its way to your
+              inbox. Otherwise this link was already used, expired, or mistyped · head back to the
               trial page for a fresh one.
             </p>
-            <Button href="/trial/" variant="secondary" class="w-full">
+            <Button href="/trial/" variant="secondary" class="w-full mt-2">
               Back to the trial page
             </Button>
           </>
@@ -97,15 +99,15 @@ const titles = {
       {
         state === 'exists' && (
           <>
-            <h1 class="text-xl font-semibold">Your domain already has a trial</h1>
-            <p class="text-sm text-text-muted">
-              Your company already started a trial — they’re one per domain. Check with your team
+            <h1 class="font-sans font-semibold text-[20px] text-text tracking-tight">Your domain already has a trial</h1>
+            <p class="font-sans font-normal text-[14px] leading-[1.6] text-text-muted">
+              Your company already started a trial · they’re one per domain. Check with your team
               (it may even be you), or write to us and we’ll sort it out.
             </p>
             <Button
               href="mailto:sales@tunnex.io?subject=Tunnex%20trial%20for%20my%20domain"
               variant="secondary"
-              class="w-full"
+              class="w-full mt-2"
             >
               Write to sales@tunnex.io
             </Button>

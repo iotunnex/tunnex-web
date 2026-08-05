@@ -3,6 +3,7 @@ import { env } from 'cloudflare:workers';
 import Base from '../../layouts/Base.astro';
 import Button from '../../components/ui/Button.astro';
 import Card from '../../components/ui/Card.astro';
+import Logo from '../../components/Logo.astro';
 import { d1SubscriberStore, peekConfirmToken } from '../../lib/newsletter.ts';
 
 // Scanner-proof confirmation page: mail scanners (SafeLinks, Proofpoint)
@@ -19,27 +20,27 @@ if (!forcedInvalid && token) {
 }
 ---
 
-<Base title="Tunnex — Confirm subscription" noindex>
+<Base title="Tunnex · Confirm subscription" noindex>
   <section
-    class="mx-auto flex min-h-[60vh] w-full max-w-6xl flex-col justify-center px-4 py-20 sm:px-6"
+    class="mx-auto flex min-h-[65vh] w-full max-w-6xl flex-col items-center justify-center px-4 py-20 sm:px-6"
   >
-    <Card class="mx-auto flex w-full max-w-md flex-col gap-4 p-8">
+    <Card class="mx-auto flex w-full max-w-md flex-col items-center gap-5 p-8 text-center">
+      <Logo variant="vertical" class="h-5" />
       {
         state === 'valid' && (
           <>
-            <h1 class="text-xl font-semibold">Confirm your subscription</h1>
-            <p class="text-sm text-text-muted">
-              One click and you’re on the list for Tunnex launch news and release notes — nothing
-              else.
+            <h1 class="font-sans font-semibold text-[20px] text-text tracking-tight">Confirm your subscription</h1>
+            <p class="font-sans font-normal text-[14px] leading-[1.6] text-text-muted">
+              One click and you’re on the list for Tunnex launch news and release notes · nothing else.
             </p>
-            <form method="post" action="/api/subscribe/confirm">
+            <form method="post" action="/api/subscribe/confirm" class="w-full mt-2">
               <input type="hidden" name="token" value={token} />
               <Button variant="primary" class="w-full">
                 Confirm subscription
               </Button>
             </form>
-            <p class="text-xs text-text-muted">
-              Didn’t subscribe? Just close this page — nothing happens without this confirmation.
+            <p class="font-mono font-medium text-[11.5px] text-text-muted">
+              Didn’t subscribe? Just close this page · nothing happens without this confirmation.
             </p>
           </>
         )
@@ -47,12 +48,12 @@ if (!forcedInvalid && token) {
       {
         state === 'expired' && (
           <>
-            <h1 class="text-xl font-semibold">This link has expired</h1>
-            <p class="text-sm text-text-muted">
+            <h1 class="font-sans font-semibold text-[20px] text-text tracking-tight">This link has expired</h1>
+            <p class="font-sans font-normal text-[14px] leading-[1.6] text-text-muted">
               Confirmation links are valid for 24 hours. Join the waitlist again and we’ll send a
               fresh one.
             </p>
-            <Button href="/download" variant="secondary" class="w-full">
+            <Button href="/download" variant="secondary" class="w-full mt-2">
               Back to the waitlist
             </Button>
           </>
@@ -61,12 +62,12 @@ if (!forcedInvalid && token) {
       {
         state === 'invalid' && (
           <>
-            <h1 class="text-xl font-semibold">This link isn’t valid anymore</h1>
-            <p class="text-sm text-text-muted">
-              If you just clicked Confirm, you’re all set — you’re on the list. Otherwise this link
+            <h1 class="font-sans font-semibold text-[20px] text-text tracking-tight">This link isn’t valid anymore</h1>
+            <p class="font-sans font-normal text-[14px] leading-[1.6] text-text-muted">
+              If you just clicked Confirm, you’re all set · you’re on the list. Otherwise this link
               was already used, expired, or mistyped; join the waitlist again for a fresh one.
             </p>
-            <Button href="/download" variant="secondary" class="w-full">
+            <Button href="/download" variant="secondary" class="w-full mt-2">
               Back to the waitlist
             </Button>
           </>

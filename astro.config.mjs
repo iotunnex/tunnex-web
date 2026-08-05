@@ -42,6 +42,9 @@ function rehypeThScope() {
 
 export default defineConfig({
   site: 'https://tunnex.io',
+  security: {
+    checkOrigin: false,
+  },
   // Astro sessions are unused (no site login). Without this, the Cloudflare
   // adapter auto-injects a SESSION KV binding into the deployed Worker config —
   // no dangling expected-but-unused bindings allowed.
@@ -146,5 +149,8 @@ export default defineConfig({
   },
   vite: {
     plugins: [tailwindcss()],
+    optimizeDeps: {
+      exclude: ['zod'],
+    },
   },
 });

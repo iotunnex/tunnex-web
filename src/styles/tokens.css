@@ -83,21 +83,21 @@
    mode attribute instead of the site's .dark class. */
 .dark,
 [data-theme='dark'] {
-  --t-bg: var(--p-neutral-950);
-  --t-surface: var(--p-neutral-925);
-  --t-surface-raised: var(--p-neutral-850);
-  --t-border: var(--p-neutral-800);
-  --t-border-interactive: var(--p-neutral-400);
-  --t-text: oklch(94.14% 0.0088 253.86); /* #E7EDF5 */
-  --t-text-muted: var(--p-neutral-400);
-  --t-primary: var(--p-accent-400);
-  --t-primary-hover: var(--p-accent-300);
-  --t-primary-fg: var(--p-accent-950);
-  --t-link: var(--p-accent-300);
-  --t-success: var(--p-green-400);
-  --t-success-fg: var(--p-green-950);
-  --t-warning: var(--p-amber-400);
-  --t-warning-fg: var(--p-amber-950);
-  --t-error: var(--p-red-400);
-  --t-error-fg: var(--p-red-950);
+  --t-bg: oklch(14.5% 0 0);
+  --t-surface: oklch(20.5% 0 0);
+  --t-surface-raised: oklch(14% 0 0);
+  --t-border: oklch(28% 0 0);
+  --t-border-interactive: oklch(40% 0 0);
+  --t-text: oklch(95% 0 0);
+  --t-text-muted: oklch(70% 0 0);
+  --t-primary: oklch(45% 0.16 22);
+  --t-primary-hover: oklch(52% 0.18 22);
+  --t-primary-fg: oklch(98% 0 0);
+  --t-link: oklch(95% 0 0);
+  --t-success: oklch(65% 0.12 150);
+  --t-success-fg: oklch(14% 0 0);
+  --t-warning: oklch(72% 0.14 75);
+  --t-warning-fg: oklch(14% 0 0);
+  --t-error: oklch(55% 0.15 25);
+  --t-error-fg: oklch(98% 0 0);
 }
