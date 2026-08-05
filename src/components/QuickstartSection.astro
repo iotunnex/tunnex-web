@@ -5,20 +5,6 @@ const steps = [
   { n: '2', title: 'Enroll a gateway', body: 'Zero-touch gateway joins on the command emitted by the installer.' },
   { n: '3', title: 'Add a device', body: 'The config is shown exactly once. A lost profile is revoke-and-reissue, never re-download.' }
 ];
-
-const terminalScript = [
-  { pre: '$ ', text: 'curl -fsSL https://get.tunnex.io | sh', fg: '#EDEDEB' },
-  { pre: '', text: '  ✓ prebuilt images pulled from ghcr.io', fg: '#858582' },
-  { pre: '', text: '  ✓ secrets generated · master key sealed at rest', fg: '#858582' },
-  { pre: '', text: '  ✓ control plane up  →  https://vpn.acme.io', fg: '#A9A9A6' },
-  { pre: '$ ', text: 'tnx gateway enroll --site ap-lan', fg: '#EDEDEB' },
-  { pre: '', text: '  ✓ gateway syd-gw-01 joined · wg0 reconciled', fg: '#858582' },
-  { pre: '', text: '  ✓ pool 10.99.0.0/16 · deterministic allocation', fg: '#858582' },
-  { pre: '$ ', text: 'tnx device add --user alice@acme.io', fg: '#EDEDEB' },
-  { pre: '', text: '  ✓ device minted · config shown once, never again', fg: '#858582' },
-  { pre: '', text: '  ✓ policy rev 42 compiled · 6 allow rules, default deny', fg: '#A9A9A6' },
-  { pre: '', text: '  handshake ok · 10.99.0.7/32 · 138ms syd→wus', fg: '#6E9C7C' }
-];
 ---
 
 <section class="t-rv border-t border-[var(--tnx-line-1)]" id="quickstart-section">
@@ -93,8 +79,9 @@ const terminalScript = [
     let lineIndex = 0;
 
     function nextLine() {
-      if (lineIndex >= scriptData.length) return;
+      if (lineIndex >= scriptData.length || !container) return;
       const data = scriptData[lineIndex];
+      if (!data) return;
 
       const lineEl = document.createElement('div');
       lineEl.className = 'font-mono text-[12.5px] leading-[1.72] whitespace-pre-wrap break-words';
@@ -117,9 +104,10 @@ const terminalScript = [
         container.appendChild(lineEl);
 
         let charIdx = 0;
+        const lineText = data.text;
         const typeInterval = setInterval(() => {
-          if (charIdx < data.text.length) {
-            textSpan.textContent += data.text[charIdx];
+          if (charIdx < lineText.length) {
+            textSpan.textContent += lineText[charIdx];
             charIdx++;
           } else {
             clearInterval(typeInterval);
