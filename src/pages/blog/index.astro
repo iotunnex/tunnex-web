@@ -1,7 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
-import Card from '../../components/ui/Card.astro';
 import { allTags, formatPostDate, readingTimeMinutes, sortedPublished } from '../../lib/blog.ts';
 
 const posts = sortedPublished(await getCollection('blog'));
@@ -9,65 +8,147 @@ const tags = allTags(await getCollection('blog'));
 ---
 
 <Base
-  title="Tunnex — Blog"
+  title="Writing & Blog — Tunnex"
   description="Engineering notes, release news, and zero-trust networking write-ups from the Tunnex team."
   canonical="/blog/"
   ogImage="/og/blog/_index.png"
 >
-  <section class="mx-auto flex w-full max-w-3xl flex-col gap-8 px-4 py-16 sm:px-6 md:py-20">
-    <div class="flex flex-col gap-3">
-      <h1 class="text-4xl font-bold tracking-tight">Blog</h1>
-      <p class="text-lg text-text-muted">
+  <div class="mx-auto max-w-[1180px] px-7 py-18 md:py-[72px] flex flex-col gap-9 max-[620px]:px-[18px]">
+    <!-- Header -->
+    <div class="flex flex-col gap-3.5 max-w-[62ch]">
+      <div class="tnx-eyebrow">WRITING</div>
+      <h1 class="tnx-h1">Blog</h1>
+      <div class="font-normal text-[17px] leading-[1.65] text-[#A9A9A6]">
         Engineering notes, release news, and zero-trust networking write-ups.
-      </p>
-      {
-        tags.length > 0 && (
-          <ul class="flex flex-wrap gap-2 pt-1">
-            {tags.map((tag) => (
-              <li>
-                <a
-                  href={`/blog/tag/${tag}/`}
-                  class="inline-flex rounded-full border border-border px-3 py-1 text-xs font-medium tracking-wide text-text-muted transition-colors hover:bg-surface-raised hover:text-text focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-                >
-                  {tag}
-                </a>
-              </li>
-            ))}
-          </ul>
-        )
-      }
+      </div>
     </div>
 
-    <ul class="flex flex-col gap-4">
-      {
-        posts.map((post) => (
-          <li>
-            <Card class="relative transition-colors hover:border-primary/40">
-              <article class="flex flex-col gap-2">
-                <h2 class="text-xl font-semibold">
-                  <a
-                    href={`/blog/${post.id}/`}
-                    class="after:absolute after:inset-0 hover:text-link focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-                  >
-                    {post.data.title}
-                  </a>
-                </h2>
-                <p class="text-sm text-text-muted">{post.data.description}</p>
-                <p class="text-xs text-text-muted">
+    <!-- 2 Column Layout: Posts List + Sidebar -->
+    <div class="t-g2 grid grid-cols-1 md:grid-cols-[1fr_320px] gap-8 items-start">
+      <!-- Left Column: Filter & Posts -->
+      <div class="flex flex-col gap-4 min-w-0">
+        <!-- Tag Filter Pills -->
+        <div class="flex items-center gap-2 flex-wrap">
+          <a
+            href="/blog/"
+            class="t-btn rounded-full px-3.5 py-1.75 font-mono font-semibold text-[10px] tracking-[0.1em] text-[#EDEDEB] bg-white/10 border border-white/24"
+          >
+            ALL
+          </a>
+          {
+            tags.map((tag) => (
+              <a
+                href={`/blog/tag/${tag}/`}
+                class="t-btn rounded-full px-3.5 py-1.75 font-mono font-semibold text-[10px] tracking-[0.1em] text-[#858582] bg-white/[0.02] border border-white/10 hover:text-white"
+              >
+                {tag.toUpperCase()}
+              </a>
+            ))
+          }
+        </div>
+
+        <!-- Posts List -->
+        <div class="flex flex-col gap-3.5">
+          {
+            posts.map((post) => (
+              <a
+                href={`/blog/${post.id}/`}
+                class="t-card border border-white/9 rounded-lg bg-[rgba(18,18,18,0.72)] p-6 flex flex-col gap-2.75 group cursor-pointer"
+              >
+                <div class="flex items-center gap-2.25 flex-wrap">
+                  {post.data.tags?.map((tg: string) => (
+                    <span class="font-mono font-semibold text-[8.5px] tracking-[0.1em] text-[#858582] border border-[#2E2E2E] bg-[#1A1A1A] rounded-full px-2.25 py-0.75">
+                      {tg.toUpperCase()}
+                    </span>
+                  ))}
+                </div>
+                <div class="font-semibold text-[clamp(20px,2.2vw,25px)] leading-[1.22] text-[#F5F5F5] tracking-[-0.02em] group-hover:text-white">
+                  {post.data.title}
+                </div>
+                <div class="font-normal text-[14.5px] leading-[1.66] text-[#858582] text-pretty">
+                  {post.data.description}
+                </div>
+                <div class="font-mono font-medium text-[10px] tracking-[0.06em] text-[#5E5E5B] mt-0.5 uppercase">
                   <time datetime={post.data.pubDate.toISOString()}>
                     {formatPostDate(post.data.pubDate)}
                   </time>
                   {' · '}
                   {post.data.author}
                   {' · '}
-                  {readingTimeMinutes(post.body ?? '')} min read
-                </p>
-              </article>
-            </Card>
-          </li>
-        ))
-      }
-    </ul>
-    {posts.length === 0 && <p class="text-sm text-text-muted">First post coming soon.</p>}
-  </section>
+                  {readingTimeMinutes(post.body ?? '')} MIN READ
+                </div>
+              </a>
+            ))
+          }
+          {posts.length === 0 && (
+            <div class="bg-[rgba(18,18,18,0.72)] border border-white/[0.09] rounded-lg p-5 font-normal text-[13.5px] text-[#858582]">
+              First post coming soon.
+            </div>
+          )}
+        </div>
+      </div>
+
+      <!-- Right Column: Sidebar Subscribe & Feeds -->
+      <div class="flex flex-col gap-3.5">
+        <!-- Subscribe Card -->
+        <div class="t-card border border-white/9 rounded-lg bg-[rgba(18,18,18,0.72)] p-5 flex flex-col gap-2.75">
+          <div class="font-semibold text-[14px] text-[#F5F5F5]">Get new posts by email</div>
+          <div class="font-normal text-[13px] leading-[1.6] text-[#858582]">Double opt-in, one click to leave. No drip sequence.</div>
+
+          <div id="blog-sub-form" class="flex flex-col gap-2.25 mt-0.5">
+            <input
+              id="blogSubEmail"
+              type="email"
+              placeholder="you@company.com"
+              aria-label="Email"
+              class="bg-[#121212] border border-[#2E2E2E] rounded-md px-3.25 py-2.75 font-normal text-[13.5px] text-[#EDEDEB] shadow-[inset_0_1px_3px_rgba(0,0,0,0.22)] focus:outline-none"
+            />
+            <button
+              id="blogSubBtn"
+              type="button"
+              class="t-btn t-prim text-center rounded-[9px] px-4 py-2.75 font-semibold text-[13px] cursor-pointer"
+            >
+              Subscribe
+            </button>
+          </div>
+
+          <div id="blog-sub-sent" class="hidden flex gap-2.25 items-start bg-[rgba(18,18,18,0.72)] border border-white/[0.09] rounded-lg p-3">
+            <span class="lic size-3.75 shrink-0 text-[#6E9C7C] mt-0.5">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-full"><path d="M21.801 10A10 10 0 1 1 17 3.335"/><path d="m9 11 3 3L22 4"/></svg>
+            </span>
+            <span class="font-normal text-[12.5px] leading-[1.55] text-[#858582]">
+              Confirmation link sent — good for 24 hours.
+            </span>
+          </div>
+        </div>
+
+        <!-- Feed Card -->
+        <div class="bg-[rgba(18,18,18,0.72)] border border-white/[0.09] rounded-lg p-4.5 flex flex-col gap-2">
+          <div class="font-mono font-semibold text-[9px] tracking-[0.16em] text-[#454542]">FEEDS</div>
+          <a
+            href="/blog/rss.xml"
+            target="_blank"
+            rel="noopener"
+            class="font-mono font-medium text-[12.5px] text-[#C9C9C4] hover:text-white"
+          >
+            /blog/rss.xml
+          </a>
+          <div class="font-normal text-[12px] leading-[1.55] text-[#5E5E5B]">Full content, from day one.</div>
+        </div>
+      </div>
+    </div>
+  </div>
 </Base>
+
+<script is:inline>
+  const subBtn = document.getElementById('blogSubBtn');
+  const subForm = document.getElementById('blog-sub-form');
+  const subSent = document.getElementById('blog-sub-sent');
+
+  subBtn?.addEventListener('click', () => {
+    if (subForm && subSent) {
+      subForm.classList.add('hidden');
+      subSent.classList.remove('hidden');
+    }
+  });
+</script>

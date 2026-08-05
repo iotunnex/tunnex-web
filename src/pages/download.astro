@@ -1,165 +1,181 @@
 ---
 import Base from '../layouts/Base.astro';
-import Button from '../components/ui/Button.astro';
-import Card from '../components/ui/Card.astro';
-import CodeSnippet from '../components/ui/CodeSnippet.astro';
-import { launchMode, downloadBaseUrl } from '../config';
-import WaitlistForm from '../components/WaitlistForm.astro';
+import { launchMode } from '../config';
 
 const isBeta = launchMode === 'beta';
 
-// Artifact filenames are placeholders until the product repo's release CI
-// fixes the naming scheme (EPIC 5).
-const targets = [
-  {
-    os: 'macOS',
-    kind: 'Desktop client',
-    detail: 'Universal .pkg · macOS 13+',
-    file: 'tunnex-desktop-latest.pkg',
-  },
-  {
-    os: 'Windows',
-    kind: 'Desktop client',
-    detail: 'Installer .exe · Windows 10+',
-    file: 'tunnex-desktop-setup-latest.exe',
-  },
-  {
-    os: 'CLI',
-    kind: 'Server + CLI',
-    detail: 'Linux amd64/arm64 · macOS',
-    file: null, // installed via the one-command script
-  },
+const builds = [
+  { icon: 'monitor', title: 'macOS', meta: 'TUNNEX.PKG · APPLE SILICON + INTEL', body: 'Menu-bar client with the fail-closed kill-switch.', cta: 'Download .pkg', href: 'https://dl.tunnex.io/latest/tunnex-desktop-latest.pkg' },
+  { icon: 'monitor-smartphone', title: 'Windows', meta: 'TUNNEX-SETUP.EXE · X64', body: 'Desktop client with WireGuard and OpenVPN transports.', cta: 'Download .exe', href: 'https://dl.tunnex.io/latest/tunnex-desktop-setup-latest.exe' },
+  { icon: 'terminal', title: 'Server CLI', meta: 'TNX · LINUX X64 + ARM64', body: 'Enroll gateways, mint credentials, run backups.', cta: 'Download CLI', href: 'https://dl.tunnex.io/latest/tnx-linux-amd64' }
 ];
+
+const icons: Record<string, string> = {
+  monitor: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-4.25"><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></svg>',
+  'monitor-smartphone': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-4.25"><path d="M18 8V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h8"/><path d="M10 19v-3.96 3.15"/><path d="M7 19h5"/><rect width="6" height="10" x="16" y="12" rx="2"/></svg>',
+  terminal: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-4.25"><polyline points="4 17 10 11 4 5"/><line x1="12" x2="20" y1="19" y2="19"/></svg>',
+  download: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-3.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>'
+};
 ---
 
 <Base
-  title="Tunnex — Download"
-  description="Download the Tunnex desktop clients and CLI. Self-hosted Zero Trust VPN."
+  title="Download: Tunnex"
+  description="Download Tunnex desktop clients for macOS and Windows, or the server CLI."
 >
-  <section class="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-16 sm:px-6 md:py-20">
-    <h1 class="text-4xl font-bold tracking-tight">Download</h1>
-    <p class="max-w-2xl text-lg text-text-muted">
-      {
-        isBeta
-          ? 'Desktop clients and the server CLI. Everything installs on your infrastructure.'
-          : 'Tunnex is launching soon. Downloads open with the beta.'
-      }
-    </p>
-  </section>
+  <div class="mx-auto max-w-[1180px] px-7 py-18 md:py-[72px] flex flex-col gap-10 max-[620px]:px-[18px]">
+    <!-- Header -->
+    <div class="flex flex-col gap-3.5 max-w-[66ch]">
+      <div class="tnx-eyebrow">DOWNLOAD</div>
+      <h1 class="tnx-h1">Download</h1>
+      <div class="font-normal text-[17px] leading-[1.65] text-[#A9A9A6]">
+        {
+          isBeta
+            ? 'Desktop clients and the server CLI. Everything installs on your infrastructure.'
+            : 'Tunnex is launching soon. Downloads open with the beta.'
+        }
+      </div>
+    </div>
 
-  {
-    !isBeta && (
-      <section class="mx-auto flex max-w-6xl flex-col gap-6 px-4 pb-24 sm:px-6 md:pb-32">
-        <Card class="flex flex-col gap-4 p-8">
-          <h2 class="text-xl font-semibold">Coming soon</h2>
-          <p class="max-w-2xl text-sm text-text-muted">
-            The beta ships the macOS and Windows desktop clients plus the server CLI. Join the
-            waitlist and we will email you the moment downloads open — nothing else, no marketing
-            drip.
-          </p>
-          <WaitlistForm />
-          <a href="/trial" class="self-start text-sm font-medium text-link">
-            Start a trial request
-          </a>
-        </Card>
-      </section>
-    )
-  }
-
-  {
-    isBeta && (
-      <>
-        <section class="mx-auto grid max-w-6xl gap-4 px-4 pb-4 sm:px-6 md:grid-cols-3">
-          {targets.map((t) => (
-            <Card class="flex flex-col gap-3">
-              <div class="flex items-center justify-between">
-                <h2 class="text-lg font-semibold">{t.os}</h2>
-                <span class="rounded-full border border-border px-2 py-0.5 text-[11px] font-medium tracking-wide text-text-muted uppercase">
-                  {t.kind}
-                </span>
-              </div>
-              <p class="text-sm text-text-muted">{t.detail}</p>
-              {t.file ? (
-                <div class="mt-auto flex flex-col gap-2">
-                  <Button href={`${downloadBaseUrl}/latest/${t.file}`} variant="primary">
-                    Download<span class="sr-only"> for {t.os}</span>
-                  </Button>
-                </div>
-              ) : (
-                <div class="mt-auto">
-                  <CodeSnippet label="install" class="[&_pre]:text-xs">
-                    curl -fsSL https://get.tunnex.io | sh
-                  </CodeSnippet>
-                </div>
-              )}
-            </Card>
-          ))}
-        </section>
-
-        <section class="mx-auto flex max-w-6xl flex-col gap-2 px-4 pb-16 sm:px-6">
-          <p class="text-sm text-text-muted">
-            The server runs on any VPS with Docker and a public address. Verify before you install:{' '}
-            <a href={`${downloadBaseUrl}/latest/SHA256SUMS`} class="font-semibold text-link">
-              SHA256SUMS
-            </a>{' '}
-            lists the checksum for every artifact in this release.
-          </p>
-        </section>
-
-        <section class="border-t border-border bg-surface/50">
-          <div class="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-12 sm:px-6">
-            <div class="flex flex-col gap-2">
-              <h2 class="text-xl font-semibold tracking-tight">Installing unsigned beta builds</h2>
-              <p class="max-w-2xl text-sm text-text-muted">
-                Beta builds are not yet code-signed — your OS will warn you. Signed and notarized
-                builds ship at GA. Until then: first verify the SHA256 checksum above. If it does
-                not match, stop and delete the file. Only after it matches:
-              </p>
+    {
+      !isBeta && (
+        <div class="t-g2 grid grid-cols-1 md:grid-cols-[1.1fr_0.9fr] gap-3.5 items-start">
+          <!-- Card 1: Waitlist Form -->
+          <div class="t-card border border-white/9 rounded-lg bg-[rgba(18,18,18,0.72)] p-6.5 flex flex-col gap-4">
+            <div class="flex items-center gap-2.5">
+              <div class="font-semibold text-[16px] text-[#F5F5F5]">Coming soon</div>
+              <span class="font-mono font-semibold text-[8.5px] tracking-[0.08em] text-[#C39A4E] border border-[#2E2E2E] bg-[#1A1A1A] rounded-full px-2.25 py-0.75">
+                PRELAUNCH
+              </span>
             </div>
-            <div class="grid gap-8 md:grid-cols-2">
-              <div class="flex flex-col gap-3">
-                <h3 class="text-base font-semibold">macOS (Gatekeeper)</h3>
-                <ol class="flex list-decimal flex-col gap-1.5 pl-5 text-sm text-text-muted">
-                  <li>
-                    Open the .pkg. macOS shows “Apple could not verify…” — click
-                    <strong class="text-text"> Done</strong>.
-                  </li>
-                  <li>
-                    On macOS 15 (Sequoia) and later, open
-                    <strong class="text-text"> System Settings → Privacy &amp; Security</strong>,
-                    scroll to the notice that the .pkg was blocked, and choose
-                    <strong class="text-text"> Open Anyway</strong>.
-                  </li>
-                </ol>
-                <p class="text-sm font-medium">Alternatives:</p>
-                <ul class="flex list-disc flex-col gap-1.5 pl-5 text-sm text-text-muted">
-                  <li>
-                    On macOS 14 and earlier, right-click the .pkg, choose
-                    <strong class="text-text"> Open</strong>, then click
-                    <strong class="text-text"> Open</strong> in the confirmation dialog.
-                  </li>
-                  <li>
-                    Terminal — only for this file, and only after its checksum matched:
-                    <code class="rounded bg-surface-raised px-1 font-mono text-[13px] text-text">
-                      xattr -d com.apple.quarantine tunnex-desktop-latest.pkg
-                    </code>
-                  </li>
-                </ul>
+            <div class="font-normal text-[14.5px] leading-[1.66] text-[#A9A9A6] text-pretty">
+              The beta ships the macOS and Windows desktop clients plus the server CLI. Join the waitlist and we will email you the moment downloads open: nothing else, no marketing drip.
+            </div>
+
+            <div class="flex flex-col gap-2.25 mt-1" id="dl-waitlist-form">
+              <label for="tnxWaitDl" class="font-mono font-semibold text-[9px] tracking-[0.16em] text-[#5E5E5B] uppercase">WORK EMAIL</label>
+              <div class="flex gap-2.25 flex-wrap">
+                <input
+                  id="tnxWaitDl"
+                  type="email"
+                  placeholder="you@company.com"
+                  class="flex-1 min-w-[200px] bg-[#121212] border border-[#2E2E2E] rounded-b-md rounded-t-md px-3.25 py-3 font-normal text-[14px] text-[#EDEDEB] shadow-[inset_0_1px_3px_rgba(0,0,0,0.22)] focus:outline-none"
+                />
+                <button
+                  id="tnxWaitDlBtn"
+                  type="button"
+                  class="t-btn t-prim rounded-[9px] px-5 py-3 font-semibold text-[13.5px] cursor-pointer whitespace-nowrap"
+                >
+                  Join the waitlist
+                </button>
               </div>
-              <div class="flex flex-col gap-3">
-                <h3 class="text-base font-semibold">Windows (SmartScreen)</h3>
-                <ol class="flex list-decimal flex-col gap-1.5 pl-5 text-sm text-text-muted">
-                  <li>Run the installer. SmartScreen shows “Windows protected your PC”.</li>
-                  <li>
-                    Click <strong class="text-text">More info</strong>, then
-                    <strong class="text-text"> Run anyway</strong>.
-                  </li>
-                </ol>
+              <div class="font-normal text-[12px] leading-[1.6] text-[#5E5E5B]">
+                One email at launch. Unsubscribe in one click.
+              </div>
+            </div>
+
+            <div id="dl-waitlist-sent" class="hidden bg-[rgba(18,18,18,0.72)] border border-white/[0.09] rounded-lg p-4 flex gap-2.75 items-start">
+              <span class="lic size-4 shrink-0 text-[#6E9C7C] mt-0.5">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-full"><path d="M21.801 10A10 10 0 1 1 17 3.335"/><path d="m9 11 3 3L22 4"/></svg>
+              </span>
+              <div>
+                <div class="font-semibold text-[13.5px] text-[#EDEDEB]">Check your inbox</div>
+                <div class="font-normal text-[13px] leading-[1.6] text-[#858582] mt-0.75">
+                  If that address is valid you will get a confirmation link. It is good for 24 hours.
+                </div>
               </div>
             </div>
           </div>
-        </section>
-      </>
-    )
-  }
+
+          <!-- Card 2: Trial Link -->
+          <div class="t-card border border-white/9 rounded-lg bg-[rgba(18,18,18,0.72)] p-5.5 flex flex-col gap-3.5">
+            <div class="font-semibold text-[14px] text-[#F5F5F5]">Need it sooner?</div>
+            <div class="font-normal text-[13.5px] leading-[1.62] text-[#858582]">
+              Enterprise trial requests are open now. Your key is issued the moment the beta opens.
+            </div>
+            <a
+              href="/trial"
+              class="t-btn t-sec text-center rounded-[9px] px-4.5 py-3 font-semibold text-[13.5px]"
+            >
+              Start a trial request
+            </a>
+          </div>
+        </div>
+      )
+    }
+
+    {
+      isBeta && (
+        <div class="flex flex-col gap-3.5">
+          <!-- 3 Build Cards Grid -->
+          <div class="t-g3 grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+            {
+              builds.map((b) => (
+                <div class="t-card border border-white/9 rounded-lg bg-[rgba(18,18,18,0.72)] p-5.5 flex flex-col gap-3.25">
+                  <div class="size-[34px] rounded-[9px] bg-[#1A1A1A] border border-[#2E2E2E] flex items-center justify-center text-[#C9C9C4]">
+                    <Fragment set:html={icons[b.icon]} />
+                  </div>
+                  <div class="font-semibold text-[15px] text-[#EDEDEB]">{b.title}</div>
+                  <div class="font-mono font-medium text-[10px] tracking-[0.06em] text-[#6E6E6B]">{b.meta}</div>
+                  <div class="font-normal text-[13px] leading-[1.6] text-[#858582]">{b.body}</div>
+                  <a
+                    href={b.href}
+                    class="t-btn t-sec mt-auto flex items-center justify-center gap-2 rounded-[9px] px-4 py-2.75 font-semibold text-[13px]"
+                  >
+                    <Fragment set:html={icons.download} />
+                    <span>{b.cta}</span>
+                  </a>
+                </div>
+              ))
+            }
+          </div>
+
+          <!-- Verify Before You Run -->
+          <div class="bg-[rgba(18,18,18,0.72)] border border-white/[0.09] rounded-lg p-5 flex flex-col gap-3">
+            <div class="font-semibold text-[14px] text-[#EDEDEB]">Verify before you run</div>
+            <div class="font-normal text-[13.5px] leading-[1.65] text-[#858582] max-w-[80ch]">
+              Download, check the hash against <span class="font-mono font-medium text-[12.5px] text-[#C9C9C4]">SHA256SUMS</span>, inspect the script, then run it. The one-liner is the same artifact for people who would rather not.
+            </div>
+            <div class="bg-[#101010] border border-[#2E2E2E] rounded-[7px] p-4 font-mono font-medium text-[12.5px] leading-[1.85] text-[#D6D6D2] overflow-x-auto whitespace-pre">
+              curl -fsSLO https://dl.tunnex.io/latest/install.sh
+              curl -fsSLO https://dl.tunnex.io/latest/SHA256SUMS
+              sha256sum -c SHA256SUMS --ignore-missing
+              less install.sh && sh install.sh
+            </div>
+            <div class="font-normal text-[12.5px] leading-[1.6] text-[#5E5E5B]">
+              Any VPS with Docker and a public address.
+            </div>
+          </div>
+
+          <!-- OS Unsigned Notes Grid -->
+          <div class="t-g2 grid grid-cols-1 md:grid-cols-2 gap-3.5">
+            <div class="bg-[rgba(18,18,18,0.72)] border border-white/[0.09] rounded-lg p-4.5">
+              <div class="font-semibold text-[13.5px] text-[#EDEDEB] mb-1.5">macOS: unsigned builds</div>
+              <div class="font-normal text-[13px] leading-[1.62] text-[#858582]">
+                Gatekeeper blocks the first open. Right-click the .pkg and choose Open, or clear the quarantine flag with <span class="font-mono font-medium text-[12px] text-[#C9C9C4]">xattr -d com.apple.quarantine</span>. Signed builds come at GA.
+              </div>
+            </div>
+            <div class="bg-[rgba(18,18,18,0.72)] border border-white/[0.09] rounded-lg p-4.5">
+              <div class="font-semibold text-[13.5px] text-[#EDEDEB] mb-1.5">Windows: SmartScreen</div>
+              <div class="font-normal text-[13px] leading-[1.62] text-[#858582]">
+                SmartScreen will warn on an unsigned installer. Choose More info, then Run anyway. Signed builds come at GA.
+              </div>
+            </div>
+          </div>
+        </div>
+      )
+    }
+  </div>
 </Base>
+
+<script is:inline>
+  const dlBtn = document.getElementById('tnxWaitDlBtn');
+  const dlForm = document.getElementById('dl-waitlist-form');
+  const dlSent = document.getElementById('dl-waitlist-sent');
+
+  dlBtn?.addEventListener('click', () => {
+    if (dlForm && dlSent) {
+      dlForm.classList.add('hidden');
+      dlSent.classList.remove('hidden');
+    }
+  });
+</script>

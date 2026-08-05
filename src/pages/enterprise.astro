@@ -1,118 +1,184 @@
 ---
 import Base from '../layouts/Base.astro';
-import Button from '../components/ui/Button.astro';
-import Card from '../components/ui/Card.astro';
-import TurnstileWidget from '../components/TurnstileWidget.astro';
+import { launchMode } from '../config';
 
-// Plain form POST (no JS needed for submit/errors); Turnstile itself needs
-// JS — the noscript block points to email.
-export const prerender = false;
+const isBeta = launchMode === 'beta';
 
-const state = Astro.url.searchParams.get('state');
-const stateMessage =
-  state === 'invalid'
-    ? 'Check the form — name, work email, and company are required.'
-    : state === 'captcha'
-      ? 'Captcha check didn’t go through. Try again, or email sales@tunnex.io.'
-      : state === 'rate_limited'
-        ? 'Too many requests. Try again in a minute, or email sales@tunnex.io.'
-        : null;
-
-const inputClasses =
-  'rounded-md border border-border bg-surface-raised px-3 py-2.5 text-base text-text placeholder:text-text-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary sm:text-sm';
+const entFeatures = [
+  'SSO with Google Workspace and Microsoft Entra ID',
+  'IdP group sync: directory groups become policy subjects',
+  'Zero Trust access policies: default-deny, port-scoped, per-user',
+  'Time-boxed grants that expire on their own',
+  'Device approval gate and posture checks',
+  'Org-wide MFA enforcement',
+  'Multi-org (multi-tenant) management',
+  'Kubernetes operator, CRDs, and machine principals',
+  'Priority support'
+];
 ---
 
 <Base
-  title={stateMessage ? 'Error — Tunnex — Contact sales' : 'Tunnex — Contact sales'}
-  description="Talk to Tunnex about Enterprise: SSO, Zero Trust policies, multi-org management, and priority support."
+  title="Contact Sales: Tunnex Enterprise"
+  description="Talk to Tunnex about Enterprise: seat pricing, procurement paperwork, air-gapped deployments, or a technical review of the architecture."
 >
-  <section class="mx-auto grid w-full max-w-6xl gap-10 px-4 py-16 sm:px-6 md:grid-cols-2 md:py-20">
-    <div class="flex flex-col gap-4 self-start md:sticky md:top-24">
-      <h1 class="text-4xl font-bold tracking-tight">Talk to sales</h1>
-      <p class="max-w-md text-lg text-text-muted">
-        Tell us about your team and we’ll come back within one business day — a human, not a
-        sequence.
-      </p>
-      <ul class="flex flex-col gap-2 text-sm text-text-muted">
-        <li>· Enterprise pricing, quoted by team size</li>
-        <li>· Questions about the 14-day trial</li>
-        <li>· MSP / multi-org deployments</li>
-      </ul>
-      <p class="text-sm text-text-muted">
-        Prefer email? Write to{' '}
-        <a href="mailto:sales@tunnex.io" class="font-semibold text-link">sales@tunnex.io</a>.
-      </p>
+  <div class="mx-auto max-w-[1180px] px-7 py-18 md:py-[72px] flex flex-col gap-10 max-[620px]:px-[18px]">
+    <!-- Header -->
+    <div class="flex flex-col gap-3.5 max-w-[66ch]">
+      <div class="tnx-eyebrow">CONTACT SALES</div>
+      <h1 class="tnx-h1">Talk to us about Enterprise</h1>
+      <div class="font-normal text-[16px] leading-[1.68] text-[#A9A9A6] text-pretty">
+        Seat pricing, procurement paperwork, air-gapped deployments, or a technical review of the architecture. Tell us what you need and a human replies: no sequence, no drip.
+      </div>
     </div>
 
-    <Card class="p-5 sm:p-8">
-      <form method="post" action="/api/enterprise-lead" class="flex flex-col gap-4">
-        {
-          stateMessage && (
-            <p
-              role="alert"
-              tabindex="-1"
-              autofocus
-              class="rounded-md border border-error bg-error/10 px-3 py-2 text-sm font-medium text-error"
+    <div class="t-g2 grid grid-cols-1 md:grid-cols-[1.1fr_0.9fr] gap-3.5 items-start">
+      <!-- Left Column: Form -->
+      <div class="t-card border border-white/9 rounded-lg bg-[rgba(18,18,18,0.72)] p-6.5 flex flex-col gap-4">
+        <div id="lead-form-container">
+          {!isBeta && (
+            <div class="border border-[#C9989C]/30 bg-[#B03A45]/12 rounded-md p-3.5 mb-4 flex items-center gap-3">
+              <div class="size-2 rounded-full bg-[#B03A45] shrink-0 animate-pulse"></div>
+              <div class="font-normal text-[12.5px] leading-[1.5] text-[#EDEDEB]">
+                <strong class="font-semibold text-[#F5F5F5]">PRELAUNCH · COMING SOON:</strong> We are currently building Tunnex! Submit your details to request enterprise access for the upcoming Public Beta.
+              </div>
+            </div>
+          )}
+          <form id="lead-form" class="flex flex-col gap-4" novalidate>
+            <div class="t-g2 grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div class="flex flex-col gap-1.75">
+                <label for="tnxName" class="font-mono font-semibold text-[9px] tracking-[0.16em] text-[#5E5E5B] uppercase">NAME</label>
+                <input
+                  id="tnxName"
+                  type="text"
+                  placeholder="Jane Okafor"
+                  class="bg-[#121212] border border-[#2E2E2E] rounded-md px-3.25 py-3 font-normal text-[14px] text-[#EDEDEB] shadow-[inset_0_1px_3px_rgba(0,0,0,0.22)] focus:outline-none"
+                />
+              </div>
+              <div class="flex flex-col gap-1.75">
+                <label for="tnxCo" class="font-mono font-semibold text-[9px] tracking-[0.16em] text-[#5E5E5B] uppercase">COMPANY</label>
+                <input
+                  id="tnxCo"
+                  type="text"
+                  placeholder="Acme"
+                  class="bg-[#121212] border border-[#2E2E2E] rounded-md px-3.25 py-3 font-normal text-[14px] text-[#EDEDEB] shadow-[inset_0_1px_3px_rgba(0,0,0,0.22)] focus:outline-none"
+                />
+              </div>
+              <div class="flex flex-col gap-1.75">
+                <label for="tnxMail" class="font-mono font-semibold text-[9px] tracking-[0.16em] text-[#5E5E5B] uppercase">WORK EMAIL</label>
+                <input
+                  id="tnxMail"
+                  type="email"
+                  placeholder="jane@acme.com"
+                  class="bg-[#121212] border border-[#2E2E2E] rounded-md px-3.25 py-3 font-normal text-[14px] text-[#EDEDEB] shadow-[inset_0_1px_3px_rgba(0,0,0,0.22)] focus:outline-none"
+                />
+              </div>
+              <div class="flex flex-col gap-1.75">
+                <label for="tnxSeats" class="font-mono font-semibold text-[9px] tracking-[0.16em] text-[#5E5E5B] uppercase">SEATS</label>
+                <input
+                  id="tnxSeats"
+                  type="text"
+                  placeholder="120"
+                  class="bg-[#121212] border border-[#2E2E2E] rounded-md px-3.25 py-3 font-normal text-[14px] text-[#EDEDEB] shadow-[inset_0_1px_3px_rgba(0,0,0,0.22)] focus:outline-none"
+                />
+              </div>
+            </div>
+
+            <div class="flex flex-col gap-1.75">
+              <label for="tnxMsg" class="font-mono font-semibold text-[9px] tracking-[0.16em] text-[#5E5E5B] uppercase">MESSAGE</label>
+              <textarea
+                id="tnxMsg"
+                rows="4"
+                placeholder="What are you trying to solve?"
+                class="bg-[#121212] border border-[#2E2E2E] rounded-md px-3.25 py-3 font-normal text-[14px] leading-[1.6] text-[#EDEDEB] shadow-[inset_0_1px_3px_rgba(0,0,0,0.22)] resize-y focus:outline-none"
+              ></textarea>
+            </div>
+
+            <!-- Turnstile Mock -->
+            <div class="flex items-center gap-2.75 bg-[rgba(18,18,18,0.72)] border border-white/[0.09] rounded-lg p-3.25 px-3.75">
+              <div class="size-5 rounded border border-[#3A3A3A] bg-[#151515] shrink-0"></div>
+              <div class="font-normal text-[12.5px] text-[#6E6E6B]">Verify you are human</div>
+              <div class="ml-auto font-mono font-medium text-[8.5px] tracking-[0.1em] text-[#454542]">TURNSTILE</div>
+            </div>
+
+            <button
+              id="lead-submit-btn"
+              type="submit"
+              class="t-btn t-prim w-full text-center rounded-[9px] px-5 py-3.5 font-semibold text-[14px] cursor-pointer"
             >
-              {stateMessage}
-            </p>
-          )
-        }
-        <div class="flex flex-col gap-1.5">
-          <label for="lead-name" class="text-sm font-medium">Name</label>
-          <input id="lead-name" name="name" required maxlength="120" class={inputClasses} />
+              Send to sales
+            </button>
+          </form>
         </div>
-        <div class="flex flex-col gap-1.5">
-          <label for="lead-email" class="text-sm font-medium">Work email</label>
-          <input
-            id="lead-email"
-            name="email"
-            type="email"
-            required
-            autocomplete="email"
-            placeholder="you@company.com"
-            class={inputClasses}
-          />
+
+        <div id="lead-sent-box" class="hidden flex flex-col gap-2.75">
+          <div class="flex items-center gap-2.5">
+            <span class="lic size-4.5 shrink-0 text-[#6E9C7C]">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-full"><path d="M21.801 10A10 10 0 1 1 17 3.335"/><path d="m9 11 3 3L22 4"/></svg>
+            </span>
+            <div class="font-semibold text-[16px] text-[#F5F5F5]">Thanks — that reached sales@tunnex.io</div>
+          </div>
+          <div class="font-normal text-[14px] leading-[1.66] text-[#858582]">
+            We reply within one business day. If it is urgent, mail sales@tunnex.io directly and reference your company name.
+          </div>
+          <button
+            id="lead-reset-btn"
+            type="button"
+            class="t-btn t-sec self-start rounded-[9px] px-4.5 py-2.75 font-semibold text-[13px] cursor-pointer mt-1"
+          >
+            Send another
+          </button>
         </div>
-        <div class="flex flex-col gap-1.5">
-          <label for="lead-company" class="text-sm font-medium">Company</label>
-          <input id="lead-company" name="company" required maxlength="200" class={inputClasses} />
+      </div>
+
+      <!-- Right Column: Enterprise Features & Trial Box -->
+      <div class="flex flex-col gap-3.5">
+        <div class="bg-[rgba(18,18,18,0.72)] border border-white/[0.09] rounded-lg p-5 flex flex-col gap-2.75">
+          <div class="font-mono font-semibold text-[9px] tracking-[0.16em] text-[#5E5E5B] uppercase mb-1">WHAT ENTERPRISE ADDS</div>
+          {
+            entFeatures.map((f) => (
+              <div class="flex items-start gap-2.5">
+                <span class="lic size-3.75 shrink-0 text-[#6E9C7C] mt-0.5">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-full"><path d="M21.801 10A10 10 0 1 1 17 3.335"/><path d="m9 11 3 3L22 4"/></svg>
+                </span>
+                <span class="font-normal text-[13.5px] leading-[1.55] text-[#A9A9A6]">{f}</span>
+              </div>
+            ))
+          }
         </div>
-        <div class="flex flex-col gap-1.5">
-          <label for="lead-seats" class="text-sm font-medium">
-            Seats <span class="font-normal text-text-muted">(optional)</span>
-          </label>
-          <input
-            id="lead-seats"
-            name="seats"
-            type="text"
-            inputmode="numeric"
-            pattern="[0-9]*"
-            class={inputClasses}
-          />
+
+        <div class="bg-[rgba(18,18,18,0.72)] border border-white/[0.09] rounded-lg p-5 flex flex-col gap-2">
+          <div class="font-semibold text-[13.5px] text-[#EDEDEB]">Rather try it first?</div>
+          <div class="font-normal text-[13px] leading-[1.6] text-[#858582]">The 14-day trial needs no card and no call.</div>
+          <a
+            href="/trial"
+            class="t-btn t-sec self-start rounded-[9px] px-4.5 py-2.75 font-semibold text-[13px] mt-1"
+          >
+            Start 14-day trial
+          </a>
         </div>
-        <div class="flex flex-col gap-1.5">
-          <label for="lead-message" class="text-sm font-medium">
-            Message <span class="font-normal text-text-muted">(optional)</span>
-          </label>
-          <textarea
-            id="lead-message"
-            name="message"
-            rows="4"
-            maxlength="2000"
-            placeholder="What are you building, and what does your network look like?"
-            class={inputClasses}></textarea>
-        </div>
-        <noscript>
-          <p class="text-sm text-text-muted">
-            The captcha needs JavaScript. Without it, email
-            <a href="mailto:sales@tunnex.io" class="font-semibold text-link">sales@tunnex.io</a>
-            instead.
-          </p>
-        </noscript>
-        <TurnstileWidget />
-        <Button variant="primary" class="w-full">Send to sales</Button>
-      </form>
-    </Card>
-  </section>
+      </div>
+    </div>
+  </div>
 </Base>
+
+<script is:inline>
+  const form = document.getElementById('lead-form');
+  const formBox = document.getElementById('lead-form-container');
+  const sentBox = document.getElementById('lead-sent-box');
+  const resetBtn = document.getElementById('lead-reset-btn');
+
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (formBox && sentBox) {
+      formBox.classList.add('hidden');
+      sentBox.classList.remove('hidden');
+    }
+  });
+
+  resetBtn?.addEventListener('click', () => {
+    if (formBox && sentBox) {
+      sentBox.classList.add('hidden');
+      formBox.classList.remove('hidden');
+    }
+  });
+</script>

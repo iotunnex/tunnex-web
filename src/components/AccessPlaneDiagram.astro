@@ -1,0 +1,326 @@
+---
+// Access Plane Diagram (Hero visual) - Section 1
+---
+
+<div class="flex flex-col gap-4 min-w-0" id="access-plane-container">
+  <div class="t-diag w-full overflow-x-auto">
+    <svg
+      viewBox="0 0 1000 400"
+      role="img"
+      aria-labelledby="access-plane-title"
+      aria-describedby="access-plane-desc"
+      class="w-full h-auto block select-none"
+      id="access-plane-svg"
+    >
+      <title id="access-plane-title">Tunnex access plane: humans, workloads, and AI agents reaching named destinations through one policy boundary</title>
+      <desc id="access-plane-desc">
+        Three principals on the left (human, workload, and AI agent) connect through a single central policy core to five destinations on the right: an SSH server, PostgreSQL, Kubernetes, internal APIs, and an MCP server. One principal and one destination are highlighted at a time.
+      </desc>
+
+      <defs>
+        <filter id="tnxPlaneGlow" x="-70%" y="-70%" width="240%" height="240%">
+          <feGaussianBlur stdDeviation="5" result="b"></feGaussianBlur>
+          <feMerge>
+            <feMergeNode in="b"></feMergeNode>
+            <feMergeNode in="SourceGraphic"></feMergeNode>
+          </feMerge>
+        </filter>
+
+        <radialGradient id="tnxCoreGlow" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#C9C9C4" stop-opacity="0.22"></stop>
+          <stop offset="70%" stop-color="#C9C9C4" stop-opacity="0.05"></stop>
+          <stop offset="100%" stop-color="#C9C9C4" stop-opacity="0"></stop>
+        </radialGradient>
+      </defs>
+
+      <!-- Principal Paths to Core -->
+      <!-- P0: Human (y=90 -> 200) -->
+      <g id="p-edge-0">
+        <path d="M144 90 C 262 90 300 200 404 200" fill="none" stroke="#EDEDEB" stroke-width="1.9" class="t-edge-base"></path>
+        <path d="M144 90 C 262 90 300 200 404 200" fill="none" stroke="#EDEDEB" stroke-width="3.4" stroke-linecap="round" pathLength="100" class="t-trail"></path>
+        <path d="M144 90 C 262 90 300 200 404 200" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" pathLength="100" filter="url(#tnxPlaneGlow)" class="t-pulse"></path>
+      </g>
+
+      <!-- P1: Workload (y=200 -> 200) -->
+      <g id="p-edge-1">
+        <path d="M144 200 L404 200" fill="none" stroke="#454542" stroke-width="1" stroke-dasharray="3 8" stroke-linecap="round" opacity="0.5" class="t-edge-base"></path>
+        <path d="M144 200 L404 200" fill="none" stroke="#454542" stroke-width="3.4" stroke-linecap="round" pathLength="100" class="t-trail opacity-0"></path>
+        <path d="M144 200 L404 200" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" pathLength="100" filter="url(#tnxPlaneGlow)" class="t-pulse opacity-0"></path>
+      </g>
+
+      <!-- P2: AI Agent (y=310 -> 200) -->
+      <g id="p-edge-2">
+        <path d="M144 310 C 262 310 300 200 404 200" fill="none" stroke="#454542" stroke-width="1" stroke-dasharray="3 8" stroke-linecap="round" opacity="0.5" class="t-edge-base"></path>
+        <path d="M144 310 C 262 310 300 200 404 200" fill="none" stroke="#454542" stroke-width="3.4" stroke-linecap="round" pathLength="100" class="t-trail opacity-0"></path>
+        <path d="M144 310 C 262 310 300 200 404 200" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" pathLength="100" filter="url(#tnxPlaneGlow)" class="t-pulse opacity-0"></path>
+      </g>
+
+      <!-- Destination Paths from Core -->
+      <!-- D0: SSH Server (y=200 -> 76) -->
+      <g id="d-edge-0">
+        <path d="M536 200 C 646 200 664 76 776 76" fill="none" stroke="#454542" stroke-width="1" stroke-dasharray="3 8" stroke-linecap="round" opacity="0.5" class="t-edge-base"></path>
+        <path d="M536 200 C 646 200 664 76 776 76" fill="none" stroke="#454542" stroke-width="3.4" stroke-linecap="round" pathLength="100" class="t-trail opacity-0"></path>
+        <path d="M536 200 C 646 200 664 76 776 76" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" pathLength="100" filter="url(#tnxPlaneGlow)" class="t-pulse opacity-0"></path>
+      </g>
+
+      <!-- D1: PostgreSQL (y=200 -> 138) -->
+      <g id="d-edge-1">
+        <path d="M536 200 C 652 200 672 138 776 138" fill="none" stroke="#454542" stroke-width="1" stroke-dasharray="3 8" stroke-linecap="round" opacity="0.5" class="t-edge-base"></path>
+        <path d="M536 200 C 652 200 672 138 776 138" fill="none" stroke="#454542" stroke-width="3.4" stroke-linecap="round" pathLength="100" class="t-trail opacity-0"></path>
+        <path d="M536 200 C 652 200 672 138 776 138" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" pathLength="100" filter="url(#tnxPlaneGlow)" class="t-pulse opacity-0"></path>
+      </g>
+
+      <!-- D2: Kubernetes (y=200 -> 200) -->
+      <g id="d-edge-2">
+        <path d="M536 200 L776 200" fill="none" stroke="#EDEDEB" stroke-width="1.9" class="t-edge-base"></path>
+        <path d="M536 200 L776 200" fill="none" stroke="#EDEDEB" stroke-width="3.4" stroke-linecap="round" pathLength="100" class="t-trail"></path>
+        <path d="M536 200 L776 200" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" pathLength="100" filter="url(#tnxPlaneGlow)" class="t-pulse"></path>
+      </g>
+
+      <!-- D3: Internal APIs (y=200 -> 262) -->
+      <g id="d-edge-3">
+        <path d="M536 200 C 652 200 672 262 776 262" fill="none" stroke="#454542" stroke-width="1" stroke-dasharray="3 8" stroke-linecap="round" opacity="0.5" class="t-edge-base"></path>
+        <path d="M536 200 C 652 200 672 262 776 262" fill="none" stroke="#454542" stroke-width="3.4" stroke-linecap="round" pathLength="100" class="t-trail opacity-0"></path>
+        <path d="M536 200 C 652 200 672 262 776 262" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" pathLength="100" filter="url(#tnxPlaneGlow)" class="t-pulse opacity-0"></path>
+      </g>
+
+      <!-- D4: MCP Server (y=200 -> 324) -->
+      <g id="d-edge-4">
+        <path d="M536 200 C 646 200 664 324 776 324" fill="none" stroke="#454542" stroke-width="1" stroke-dasharray="3 8" stroke-linecap="round" opacity="0.5" class="t-edge-base"></path>
+        <path d="M536 200 C 646 200 664 324 776 324" fill="none" stroke="#454542" stroke-width="3.4" stroke-linecap="round" pathLength="100" class="t-trail opacity-0"></path>
+        <path d="M536 200 C 646 200 664 324 776 324" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" pathLength="100" filter="url(#tnxPlaneGlow)" class="t-pulse opacity-0"></path>
+      </g>
+
+      <!-- Policy Core Stack (x=470, y=200) -->
+      <g id="policy-core">
+        <circle cx="470" cy="200" r="68" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="1.1" class="t-ring"></circle>
+        <circle cx="470" cy="200" r="68" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="1.1" class="t-ring t-ring2"></circle>
+        <circle cx="470" cy="200" r="98" fill="none" stroke="rgba(255,255,255,.05)"></circle>
+        <circle cx="470" cy="200" r="96" fill="url(#tnxCoreGlow)"></circle>
+        <circle cx="470" cy="200" r="66" fill="rgba(16,16,16,.96)" stroke="rgba(255,255,255,.16)" stroke-width="1.4"></circle>
+
+        <!-- Official Tunnex Logo Emblem inside core -->
+        <g transform="translate(442,173) scale(0.0971)">
+          <path d="M41.2143 0H535.786C563.262 0 577 13.6049 577 40.8148V142.852C577 170.062 563.262 183.667 535.786 183.667H381.232V428.556L288.5 551L195.768 428.556V183.667H41.2143C13.7381 183.667 0 170.062 0 142.852V40.8148C0 13.6049 13.7381 0 41.2143 0Z" fill="url(#tnxMarkGradA)"></path>
+          <path d="M281.292 0.379333H308.064L250.402 88.0104H223.63L281.292 0.379333Z" fill="#101010"></path>
+          <path d="M100.067 88.0103H481.052L321.45 238.817V436.497H255.55V238.817L100.067 88.0103Z" fill="#101010"></path>
+          <g stroke="#FFFFFF" stroke-width="5" fill="none">
+            <path d="M100.067 88.0103L288.5 246.969"></path>
+            <path d="M481.052 88.0103L288.5 246.969"></path>
+            <path d="M288.5 246.969V467.066"></path>
+          </g>
+          <g fill="#FFFFFF">
+            <circle cx="100.067" cy="88.0103" r="19.5"></circle>
+            <circle cx="481.052" cy="88.0103" r="19.5"></circle>
+            <circle cx="288.5" cy="246.969" r="19.5"></circle>
+            <circle cx="288.5" cy="467.066" r="19.5"></circle>
+          </g>
+        </g>
+        <linearGradient id="tnxMarkGradA" x1="442" y1="173" x2="498" y2="227" gradientUnits="userSpaceOnUse">
+          <stop stop-color="#FF5A63"></stop>
+          <stop offset="0.45" stop-color="#E01B2D"></stop>
+          <stop offset="1" stop-color="#8E0F1C"></stop>
+        </linearGradient>
+      </g>
+
+      <!-- Principals (Left) -->
+      <!-- P0: Human -->
+      <g id="p-node-0" class="cursor-pointer" data-principal="0">
+        <rect x="96" y="66" width="48" height="48" rx="13" fill="rgba(22,22,22,0.94)" stroke="#EDEDEB" stroke-width="1.4" class="node-box"></rect>
+        <g fill="none" stroke="#EDEDEB" stroke-width="1.6" stroke-linecap="round" class="node-icon">
+          <circle cx="120" cy="83" r="5.6"></circle>
+          <path d="M110 102c0-5.5 4.5-8.6 10-8.6s10 3.1 10 8.6"></path>
+        </g>
+        <text x="120" y="132" text-anchor="middle" font-family="var(--tnx-mono)" font-size="17" font-weight="600" letter-spacing="2.1" fill="#EDEDEB" class="node-label">HUMAN</text>
+      </g>
+
+      <!-- P1: Workload -->
+      <g id="p-node-1" class="cursor-pointer" data-principal="1">
+        <rect x="96" y="176" width="48" height="48" rx="13" fill="rgba(22,22,22,0.94)" stroke="rgba(255,255,255,0.14)" stroke-width="1.4" class="node-box"></rect>
+        <g fill="none" stroke="#5E5E5B" stroke-width="1.6" stroke-linecap="round" class="node-icon">
+          <rect x="110" y="190" width="20" height="20" rx="4"></rect>
+          <rect x="116" y="196" width="8" height="8" rx="2"></rect>
+        </g>
+        <text x="120" y="242" text-anchor="middle" font-family="var(--tnx-mono)" font-size="17" font-weight="600" letter-spacing="2.1" fill="#4A4A48" class="node-label">WORKLOAD</text>
+      </g>
+
+      <!-- P2: AI Agent (Official Claude Symbol Logo) -->
+      <g id="p-node-2" class="cursor-pointer" data-principal="2">
+        <rect x="96" y="286" width="48" height="48" rx="13" fill="rgba(22,22,22,0.94)" stroke="rgba(255,255,255,0.14)" stroke-width="1.4" class="node-box"></rect>
+        <g transform="translate(108, 298) scale(0.24)">
+          <path d="m19.6 66.5 19.7-11 .3-1-.3-.5h-1l-3.3-.2-11.2-.3L14 53l-9.5-.5-2.4-.5L0 49l.2-1.5 2-1.3 2.9.2 6.3.5 9.5.6 6.9.4L38 49.1h1.6l.2-.7-.5-.4-.4-.4L29 41l-10.6-7-5.6-4.1-3-2-1.5-2-.6-4.2 2.7-3 3.7.3.9.2 3.7 2.9 8 6.1L37 36l1.5 1.2.6-.4.1-.3-.7-1.1L33 25l-6-10.4-2.7-4.3-.7-2.6c-.3-1-.4-2-.4-3l3-4.2L28 0l4.2.6L33.8 2l2.6 6 4.1 9.3L47 29.9l2 3.8 1 3.4.3 1h.7v-.5l.5-7.2 1-8.7 1-11.2.3-3.2 1.6-3.8 3-2L61 2.6l2 2.9-.3 1.8-1.1 7.7L59 27.1l-1.5 8.2h.9l1-1.1 4.1-5.4 6.9-8.6 3-3.5L77 13l2.3-1.8h4.3l3.1 4.7-1.4 4.9-4.4 5.6-3.7 4.7-5.3 7.1-3.2 5.7.3.4h.7l12-2.6 6.4-1.1 7.6-1.3 3.5 1.6.4 1.6-1.4 3.4-8.2 2-9.6 2-14.3 3.3-.2.1.2.3 6.4.6 2.8.2h6.8l12.6 1 3.3 2 1.9 2.7-.3 2-5.1 2.6-6.8-1.6-16-3.8-5.4-1.3h-.8v.4l4.6 4.5 8.3 7.5L89 80.1l.5 2.4-1.3 2-1.4-.2-9.2-7-3.6-3-8-6.8h-.5v.7l1.8 2.7 9.8 14.7.5 4.5-.7 1.4-2.6 1-2.7-.6-5.8-8-6-9-4.7-8.2-.5.4-2.9 30.2-1.3 1.5-3 1.2-2.5-2-1.4-3 1.4-6.2 1.6-8 1.3-6.4 1.2-7.9.7-2.6v-.2H49L43 72l-9 12.3-7.2 7.6-1.7.7-3-1.5.3-2.8L24 86l10-12.8 6-7.9 4-4.6-.1-.5h-.3L17.2 77.4l-4.7.6-2-2 .2-3 1-1 8-5.5Z" fill="#5E5E5B" class="node-icon"></path>
+        </g>
+        <text x="120" y="352" text-anchor="middle" font-family="var(--tnx-mono)" font-size="17" font-weight="600" letter-spacing="2.1" fill="#4A4A48" class="node-label">AI AGENT</text>
+      </g>
+
+      <!-- Destinations (Right) -->
+      <!-- D0: SSH Server -->
+      <g id="d-node-0" data-dest="0">
+        <rect x="776" y="54" width="44" height="44" rx="12" fill="rgba(22,22,22,0.94)" stroke="rgba(255,255,255,0.14)" stroke-width="1.3" class="node-box"></rect>
+        <g fill="none" stroke="#5E5E5B" stroke-width="1.5" stroke-linecap="round" class="node-icon">
+          <path d="M789 70l4 6-4 6"></path>
+          <path d="M799 82h6"></path>
+        </g>
+        <text x="832" y="81" font-family="var(--tnx-mono)" font-size="16.5" font-weight="600" letter-spacing="1.9" fill="#858582" class="node-label">SSH SERVER</text>
+      </g>
+
+      <!-- D1: PostgreSQL -->
+      <g id="d-node-1" data-dest="1">
+        <rect x="776" y="116" width="44" height="44" rx="12" fill="rgba(22,22,22,0.94)" stroke="rgba(255,255,255,0.14)" stroke-width="1.3" class="node-box"></rect>
+        <g fill="none" stroke="#5E5E5B" stroke-width="1.5" stroke-linecap="round" class="node-icon">
+          <ellipse cx="798" cy="130" rx="9" ry="3.6"></ellipse>
+          <path d="M789 130v14c0 2 4 3.6 9 3.6s9-1.6 9-3.6v-14"></path>
+        </g>
+        <text x="832" y="143" font-family="var(--tnx-mono)" font-size="16.5" font-weight="600" letter-spacing="1.9" fill="#858582" class="node-label">POSTGRESQL</text>
+      </g>
+
+      <!-- D2: Kubernetes -->
+      <g id="d-node-2" data-dest="2">
+        <rect x="776" y="178" width="44" height="44" rx="12" fill="rgba(22,22,22,0.94)" stroke="#EDEDEB" stroke-width="1.3" class="node-box"></rect>
+        <g fill="none" stroke="#EDEDEB" stroke-width="1.5" stroke-linecap="round" class="node-icon">
+          <path d="M798 189l8 4.6v9.2l-8 4.6-8-4.6v-9.2z"></path>
+          <circle cx="798" cy="198" r="2.6"></circle>
+        </g>
+        <text x="832" y="205" font-family="var(--tnx-mono)" font-size="16.5" font-weight="600" letter-spacing="1.9" fill="#EDEDEB" class="node-label">KUBERNETES</text>
+      </g>
+
+      <!-- D3: Internal APIs -->
+      <g id="d-node-3" data-dest="3">
+        <rect x="776" y="240" width="44" height="44" rx="12" fill="rgba(22,22,22,0.94)" stroke="rgba(255,255,255,0.14)" stroke-width="1.3" class="node-box"></rect>
+        <g fill="none" stroke="#5E5E5B" stroke-width="1.5" stroke-linecap="round" class="node-icon">
+          <rect x="789" y="252" width="18" height="20" rx="3.5"></rect>
+          <path d="M793 258h10"></path>
+          <path d="M793 263h10"></path>
+          <path d="M793 268h6"></path>
+        </g>
+        <text x="832" y="267" font-family="var(--tnx-mono)" font-size="16.5" font-weight="600" letter-spacing="1.9" fill="#858582" class="node-label">INTERNAL APIS</text>
+      </g>
+
+      <!-- D4: MCP Server -->
+      <g id="d-node-4" data-dest="4">
+        <rect x="776" y="302" width="44" height="44" rx="12" fill="rgba(22,22,22,0.94)" stroke="rgba(255,255,255,0.14)" stroke-width="1.3" class="node-box"></rect>
+        <g fill="none" stroke="#5E5E5B" stroke-width="1.5" stroke-linecap="round" class="node-icon">
+          <path d="M798 313l8 4v7c0 5-3.4 7.6-8 9-4.6-1.4-8-4-8-9v-7z"></path>
+        </g>
+        <text x="832" y="329" font-family="var(--tnx-mono)" font-size="16.5" font-weight="600" letter-spacing="1.9" fill="#858582" class="node-label">MCP SERVER</text>
+      </g>
+    </svg>
+  </div>
+
+  <!-- Diagram Captions (Centered) -->
+  <div class="flex flex-col items-center gap-[3px] mt-1.5 text-center">
+    <div class="font-semibold text-[17px] text-[#EDEDEB]" id="access-caption-title">SSO-verified people, device-bound tunnels</div>
+    <div class="font-normal text-[15px] text-[#858582]" id="access-caption-sub">Revoke once: revoked everywhere</div>
+  </div>
+</div>
+
+<script is:inline>
+  // Access plane interactive highlight logic from reference prototype
+  const steps = [
+    { p: 0, d: 2, title: 'SSO-verified people, device-bound tunnels', sub: 'Revoke once: revoked everywhere' },
+    { p: 1, d: 3, title: 'Service identity for gateways and CI', sub: 'Default-deny between named endpoints' },
+    { p: 2, d: 4, title: 'Owned AI agent principals, scoped MCP access', sub: 'Shipped · Time-boxed grants & network-level default-deny' }
+  ];
+
+  let current = 0;
+  let timer = null;
+
+  function updateHighlight(idx) {
+    const step = steps[idx];
+    if (!step) return;
+
+    // Update Principals
+    for (let i = 0; i < 3; i++) {
+      const node = document.getElementById(`p-node-${i}`);
+      const edge = document.getElementById(`p-edge-${i}`);
+      const isSel = i === step.p;
+      const isAgent = i === 2;
+
+      if (node) {
+        const box = node.querySelector('.node-box');
+        const icon = node.querySelector('.node-icon');
+        const label = node.querySelector('.node-label');
+        if (box) box.setAttribute('stroke', isSel ? (isAgent ? 'rgba(196,98,108,0.5)' : 'rgba(255,255,255,0.4)') : 'rgba(255,255,255,0.14)');
+        if (icon) icon.setAttribute('stroke', isSel ? (isAgent ? '#C4626C' : '#EDEDEB') : '#5E5E5B');
+        if (label) label.setAttribute('fill', isSel ? (isAgent ? '#C4626C' : '#EDEDEB') : '#4A4A48');
+      }
+
+      if (edge) {
+        const base = edge.querySelector('.t-edge-base');
+        const trail = edge.querySelector('.t-trail');
+        const pulse = edge.querySelector('.t-pulse');
+
+        if (isSel) {
+          if (base) { base.setAttribute('stroke', isAgent ? '#C4626C' : '#EDEDEB'); base.setAttribute('stroke-width', '1.9'); base.removeAttribute('stroke-dasharray'); base.style.opacity = '1'; }
+          if (trail) { trail.setAttribute('stroke', isAgent ? '#C4626C' : '#EDEDEB'); trail.classList.remove('opacity-0'); trail.style.display = 'block'; }
+          if (pulse) { pulse.classList.remove('opacity-0'); pulse.style.display = 'block'; }
+        } else {
+          if (base) { base.setAttribute('stroke', '#454542'); base.setAttribute('stroke-width', '1'); base.setAttribute('stroke-dasharray', '3 8'); base.style.opacity = '0.5'; }
+          if (trail) { trail.classList.add('opacity-0'); trail.style.display = 'none'; }
+          if (pulse) { pulse.classList.add('opacity-0'); pulse.style.display = 'none'; }
+        }
+      }
+    }
+
+    // Update Destinations
+    for (let j = 0; j < 5; j++) {
+      const node = document.getElementById(`d-node-${j}`);
+      const edge = document.getElementById(`d-edge-${j}`);
+      const isSel = j === step.d;
+
+      if (node) {
+        const box = node.querySelector('.node-box');
+        const icon = node.querySelector('.node-icon');
+        const label = node.querySelector('.node-label');
+        if (box) box.setAttribute('stroke', isSel ? 'rgba(255,255,255,0.4)' : 'rgba(255,255,255,0.14)');
+        if (icon) icon.setAttribute('stroke', isSel ? '#EDEDEB' : '#5E5E5B');
+        if (label) label.setAttribute('fill', isSel ? '#EDEDEB' : '#858582');
+      }
+
+      if (edge) {
+        const base = edge.querySelector('.t-edge-base');
+        const trail = edge.querySelector('.t-trail');
+        const pulse = edge.querySelector('.t-pulse');
+
+        if (isSel) {
+          if (base) { base.setAttribute('stroke', '#EDEDEB'); base.setAttribute('stroke-width', '1.9'); base.removeAttribute('stroke-dasharray'); base.style.opacity = '1'; }
+          if (trail) { trail.classList.remove('opacity-0'); trail.style.display = 'block'; }
+          if (pulse) { pulse.classList.remove('opacity-0'); pulse.style.display = 'block'; }
+        } else {
+          if (base) { base.setAttribute('stroke', '#454542'); base.setAttribute('stroke-width', '1'); base.setAttribute('stroke-dasharray', '3 8'); base.style.opacity = '0.5'; }
+          if (trail) { trail.classList.add('opacity-0'); trail.style.display = 'none'; }
+          if (pulse) { pulse.classList.add('opacity-0'); pulse.style.display = 'none'; }
+        }
+      }
+    }
+
+    // Update Captions
+    const capTitle = document.getElementById('access-caption-title');
+    const capSub = document.getElementById('access-caption-sub');
+    if (capTitle) capTitle.textContent = step.title;
+    if (capSub) capSub.textContent = step.sub;
+  }
+
+  function nextStep() {
+    current = (current + 1) % steps.length;
+    updateHighlight(current);
+  }
+
+  // Click handler on principal nodes
+  document.querySelectorAll('[data-principal]').forEach((el) => {
+    el.addEventListener('click', () => {
+      const pIdx = parseInt(el.getAttribute('data-principal') || '0', 10);
+      const stepIdx = steps.findIndex(s => s.p === pIdx);
+      if (stepIdx !== -1) {
+        current = stepIdx;
+        updateHighlight(current);
+        clearInterval(timer);
+        timer = setInterval(nextStep, 3000);
+      }
+    });
+  });
+
+  // Start rotation
+  updateHighlight(0);
+  timer = setInterval(nextStep, 3000);
+</script>

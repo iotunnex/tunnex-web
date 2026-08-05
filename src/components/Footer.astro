@@ -3,69 +3,90 @@ import { launchMode } from '../config';
 import Logo from './Logo.astro';
 
 const year = new Date().getFullYear();
-const showGitHub = launchMode === 'beta';
+const isBeta = launchMode === 'beta';
+
+const productLinks = [
+  { href: '/pricing', label: 'Pricing' },
+  { href: '/download', label: 'Download' },
+  { href: '/security', label: 'Security' },
+  { href: '/blog', label: 'Blog' },
+  { href: '/docs', label: 'Documentation' },
+  { href: '/enterprise', label: 'Contact sales' },
+];
 ---
 
-<footer class="mt-auto border-t border-border">
-  <div class="mx-auto grid max-w-6xl gap-8 px-4 py-10 sm:grid-cols-2 sm:px-6 md:grid-cols-4">
-    <div class="sm:col-span-2 md:col-span-1">
-      <p class="text-text">
-        <Logo class="h-5 w-auto" />
-        <span class="sr-only">Tunnex</span>
-      </p>
-      <p class="mt-2 max-w-xs text-sm font-medium">
-        Connect everything. <span class="text-primary">Trust nothing.</span>
-      </p>
+<footer class="mt-auto border-t border-[var(--tnx-line-1)] bg-[rgba(13,13,13,0.5)]">
+  <div class="mx-auto max-w-[1180px] px-7 pt-[56px] pb-[40px] max-[620px]:px-[18px]">
+    <div class="t-ftr grid grid-cols-1 sm:grid-cols-2 md:grid-cols-[1.4fr_1fr_1fr_1fr] gap-[40px]">
+      <!-- Column 1: Brand & Tagline -->
+      <div class="flex flex-col gap-3">
+        <a href="/" aria-label="Tunnex — Home" class="inline-flex">
+          <Logo variant="lockup" class="h-3.5 w-auto" />
+        </a>
+        <div class="font-normal text-[13px] leading-[1.6] text-[#6E6E6B]">
+          Connect everything. Trust nothing.
+        </div>
+      </div>
+
+      <!-- Column 2: Product Links -->
+      <div class="flex flex-col gap-2.75">
+        <div class="font-mono font-semibold text-[9px] tracking-[0.16em] text-[#454542] uppercase">PRODUCT</div>
+        <ul class="flex flex-col gap-2">
+          {
+            productLinks.map((l) => (
+              <li>
+                <a href={l.href} class="font-sans font-normal text-[13px] text-[#858582] hover:text-[#EDEDEA] transition-colors">
+                  {l.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <!-- Column 3: Contact Links -->
+      <div class="flex flex-col gap-2.75">
+        <div class="font-mono font-semibold text-[9px] tracking-[0.16em] text-[#454542] uppercase">CONTACT</div>
+        <ul class="flex flex-col gap-2">
+          <li>
+            <a href="mailto:sales@tunnex.io" class="font-sans font-normal text-[13px] text-[#858582] hover:text-[#EDEDEA] transition-colors">
+              sales@tunnex.io
+            </a>
+          </li>
+          <li>
+            <a href="mailto:security@tunnex.io" class="font-sans font-normal text-[13px] text-[#858582] hover:text-[#EDEDEA] transition-colors">
+              security@tunnex.io
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Column 4: Legal Links -->
+      <div class="flex flex-col gap-2.75">
+        <div class="font-mono font-semibold text-[9px] tracking-[0.16em] text-[#454542] uppercase">LEGAL</div>
+        <ul class="flex flex-col gap-2">
+          <li>
+            <a href="/privacy" class="font-sans font-normal text-[13px] text-[#858582] hover:text-[#EDEDEA] transition-colors">
+              Privacy
+            </a>
+          </li>
+          <li>
+            <a href="/terms" class="font-sans font-normal text-[13px] text-[#858582] hover:text-[#EDEDEA] transition-colors">
+              Terms
+            </a>
+          </li>
+        </ul>
+      </div>
     </div>
 
-    <nav aria-label="Product">
-      <p class="text-xs font-semibold tracking-wide text-text-muted uppercase">Product</p>
-      <ul class="mt-3 flex flex-col gap-2 text-sm">
-        <li><a href="/pricing" class="text-text-muted hover:text-text">Pricing</a></li>
-        <li><a href="/download" class="text-text-muted hover:text-text">Download</a></li>
-        <li><a href="/security" class="text-text-muted hover:text-text">Security</a></li>
-        <li><a href="/blog" class="text-text-muted hover:text-text">Blog</a></li>
-        <li><a href="/docs" class="text-text-muted hover:text-text">Documentation</a></li>
-        {
-          showGitHub && (
-            <li>
-              <a href="https://github.com/iotunnex" class="text-text-muted hover:text-text">
-                GitHub
-              </a>
-            </li>
-          )
-        }
-      </ul>
-    </nav>
-
-    <nav aria-label="Contact">
-      <p class="text-xs font-semibold tracking-wide text-text-muted uppercase">Contact</p>
-      <ul class="mt-3 flex flex-col gap-2 text-sm">
-        <li>
-          <a href="mailto:sales@tunnex.io" class="text-text-muted hover:text-text">
-            sales@tunnex.io
-          </a>
-        </li>
-        <li>
-          <a href="mailto:security@tunnex.io" class="text-text-muted hover:text-text">
-            security@tunnex.io
-          </a>
-        </li>
-      </ul>
-    </nav>
-
-    <nav aria-label="Legal">
-      <p class="text-xs font-semibold tracking-wide text-text-muted uppercase">Legal</p>
-      <ul class="mt-3 flex flex-col gap-2 text-sm">
-        {/* Privacy/terms pages land in S4.3 — slots wired now. */}
-        <li><a href="/privacy" class="text-text-muted hover:text-text">Privacy</a></li>
-        <li><a href="/terms" class="text-text-muted hover:text-text">Terms</a></li>
-      </ul>
-    </nav>
-  </div>
-  <div class="border-t border-border">
-    <p class="mx-auto max-w-6xl px-4 py-4 text-xs text-text-muted sm:px-6">
-      © {year} Tunnex. All rights reserved.
-    </p>
+    <!-- Bottom Copyright & Mode Bar -->
+    <div class="mt-10 pt-5 border-t border-white/[0.06] flex items-center justify-between gap-3 flex-wrap">
+      <div class="font-sans font-normal text-[12px] text-[#4A4A48]">
+        © {year} Tunnex. All rights reserved.
+      </div>
+      <div class="font-mono font-medium text-[9px] tracking-[0.14em] text-[#3D4358] uppercase ml-auto">
+        LAUNCH_MODE · {isBeta ? 'BETA' : 'PRELAUNCH'}
+      </div>
+    </div>
   </div>
 </footer>

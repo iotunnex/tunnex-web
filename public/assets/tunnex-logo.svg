@@ -1,4 +1,5 @@
 <svg width="577" height="551" viewBox="0 0 577 551" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="577" height="551" fill="#0A0A0A"></rect>
 <path d="M41.2143 0H535.786C563.262 0 577 13.6049 577 40.8148V142.852C577 170.062 563.262 183.667 535.786 183.667H381.232V428.556L288.5 551L195.768 428.556V183.667H41.2143C13.7381 183.667 0 170.062 0 142.852V40.8148C0 13.6049 13.7381 0 41.2143 0Z" fill="url(#paint0_linear_0_1)"></path>
 <path d="M41.2143 0H535.786C563.262 0 577 13.6049 577 40.8148V142.852C577 170.062 563.262 183.667 535.786 183.667H381.232V428.556L288.5 551L195.768 428.556V183.667H41.2143C13.7381 183.667 0 170.062 0 142.852V40.8148C0 13.6049 13.7381 0 41.2143 0Z" fill="url(#sheen)"></path>
 <path d="M281.292 0.379333H308.064L250.402 88.0104H223.63L281.292 0.379333Z" fill="#0A0A0A"></path>
@@ -17,6 +18,8 @@
 <stop offset="0.5" stop-color="#FFFFFF" stop-opacity="0.92"></stop>
 <stop offset="0.58" stop-color="#FFFFFF" stop-opacity="0"></stop>
 <stop offset="1" stop-color="#FFFFFF" stop-opacity="0"></stop>
+
+
 </linearGradient>
 <linearGradient id="paint0_linear_0_1" x1="0" y1="0" x2="407.553" y2="569.046" gradientUnits="userSpaceOnUse">
 <stop stop-color="#FF5A63"></stop>

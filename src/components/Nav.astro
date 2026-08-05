@@ -1,34 +1,41 @@
 ---
 import { launchMode } from '../config';
-import ThemeToggle from './ThemeToggle.astro';
-import Logo from './Logo.astro';
 
 const links = [
+  { href: '/', label: 'Home' },
+  { href: '/features', label: 'Features' },
   { href: '/pricing', label: 'Pricing' },
   { href: '/download', label: 'Download' },
   { href: '/security', label: 'Security' },
   { href: '/blog', label: 'Blog' },
   { href: '/docs', label: 'Docs' },
 ];
-const showGitHub = launchMode === 'beta';
 
-// Active-nav: the current top-level section (first path segment), so /blog/foo
-// and /docs/quickstart still light their nav item.
-const section = '/' + (Astro.url.pathname.split('/').filter(Boolean)[0] ?? '');
-const isActive = (href: string) => href === section;
+const isBeta = launchMode === 'beta';
+
+// Active-nav: current path segment check
+const pathname = Astro.url.pathname;
+const isActive = (href: string) => {
+  if (href === '/') return pathname === '/';
+  return pathname.startsWith(href);
+};
 ---
 
-<header class="sticky top-0 z-40 border-b border-border bg-bg/90 backdrop-blur">
-  <nav aria-label="Main" class="mx-auto flex h-14 max-w-6xl items-center gap-6 px-4 sm:px-6">
-    <a
-      href="/"
-      aria-label="Tunnex — home"
-      class="text-text focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-    >
-      <Logo variant="badge" class="h-4 w-auto" />
+<header class="sticky top-0 z-[60] h-[64px] w-full border-b border-[var(--tnx-line-2)] bg-[var(--tnx-topbar)] backdrop-blur-[24px] backdrop-saturate-[140%]">
+  <nav aria-label="Main" class="mx-auto flex h-full max-w-[1180px] items-center justify-between gap-[22px] px-[28px] max-[620px]:px-[18px]">
+    <!-- Brand / Logo -->
+    <a href="/" aria-label="Tunnex — Home" class="flex items-center gap-2.5 group focus-visible:outline-none">
+      <!-- 30px Logo Lozenge -->
+      <div class="t-logo-sheen flex size-[30px] items-center justify-center rounded-[9px] bg-[#0A0A0A] p-[5px] shadow-[0_6px_18px_rgba(255,255,255,0.14)] overflow-hidden transition-transform duration-200 group-hover:scale-105">
+        <img src="/assets/tunnex-logo.svg" alt="Tunnex" class="size-full object-contain block" />
+      </div>
+
+      <!-- Wordmark SVG at height 13px -->
+      <img src="/assets/tunnex-wordmark.svg" alt="TUNNEX" class="h-[13px] w-auto block" />
     </a>
 
-    <ul class="hidden items-center gap-5 md:flex">
+    <!-- Desktop Navigation Links (Hidden under 960px) -->
+    <ul class="t-navlinks flex items-center gap-1 max-[960px]:hidden">
       {
         links.map((l) => (
           <li>
@@ -36,10 +43,10 @@ const isActive = (href: string) => href === section;
               href={l.href}
               aria-current={isActive(l.href) ? 'page' : undefined}
               class:list={[
-                'text-sm transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary',
+                't-nav inline-block rounded-[9px] px-[12px] py-[7px] text-[13.5px] font-medium leading-none text-[#C9C9C4] transition-colors',
                 isActive(l.href)
-                  ? 'font-medium text-text underline decoration-primary decoration-2 underline-offset-8'
-                  : 'text-text-muted hover:text-text',
+                  ? 'bg-white/[0.06] text-[#EDEDEB]'
+                  : 'hover:bg-white/[0.06] hover:text-[#EDEDEA]',
               ]}
             >
               {l.label}
@@ -49,43 +56,51 @@ const isActive = (href: string) => href === section;
       }
     </ul>
 
-    <div class="ml-auto flex items-center gap-3">
-      {
-        showGitHub && (
-          <a
-            href="https://github.com/iotunnex"
-            class="hidden text-sm text-text-muted transition-colors hover:text-text md:block"
-          >
-            GitHub
-          </a>
-        )
-      }
-      <ThemeToggle />
+    <!-- Right Controls / CTA -->
+    <div class="flex items-center gap-3">
+      <!-- Mode Badge / Segmented Chip (Desktop) -->
+      <div class="hidden items-center rounded-[9px] border border-[#262626] bg-[rgba(18,18,18,0.72)] px-2.5 py-1 text-[10.5px] font-mono font-semibold uppercase tracking-wider text-[#858582] md:flex">
+        <span>{isBeta ? 'BETA' : 'PRELAUNCH'}</span>
+      </div>
+
+      <!-- Primary CTA Button -->
+      <a
+        href={isBeta ? '/download' : '/trial'}
+        class="t-btn t-prim hidden rounded-[9px] px-4 py-[9px] text-[14px] font-semibold leading-none text-[#F7F5F5] min-[960px]:inline-flex items-center justify-center"
+      >
+        {isBeta ? 'Download' : 'Start 14-day trial'}
+      </a>
+
+      <!-- Mobile Burger Button (Shown under 960px) -->
       <button
         id="nav-menu-btn"
         type="button"
-        class="inline-flex size-9 items-center justify-center rounded-md border border-border text-text-muted hover:bg-surface-raised hover:text-text focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary md:hidden"
+        class="t-btn t-sec t-burger hidden size-[38px] items-center justify-center rounded-[9px] text-[#C9C9C4] hover:text-white max-[960px]:inline-flex"
         aria-label="Open menu"
         aria-expanded="false"
         aria-controls="nav-menu"
       >
         <svg
-          class="size-4"
+          class="size-[17px]"
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
-          stroke-width="2"
+          stroke-width="1.6"
           stroke-linecap="round"
+          stroke-linejoin="round"
           aria-hidden="true"
         >
-          <path d="M4 7h16M4 12h16M4 17h16"></path>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
         </svg>
       </button>
     </div>
   </nav>
 
-  <div id="nav-menu" class="hidden border-t border-border md:hidden">
-    <ul class="flex flex-col gap-1 px-4 py-3">
+  <!-- Mobile Dropdown Panel -->
+  <div id="nav-menu" class="hidden border-b border-[var(--tnx-line-2)] bg-[rgba(13,13,13,0.95)] px-[18px] py-4 backdrop-blur-xl max-[960px]:block">
+    <ul class="flex flex-col gap-1">
       {
         links.map((l) => (
           <li>
@@ -93,8 +108,8 @@ const isActive = (href: string) => href === section;
               href={l.href}
               aria-current={isActive(l.href) ? 'page' : undefined}
               class:list={[
-                'block rounded-md px-2 py-2 text-sm hover:bg-surface-raised hover:text-text',
-                isActive(l.href) ? 'font-medium text-text' : 'text-text-muted',
+                'block rounded-[9px] px-3 py-2.5 text-[15px] font-medium text-[#C9C9C4] hover:bg-white/[0.06] hover:text-white',
+                isActive(l.href) ? 'bg-white/[0.06] text-white' : '',
               ]}
             >
               {l.label}
@@ -102,19 +117,15 @@ const isActive = (href: string) => href === section;
           </li>
         ))
       }
-      {
-        showGitHub && (
-          <li>
-            <a
-              href="https://github.com/iotunnex"
-              class="block rounded-md px-2 py-2 text-sm text-text-muted hover:bg-surface-raised hover:text-text"
-            >
-              GitHub
-            </a>
-          </li>
-        )
-      }
     </ul>
+    <div class="mt-4 pt-3 border-t border-white/10 flex flex-col gap-3">
+      <a
+        href={isBeta ? '/download' : '/trial'}
+        class="t-btn t-prim block w-full rounded-[9px] py-3 text-center text-[14px] font-semibold text-[#F7F5F5]"
+      >
+        {isBeta ? 'Download' : 'Start 14-day trial'}
+      </a>
+    </div>
   </div>
 </header>
 

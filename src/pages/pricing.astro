@@ -1,186 +1,190 @@
 ---
 import Base from '../layouts/Base.astro';
-import Button from '../components/ui/Button.astro';
-import { launchMode, enterprisePricing, indicativeSeatPrice } from '../config';
-
-const isBeta = launchMode === 'beta';
-const isIndicative = enterprisePricing === 'indicative';
+import FaqSection from '../components/FaqSection.astro';
+import ComparisonTableSection from '../components/ComparisonTableSection.astro';
 
 const openFeatures = [
   'Self-hosted control plane, gateways, and clients',
-  'Unlimited devices',
-  'Single organization',
-  'Local authentication',
-  'WireGuard data plane',
-  'Desktop + CLI clients',
-  'Community support',
+  'WireGuard and OpenVPN, both data planes',
+  'Unlimited devices, single organization',
+  'Sites, site-to-site routing, hub-and-spoke',
+  'Local accounts (argon2id), email verification, MFA',
+  'Desktop clients for macOS and Windows, fail-closed kill-switch',
+  'tunnex CLI, .ovpn export, mobile via the official WireGuard apps',
+  'Flow and audit logs, Prometheus metrics, backup and restore',
+  'Community support'
 ];
 
-const faq = [
-  {
-    q: 'What happens when my license expires?',
-    a: 'Grace period with warnings, then Enterprise features lapse to Open. The VPN keeps running — always.',
-  },
-  {
-    q: 'Does it phone home?',
-    a: 'No. License keys are verified offline against a public key in the binary. Air-gapped deployments are fully supported.',
-  },
-  {
-    q: 'What do you see of my network?',
-    a: 'Nothing. Our hosted service holds billing and license records only — no traffic, no keys, no user data.',
-    link: { href: '/security', label: 'Read the security model →' },
-  },
-  {
-    q: 'What happens after the trial?',
-    a: 'Your deployment lapses to Open features and keeps working. Upgrade any time by pasting a new key — no reinstall, no migration.',
-  },
-];
-
-const enterpriseFeatures = [
-  'SSO: Google & Microsoft Entra',
-  'Zero Trust access policies',
+const entFeatures = [
+  'SSO with Google Workspace and Microsoft Entra ID',
+  'IdP group sync: directory groups become policy subjects',
+  'Zero Trust access policies: default-deny, port-scoped, per-user',
+  'Time-boxed grants that expire on their own',
+  'Device approval gate and posture checks',
+  'Org-wide MFA enforcement',
   'Multi-org (multi-tenant) management',
-  'Kubernetes operator',
-  'Priority support',
+  'Kubernetes operator, CRDs, and machine principals',
+  'Priority support'
+];
+
+const vendorQuestions = [
+  {
+    q: 'Can your support engineers see my network topology or read my logs?',
+    a: 'With Tunnex, no: the control plane and logs live inside your infrastructure. Ask any SaaS VPN vendor for their SOC 2 report and read the section on employee access to tenant telemetry.'
+  },
+  {
+    q: 'What happens to my tunnels if your cloud has an outage?',
+    a: 'Tunnex gateways keep reconciling and tunnels stay up. If a vendor’s control plane is in their cloud, ask what happens during their next S3 or BGP incident.'
+  },
+  {
+    q: 'Can I verify license compliance without sending device inventories to your servers?',
+    a: 'Tunnex verifies keys offline with asymmetric cryptography. Ask other vendors if their license check sends hostname, IP, or user lists to their API.'
+  },
+  {
+    q: 'If I offboard a user in my IdP, how many seconds until their WireGuard session drops?',
+    a: 'Tunnex sweeps sessions, pool addresses, and peer slots on directory revocation. Ask if the vendor relies on token expiry windows (often up to 1 hour) before access is actually cut.'
+  }
 ];
 ---
 
 <Base
-  title="Tunnex — Pricing"
-  description="Tunnex is self-hosted either way: the Open tier is free for unlimited devices; Enterprise adds SSO, Zero Trust policies, and multi-org management."
+  title="Pricing & Editions: Tunnex"
+  description="Self-hosted either way. The free Open tier is unlimited; Enterprise adds SSO, Zero Trust policies, and multi-org management."
 >
-  <section class="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-16 sm:px-6 md:py-20">
-    <h1 class="text-4xl font-bold tracking-tight">Pricing</h1>
-    <p class="max-w-2xl text-lg text-text-muted">
-      Self-hosted either way. Your network runs on your infrastructure whether you pay us or not —
-      Enterprise is for teams that need identity, policy, and scale.
-    </p>
-  </section>
-
-  <section class="mx-auto grid max-w-6xl gap-6 px-4 pb-20 sm:px-6 lg:grid-cols-2">
-    <!-- Open tier -->
-    <div class="flex flex-col gap-6 rounded-lg border border-border bg-surface p-8">
-      <div class="flex flex-col gap-1">
-        <h2 class="text-lg font-semibold">Open</h2>
-        <p class="text-5xl font-bold tracking-tight">Free</p>
-        <p class="text-sm text-text-muted">Self-hosted, forever. No device caps, no seat math.</p>
-      </div>
-      <ul class="flex flex-col gap-3 text-sm">
-        {
-          openFeatures.map((f) => (
-            <li class="flex items-start gap-2.5">
-              <svg
-                class="mt-0.5 size-4 shrink-0 text-success"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2.5"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
-                <path d="M4 12.5 10 18 20 6" />
-              </svg>
-              {f}
-            </li>
-          ))
-        }
-      </ul>
-      <div class="mt-auto">
-        <Button href={isBeta ? '/download' : '/docs'} variant="secondary" class="w-full">
-          {isBeta ? 'Download' : 'Read the docs'}
-        </Button>
+  <div class="mx-auto max-w-[1180px] px-7 py-18 md:py-[72px] flex flex-col gap-11 max-[620px]:px-[18px]">
+    <!-- Header -->
+    <div class="flex flex-col gap-3.5 max-w-[66ch]">
+      <div class="tnx-eyebrow">PRICING</div>
+      <h1 class="tnx-h1">Pricing</h1>
+      <div class="font-normal text-[17px] leading-[1.65] text-[#A9A9A6] text-pretty">
+        Self-hosted either way. Your network runs on your infrastructure whether you pay us or not: Enterprise is for teams that need identity, policy, and scale.
       </div>
     </div>
 
-    <!-- Enterprise tier -->
-    <div class="flex flex-col gap-6 rounded-lg border-2 border-primary bg-surface-raised p-8">
-      <div class="flex flex-col gap-1">
-        <div class="flex items-center justify-between">
-          <h2 class="text-lg font-semibold">Enterprise</h2>
-          <span
-            class="rounded-full border border-primary/40 px-2 py-0.5 text-[11px] font-medium tracking-wide text-primary uppercase"
-          >
-            14-day free trial
-          </span>
+    <!-- 2 Tier Cards Grid -->
+    <div class="t-g2 grid grid-cols-1 md:grid-cols-2 gap-3.5 items-start">
+      <!-- Open Tier -->
+      <div class="t-card border border-white/9 rounded-lg bg-[rgba(18,18,18,0.72)] p-6.5 flex flex-col gap-4.5">
+        <div>
+          <div class="font-semibold text-[18px] text-[#F5F5F5]">Open</div>
+          <div class="font-bold text-[40px] text-[#EDEDEB] tracking-[-0.02em] mt-2">Free</div>
+          <div class="font-normal text-[13px] leading-[1.6] text-[#858582] mt-1">
+            Self-hosted, forever. No device caps, no seat math.
+          </div>
         </div>
-        <p class="text-5xl font-bold tracking-tight">
-          {isIndicative ? `From ${indicativeSeatPrice}` : 'Custom'}
-        </p>
-        <p class="text-sm text-text-muted">
+
+        <div class="h-px bg-[#1E1E1E]"></div>
+
+        <div class="flex flex-col gap-2.5">
           {
-            isIndicative
-              ? 'Per seat per month, billed annually.'
-              : 'Per-seat, billed annually. Quoted by team size.'
+            openFeatures.map((f) => (
+              <div class="flex items-start gap-2.5">
+                <span class="lic size-3.75 shrink-0 text-[#6E9C7C] mt-0.5">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-full"><path d="M21.801 10A10 10 0 1 1 17 3.335"/><path d="m9 11 3 3L22 4"/></svg>
+                </span>
+                <span class="font-normal text-[13.5px] leading-[1.5] text-[#A9A9A6]">{f}</span>
+              </div>
+            ))
           }
-        </p>
+        </div>
+
+        <div class="mt-auto pt-2">
+          <a
+            href="/docs"
+            class="t-btn t-sec w-full block text-center rounded-[9px] px-5 py-3 font-semibold text-[13.5px]"
+          >
+            Read the docs
+          </a>
+        </div>
       </div>
-      <p class="text-sm font-medium">Everything in Open, plus:</p>
-      <ul class="flex flex-col gap-3 text-sm">
-        {
-          enterpriseFeatures.map((f) => (
-            <li class="flex items-start gap-2.5">
-              <svg
-                class="mt-0.5 size-4 shrink-0 text-success"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2.5"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
-                <path d="M4 12.5 10 18 20 6" />
-              </svg>
-              {f}
-            </li>
-          ))
-        }
-      </ul>
-      {
-        /*
-        EPIC 7 CHECKOUT SLOT — structural mount point, do not remove.
-        When payments land (Stripe US + Razorpay India, trigger: product S12.5),
-        the checkout flow replaces the contents of this container. Until then it
-        carries the trial + sales CTAs.
-      */
-      }
-      <div id="checkout-slot" data-slot="checkout" class="mt-auto flex flex-col gap-3">
-        <Button href="/trial" variant="primary" class="w-full">Start 14-day free trial</Button>
-        <Button href="/enterprise" variant="secondary" class="w-full">Contact sales</Button>
+
+      <!-- Enterprise Tier -->
+      <div class="t-card border border-white/9 rounded-lg bg-[rgba(18,18,18,0.72)] p-6.5 flex flex-col gap-4.5">
+        <div>
+          <div class="flex items-center gap-2.5">
+            <div class="font-semibold text-[18px] text-[#F5F5F5]">Enterprise</div>
+            <span class="font-mono font-semibold text-[8.5px] tracking-[0.08em] text-[#C9989C] border border-[#B03A45]/50 bg-[#B03A45]/16 rounded-full px-2.25 py-0.75">
+              14-DAY FREE TRIAL
+            </span>
+          </div>
+          <div class="font-bold text-[40px] text-[#EDEDEB] tracking-[-0.02em] mt-2">Custom</div>
+          <div class="font-normal text-[13px] leading-[1.6] text-[#858582] mt-1">
+            Per-seat, billed annually. Quoted by team size.
+          </div>
+        </div>
+
+        <div class="h-px bg-[#1E1E1E]"></div>
+
+        <div class="font-semibold text-[11px] text-[#D6D6D2]">Everything in Open, plus:</div>
+
+        <div class="flex flex-col gap-2.5">
+          {
+            entFeatures.map((f) => (
+              <div class="flex items-start gap-2.5">
+                <span class="lic size-3.75 shrink-0 text-[#6E9C7C] mt-0.5">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-full"><path d="M21.801 10A10 10 0 1 1 17 3.335"/><path d="m9 11 3 3L22 4"/></svg>
+                </span>
+                <span class="font-normal text-[13.5px] leading-[1.5] text-[#A9A9A6]">{f}</span>
+              </div>
+            ))
+          }
+        </div>
+
+        <div class="flex flex-col gap-2.25 mt-auto pt-2">
+          <a
+            href="/trial"
+            class="t-btn t-prim w-full block text-center rounded-[9px] px-5 py-3 font-semibold text-[13.5px]"
+          >
+            Start 14-day free trial
+          </a>
+          <a
+            href="/enterprise"
+            class="t-btn t-sec w-full block text-center rounded-[9px] px-5 py-3 font-semibold text-[13.5px]"
+          >
+            Contact sales
+          </a>
+        </div>
       </div>
     </div>
-  </section>
 
-  <section class="border-t border-border">
-    <div class="mx-auto flex max-w-6xl flex-col gap-2 px-4 py-8 sm:px-6">
-      <h2 class="text-lg font-semibold">Not sure which tier?</h2>
-      <p class="max-w-2xl text-sm text-text-muted">
-        If your team signs in with Google or Microsoft, needs per-resource access policies, or runs
-        more than one organization, you want Enterprise. Otherwise start with Open — upgrading later
-        is a license key, not a migration.
-      </p>
+    <!-- "Not sure which tier?" Banner -->
+    <div class="bg-[rgba(18,18,18,0.72)] border border-white/[0.09] rounded-lg p-5.5 md:p-6 flex flex-col gap-2">
+      <div class="font-semibold text-[14.5px] text-[#EDEDEB]">Not sure which tier?</div>
+      <div class="font-normal text-[14px] leading-[1.65] text-[#858582] max-w-[80ch] text-pretty">
+        If your team signs in with Google or Microsoft, needs per-resource access policies, or runs more than one organization, you want Enterprise. Otherwise start with Open — upgrading later is a license key, not a migration.
+      </div>
     </div>
-  </section>
+  </div>
 
-  <section class="border-t border-border bg-surface/50">
-    <div class="mx-auto flex max-w-6xl flex-col gap-8 px-4 py-16 sm:px-6">
-      <h2 class="text-xl font-semibold tracking-tight">Questions you should ask a VPN vendor</h2>
-      <div class="grid gap-x-10 gap-y-8 md:grid-cols-2">
+  <!-- Comparison Table Section -->
+  <ComparisonTableSection />
+
+  <!-- FAQ Accordion Section -->
+  <FaqSection />
+
+  <!-- Extra Vendor Questions Grid -->
+  <div class="mx-auto max-w-[1180px] px-7 pb-22 md:pb-[92px] max-[620px]:px-[18px]">
+    <div class="flex flex-col gap-4">
+      <h3 class="font-semibold text-[clamp(24px,2.8vw,32px)] leading-[1.15] tracking-[-0.02em] text-[#F5F5F5]">
+        Questions you should ask a VPN vendor
+      </h3>
+      <div class="t-g2 grid grid-cols-1 md:grid-cols-2 gap-3.5">
         {
-          faq.map((item) => (
-            <div class="flex flex-col gap-2">
-              <h3 class="text-base font-semibold">{item.q}</h3>
-              <p class="text-sm text-text-muted">{item.a}</p>
-              {item.link && (
-                <a href={item.link.href} class="text-sm font-semibold text-link">
-                  {item.link.label}
-                </a>
-              )}
+          vendorQuestions.map((q) => (
+            <div class="t-card border border-white/9 rounded-lg bg-[rgba(18,18,18,0.72)] p-5 flex flex-col gap-2.25">
+              <div class="font-semibold text-[14px] leading-[1.4] text-[#EDEDEB]">{q.q}</div>
+              <div class="font-normal text-[13.5px] leading-[1.62] text-[#858582] text-pretty">{q.a}</div>
             </div>
           ))
         }
       </div>
+      <a
+        href="/security"
+        class="inline-flex items-center gap-2 font-semibold text-[13.5px] text-[#C9C9C4] hover:text-white transition-colors self-start mt-1"
+      >
+        <span>Read the security model</span>
+        <span class="font-mono text-[13px]">→</span>
+      </a>
     </div>
-  </section>
+  </div>
 </Base>

@@ -1,0 +1,114 @@
+---
+// Capabilities 6-Cell Bento Grid Section (Section 4)
+import { launchMode } from '../config';
+
+const isBeta = launchMode === 'beta';
+
+const features = [
+  {
+    title: 'WireGuard data plane',
+    body: 'Modern cryptography and wire-speed performance with zero proprietary middleboxes.',
+    enterprise: false,
+    iconKey: 'network',
+    href: '/docs'
+  },
+  {
+    title: 'SSO that just works',
+    body: 'Native Google and Microsoft sign-in. Your directory decides who connects.',
+    enterprise: true,
+    iconKey: 'key',
+    href: '/docs/sso-setup'
+  },
+  {
+    title: 'Multi-tenant organizations',
+    body: 'Isolated organizations, networks, and policies on a single self-hosted deployment.',
+    enterprise: true,
+    iconKey: 'boxes',
+    href: '/features'
+  },
+  {
+    title: 'Fail-closed kill-switch',
+    body: 'Desktop clients stop traffic if the tunnel drops. No silent fallback to open networks.',
+    enterprise: false,
+    iconKey: 'shield',
+    href: '/security'
+  },
+  {
+    title: 'Zero Trust for AI agents',
+    body: 'Issue non-human principals with time-boxed access to MCP servers. Prevent prompt-injection blast radius.',
+    enterprise: true,
+    iconKey: 'bot',
+    href: '/features'
+  },
+  {
+    title: 'Audit logging',
+    body: 'Record connections, policy edits, and admin actions directly inside your infrastructure.',
+    enterprise: false,
+    iconKey: 'scroll-text',
+    href: '/docs'
+  },
+  {
+    title: 'Open core',
+    body: 'Free self-hosted core for unlimited devices. Enterprise adds SSO and Zero Trust policies.',
+    enterprise: false,
+    iconKey: 'hexagon',
+    href: '/pricing'
+  }
+];
+
+const icons: Record<string, string> = {
+  network: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-4.5"><rect x="16" y="16" width="6" height="6" rx="1"/><rect x="2" y="16" width="6" height="6" rx="1"/><rect x="9" y="2" width="6" height="6" rx="1"/><path d="M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3"/><path d="M12 12V8"/></svg>',
+  key: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-4.5"><path d="m21 2-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0 3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>',
+  boxes: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-4.5"><path d="M2.97 12.92A2 2 0 0 0 2 14.63v3.24a2 2 0 0 0 .97 1.71l3 1.8a2 2 0 0 0 2.06 0L12 19v-5.5l-5-3-4.03 2.42Z"/><path d="m7 16.5-4.74-2.85"/><path d="m7 16.5 5-3"/><path d="M7 16.5v5.17"/><path d="M12 13.5V19l3.97 2.38a2 2 0 0 0 2.06 0l3-1.8a2 2 0 0 0 .97-1.71v-3.24a2 2 0 0 0-.97-1.71L17 10.5l-5 3Z"/><path d="m17 16.5-5-3"/><path d="m17 16.5 4.74-2.85"/><path d="M17 16.5v5.17"/><path d="M7.97 4.42A2 2 0 0 0 7 6.13v4.37l5 3 5-3V6.13a2 2 0 0 0-.97-1.71l-3-1.8a2 2 0 0 0-2.06 0l-3 1.8Z"/><path d="M12 8 7.26 5.15"/><path d="m12 8 4.74-2.85"/><path d="M12 13.5V8"/></svg>',
+  shield: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-4.5"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>',
+  bot: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-4.5"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>',
+  'scroll-text': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-4.5"><path d="M15 12h-5"/><path d="M15 8h-5"/><path d="M19 17V5a2 2 0 0 0-2-2H4"/><path d="M8 21h12a2 2 0 0 0 2-2v-1a1 1 0 0 0-1-1H11a1 1 0 0 0-1 1v1a2 2 0 1 1-4 0V5a2 2 0 1 0-4 0v2a1 1 0 0 0 1 1h3"/></svg>',
+  hexagon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-4.5"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>'
+};
+---
+
+<section class="t-rv border-t border-[var(--tnx-line-1)]" id="capabilities-bento-section">
+  <div class="mx-auto max-w-[1180px] px-7 py-22 md:py-[88px] max-[620px]:px-[18px]">
+    <!-- Section Header -->
+    <div class="flex flex-col gap-3 mb-[44px]">
+      <div class="tnx-eyebrow">CAPABILITIES</div>
+      <h2 class="tnx-h2 max-w-[22ch]">The features a private network actually needs.</h2>
+    </div>
+
+    <!-- Clean Minimal Grid with hairline dividers -->
+    <div class="t-rise grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10">
+      {
+        features.map((f) => (
+          <div class="border-t border-white/10 pt-6 flex flex-col gap-3 group relative">
+            <div class="flex items-center gap-3">
+              <div class="size-[34px] rounded-lg bg-[#161616] border border-[#2A2A2A] flex items-center justify-center text-[#C9C9C4] shrink-0">
+                <Fragment set:html={icons[f.iconKey]} />
+              </div>
+              <div class="font-semibold text-[16px] text-[#EDEDEB] tracking-[-0.01em] group-hover:text-white transition-colors">
+                {f.title}
+              </div>
+              {f.enterprise && (
+                <span class="ml-auto font-mono font-semibold text-[8.5px] tracking-[0.08em] text-[#C39A4E] border border-[#2E2E2E] bg-[#141414] rounded-full px-2.25 py-0.75">
+                  ENTERPRISE
+                </span>
+              )}
+            </div>
+
+            <div class="font-normal text-[13.5px] leading-[1.62] text-[#858582] text-pretty max-w-[54ch]">
+              {f.body}
+            </div>
+          </div>
+        ))
+      }
+    </div>
+
+    <!-- Bottom Link -->
+    <a
+      href="/pricing"
+      class="inline-flex items-center gap-2 mt-12 font-semibold text-[13.5px] text-[#C9C9C4] hover:text-white transition-colors"
+    >
+      <span>Compare tiers</span>
+      <span class="font-mono font-semibold text-[13px]">→</span>
+    </a>
+  </div>
+</section>

@@ -1,122 +1,365 @@
 ---
 import Base from '../layouts/Base.astro';
-import Card from '../components/ui/Card.astro';
-import ArchitectureDiagram from '../components/ArchitectureDiagram.astro';
 
-// Every claim on this page is limited to founder-approved positioning
-// (home/pricing copy + locked plan decisions). No overclaiming: fail-closed
-// is "designed", never a platform-specific persistence promise.
-
-const cantSee = [
-  {
-    what: 'Your traffic',
-    detail:
-      'WireGuard tunnels terminate on your gateways. Packets never route through anything we operate.',
-  },
-  {
-    what: 'Your network keys',
-    detail:
-      'WireGuard keys are generated and stored on your machines. There is no key escrow — your private keys never touch our systems.',
-  },
-  {
-    what: 'Your configs',
-    detail: 'Network topology, ACLs, and policies live in your control plane — self-hosted.',
-  },
-  {
-    what: 'Your users',
-    detail:
-      'Identity stays between your control plane and your identity provider. We never see accounts or sign-ins.',
-  },
-  {
-    what: 'Your logs',
-    detail: 'Audit logs are written and kept inside your infrastructure. Nothing streams to us.',
-  },
+const cannotSee = [
+  { icon: 'waves', title: 'Your traffic', body: 'WireGuard tunnels terminate on your gateways. Packets never route through anything we operate.' },
+  { icon: 'key', title: 'Your network keys', body: 'WireGuard keys are generated and stored on your machines. There is no key escrow — your private keys never touch our systems.' },
+  { icon: 'settings', title: 'Your configs', body: 'Network topology, ACLs, and policies live in your control plane — self-hosted.' },
+  { icon: 'users', title: 'Your users', body: 'Identity stays between your control plane and your identity provider. We never see accounts or sign-ins.' },
+  { icon: 'scroll-text', title: 'Your logs', body: 'Audit logs are written and kept inside your infrastructure. Nothing streams to us.' }
 ];
+
+const postureBullets = [
+  { icon: 'key', title: 'Secrets encrypted at rest', body: 'Under a bootstrap master key generated on first boot. Nothing ships with a default credential.' },
+  { icon: 'terminal', title: 'Security tier blocks the build', body: 'govulncheck, CodeQL, gofmt and vet, and an SBOM run on every change. A failure stops the merge.' },
+  { icon: 'file-text', title: 'Published SECURITY.md with a disclosure SLA', body: 'The acknowledgement window is written down, not improvised per report.' },
+  { icon: 'boxes', title: 'Open core, readable', body: 'The core is Apache-2.0 and the Enterprise layer is source-available. You can read what enforces your policy.' },
+  { icon: 'shield', title: 'Fail-closed cold start', body: 'A gateway that has never received policy denies everything. There is no permissive default to inherit.' },
+  { icon: 'refresh-cw', title: 'Revocation is a full sweep', body: 'Peer slot, pool address, sessions, CLI credentials, and live telemetry are released together.' }
+];
+
+const limits = [
+  { title: 'No relay fleet', body: 'Gateways need public reachability or a port forward. A client behind CGNAT may not connect directly.' },
+  { title: 'Desktop clients are unsigned today', body: 'Gatekeeper and SmartScreen will warn. Signed and notarized builds are on the roadmap, not shipped.' },
+  { title: 'Posture is client-reported', body: 'It is not hardware attestation. A device’s gate flips on its own next report, and we label it that way everywhere.' },
+  { title: 'Mobile is the official WireGuard apps', body: 'Native Tunnex apps are on the roadmap. Gateway-side Zero Trust applies to those devices either way.' }
+];
+
+const stages = [
+  {
+    n: '01', icon: 'key', title: 'Identity', meta: 'OIDC · LOCAL', label: 'STAGE 01 — IDENTITY',
+    body: 'The principal authenticates against your identity provider or a local account. The id_token is verified, the tenant is pinned, and directory groups arrive as policy subjects rather than a list someone mirrors by hand.',
+    deny: 'the token fails verification, the account is disabled in your directory, or MFA is enforced and absent.',
+    code: `actor    alice@acme.io
+method   oidc/entra
+groups   engineering, oncall
+mfa      satisfied`
+  },
+  {
+    n: '02', icon: 'monitor-smartphone', title: 'Device', meta: 'APPROVAL · POSTURE', label: 'STAGE 02 — DEVICE',
+    body: 'The device must be approved by an admin before a tunnel is issued, and posture is evaluated continuously with a stale sweep. Posture is client-reported OS version and disk encryption — not hardware attestation, and we label it that way everywhere it appears.',
+    deny: 'the device is unapproved, posture is failing, or the last report went stale. Unknown is reported as unknown, never as compliant.',
+    code: `device   0f62edc39e8d
+approved yes · admin@acme.io
+os       macOS 15.5
+fde      ON · reported 41s ago`
+  },
+  {
+    n: '03', icon: 'shield', title: 'Policy', meta: 'DEFAULT DENY', label: 'STAGE 03 — POLICY',
+    body: 'The compiler turns rules into one deterministic artifact: allow-only, subject to destination, scoped to port and protocol. Per-user grants and time-boxed grants compile into the same artifact, so an expiring contractor grant is not a second mechanism.',
+    deny: 'no rule names this subject and destination. That is the default state, not an error condition.',
+    code: `rev      42
+subject  group:engineering
+dest     10.20.0.0/16:22/tcp
+verdict  ALLOW · rule "eng → prod ssh"`
+  },
+  {
+    n: '04', icon: 'network', title: 'Enforcement', meta: 'GATEWAY KERNEL', label: 'STAGE 04 — ENFORCEMENT',
+    body: 'The verdict is enforced at the gateway kernel, not merely routed. A node agent owns WireGuard and reconciles toward desired state; the API never touches the data plane, which is why a control-plane outage does not drop live tunnels.',
+    deny: 'the gateway holds no policy artifact — including cold start, where it denies everything until one arrives.',
+    code: `gateway  syd-gw-01
+tunnel   10.99.0.7/32
+handshake ok · 138ms
+rekey    every 120s`
+  },
+  {
+    n: '05', icon: 'scroll-text', title: 'Audit', meta: 'KERNEL-STAMPED', label: 'STAGE 05 — AUDIT',
+    body: 'Every allow, deny, aggregated deny, and termination is recorded per rule, kernel-stamped. The audit log carries first-class system actors and a stated cause, so an automated change is attributed to what made it rather than to a blank field.',
+    deny: 'nothing — this stage records. A revocation sweeps the peer slot, the pool address, and the live session, and says who did it.',
+    code: `ts       2026-08-04T20:41:19Z
+actor    alice@acme.io
+action   flow.allow · rule 6
+cause    policy rev 42`
+  }
+];
+
+const icons: Record<string, string> = {
+  waves: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-4"><path d="M2 6c.6.5 1.2 1 2.5 1C7 7 7 5 9.5 5c2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 12c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 18c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/></svg>',
+  key: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-4"><path d="m21 2-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0 3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>',
+  settings: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-4"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>',
+  users: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-4"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+  'scroll-text': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-4"><path d="M15 12h-5"/><path d="M15 8h-5"/><path d="M19 17V5a2 2 0 0 0-2-2H4"/><path d="M8 21h12a2 2 0 0 0 2-2v-1a1 1 0 0 0-1-1H11a1 1 0 0 0-1 1v1a2 2 0 1 1-4 0V5a2 2 0 1 0-4 0v2a1 1 0 0 0 1 1h3"/></svg>',
+  terminal: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-4"><polyline points="4 17 10 11 4 5"/><line x1="12" x2="20" y1="19" y2="19"/></svg>',
+  'file-text': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-4"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>',
+  boxes: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-4"><path d="M2.97 12.92A2 2 0 0 0 2 14.63v3.24a2 2 0 0 0 .97 1.71l3 1.8a2 2 0 0 0 2.06 0L12 19v-5.5l-5-3-4.03 2.42Z"/><path d="m7 16.5-4.74-2.85"/><path d="m7 16.5 5-3"/><path d="M7 16.5v5.17"/><path d="M12 13.5V19l3.97 2.38a2 2 0 0 0 2.06 0l3-1.8a2 2 0 0 0-.97-1.71v-3.24a2 2 0 0 0-.97-1.71L17 10.5l-5 3Z"/><path d="m17 16.5-5-3"/><path d="m17 16.5 4.74-2.85"/><path d="M17 16.5v5.17"/><path d="M7.97 4.42A2 2 0 0 0 7 6.13v4.37l5 3 5-3V6.13a2 2 0 0 0-.97-1.71l-3-1.8a2 2 0 0 0-2.06 0l-3 1.8Z"/><path d="M12 8 7.26 5.15"/><path d="m12 8 4.74-2.85"/><path d="M12 13.5V8"/></svg>',
+  shield: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-4"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>',
+  'refresh-cw': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-4"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>',
+  ban: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-3.75"><circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></svg>',
+  'monitor-smartphone': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-3.5"><path d="M18 8V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h8"/><path d="M10 19v-3.96 3.15"/><path d="M7 19h5"/><rect width="6" height="10" x="16" y="12" rx="2"/></svg>',
+  network: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-3.5"><rect x="16" y="16" width="6" height="6" rx="1"/><rect x="2" y="16" width="6" height="6" rx="1"/><rect x="9" y="2" width="6" height="6" rx="1"/><path d="M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3"/><path d="M12 12V8"/></svg>'
+};
 ---
 
 <Base
-  title="Tunnex — Security"
+  title="Security Model — Tunnex"
   description="Tunnex security model: your infrastructure is its own trust domain. Hosted service holds billing and license records only — offline license verification, fail-closed client design."
 >
-  <section class="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-16 sm:px-6 md:py-20">
-    <h1 class="text-4xl font-bold tracking-tight">Security</h1>
-    <p class="max-w-2xl text-lg text-text-muted">
-      The honest version: the most secure component is the one that isn’t there. Tunnex is built so
-      our infrastructure cannot touch your network — not by policy, by architecture.
-    </p>
-  </section>
-
-  <section class="mx-auto flex max-w-6xl flex-col gap-6 px-4 pb-16 sm:px-6">
-    <h2 class="text-2xl font-bold tracking-tight">Two trust domains. One of them is yours.</h2>
-    <p class="max-w-2xl text-text-muted">
-      Everything that moves or protects your data — control plane, gateways, clients — runs on
-      infrastructure you own. Our hosted service is a separate trust domain that holds exactly two
-      kinds of records: billing and licenses. It is never in your traffic path, and your VPN keeps
-      running even if tunnex.io goes dark.
-    </p>
-    <div class="overflow-x-auto">
-      <div class="min-w-[600px] sm:min-w-0"><ArchitectureDiagram /></div>
+  <div class="mx-auto max-w-[1180px] px-7 py-18 md:py-[72px] flex flex-col gap-11 max-[620px]:px-[18px]">
+    <!-- Header -->
+    <div class="flex flex-col gap-3.5 max-w-[70ch]">
+      <div class="tnx-eyebrow">SECURITY MODEL</div>
+      <h1 class="tnx-h1">Security</h1>
+      <div class="font-normal text-[17px] leading-[1.65] text-[#A9A9A6] text-pretty">
+        The honest version: the most secure component is the one that isn't there. Tunnex is built so our infrastructure cannot touch your network — not by policy, by architecture.
+      </div>
     </div>
-  </section>
 
-  <section class="border-y border-border bg-surface/50">
-    <div class="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-16 sm:px-6">
-      <h2 class="text-2xl font-bold tracking-tight">What we cannot see</h2>
-      <p class="max-w-2xl text-sm text-text-muted">
-        Not “do not look at” — cannot. These never leave your infrastructure:
-      </p>
-      <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-6">
+    <!-- 2 Trust Domains Banner -->
+    <div class="t-g2 grid grid-cols-1 md:grid-cols-2 gap-11 items-start">
+      <h2 class="font-semibold text-[clamp(24px,2.8vw,32px)] leading-[1.15] tracking-[-0.02em] text-[#F5F5F5]">
+        Two trust domains. One of them is yours.
+      </h2>
+      <div class="font-normal text-[15.5px] leading-[1.68] text-[#A9A9A6] text-pretty">
+        Everything that moves or protects your data — control plane, gateways, clients — runs on infrastructure you own. Our hosted service is a separate trust domain that holds exactly two kinds of records: billing and licenses. It is never in your traffic path, and your VPN keeps running even if tunnex.io goes dark.
+      </div>
+    </div>
+
+    <!-- What We Cannot See Grid -->
+    <div class="flex flex-col gap-4">
+      <h3 class="font-semibold text-[clamp(22px,2.6vw,30px)] leading-[1.15] tracking-[-0.02em] text-[#F5F5F5]">
+        What we cannot see
+      </h3>
+      <div class="font-normal text-[15px] leading-[1.65] text-[#858582]">
+        Not "do not look at" — cannot. These never leave your infrastructure:
+      </div>
+      <div class="t-g3 grid grid-cols-1 sm:grid-cols-3 gap-3.5">
         {
-          cantSee.map((item, i) => (
-            <div class={i < 3 ? 'lg:col-span-2' : 'lg:col-span-3'}>
-              <Card class="h-full">
-                <h3 class="text-base font-semibold">{item.what}</h3>
-                <p class="mt-2 text-sm text-text-muted">{item.detail}</p>
-              </Card>
+          cannotSee.map((c) => (
+            <div class="t-card border border-white/9 rounded-lg bg-[rgba(18,18,18,0.72)] p-5 flex flex-col gap-2.5">
+              <div class="size-[30px] rounded-[9px] bg-[#1A1A1A] border border-[#2E2E2E] flex items-center justify-center text-[#C9C9C4] shrink-0">
+                <Fragment set:html={icons[c.icon]} />
+              </div>
+              <div class="font-semibold text-[14.5px] text-[#EDEDEB]">{c.title}</div>
+              <div class="font-normal text-[13px] leading-[1.62] text-[#858582] text-pretty">{c.body}</div>
             </div>
           ))
         }
       </div>
     </div>
-  </section>
 
-  <section class="mx-auto grid max-w-6xl gap-10 px-4 py-16 sm:px-6 md:grid-cols-2">
-    <div class="flex flex-col gap-3">
-      <h2 class="text-2xl font-bold tracking-tight">Licenses verify offline</h2>
-      <p class="text-sm text-text-muted">
-        Enterprise license keys are verified inside your deployment against a public key that ships
-        in the binary. There is no phone-home, no license server in your critical path, and
-        air-gapped deployments are fully supported.
-      </p>
-      <p class="text-sm text-text-muted">
-        When a license expires: a grace period with warnings, then Enterprise features lapse to the
-        Open tier. The VPN keeps running — license state never touches the data plane. Upgrading
-        again is pasting a new key, not a reinstall.
-      </p>
+    <!-- Licenses & Fail Closed Cards -->
+    <div class="t-g2 grid grid-cols-1 md:grid-cols-2 gap-3.5 items-start">
+      <div class="t-card border border-white/9 rounded-lg bg-[rgba(18,18,18,0.72)] p-6 flex flex-col gap-3">
+        <div class="font-semibold text-[16px] text-[#F5F5F5]">Licenses verify offline</div>
+        <div class="font-normal text-[14px] leading-[1.66] text-[#858582] text-pretty">
+          Enterprise license keys are verified inside your deployment against a public key that ships in the binary. There is no phone-home, no license server in your critical path, and air-gapped deployments are fully supported.
+        </div>
+        <div class="font-normal text-[14px] leading-[1.66] text-[#858582] text-pretty">
+          When a license expires: a grace period with warnings, then Enterprise features lapse to the Open tier. The VPN keeps running — license state never touches the data plane. Upgrading again is pasting a new key, not a reinstall.
+        </div>
+      </div>
+      <div class="t-card border border-white/9 rounded-lg bg-[rgba(18,18,18,0.72)] p-6 flex flex-col gap-3">
+        <div class="font-semibold text-[16px] text-[#F5F5F5]">Designed to fail closed</div>
+        <div class="font-normal text-[14px] leading-[1.66] text-[#858582] text-pretty">
+          The desktop clients include a kill-switch designed to fail closed: if the tunnel drops, traffic stops rather than silently falling back to the open network. Fail-open is a design bug, not a convenience.
+        </div>
+        <div class="font-normal text-[14px] leading-[1.66] text-[#858582] text-pretty">
+          We say "designed to" deliberately — hardening this behavior on every platform is ongoing engineering, and we would rather under-promise here than oversell a security boundary.
+        </div>
+      </div>
     </div>
-    <div class="flex flex-col gap-3">
-      <h2 class="text-2xl font-bold tracking-tight">Designed to fail closed</h2>
-      <p class="text-sm text-text-muted">
-        The desktop clients include a kill-switch designed to fail closed: if the tunnel drops,
-        traffic stops rather than silently falling back to the open network. Fail-open is a design
-        bug, not a convenience.
-      </p>
-      <p class="text-sm text-text-muted">
-        We say “designed to” deliberately — hardening this behavior on every platform is ongoing
-        engineering, and we would rather under-promise here than oversell a security boundary.
-      </p>
-    </div>
-  </section>
 
-  <section class="border-t border-border bg-surface/50">
-    <div class="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-16 sm:px-6">
-      <h2 class="text-2xl font-bold tracking-tight">Found a vulnerability?</h2>
-      <p class="max-w-2xl text-sm text-text-muted">
-        Email
-        <a href="mailto:security@tunnex.io" class="font-semibold text-link"> security@tunnex.io</a>.
-        A human reads every report, and we will acknowledge yours. We don’t run a bug bounty
-        program. Please give us a reasonable window to fix the issue before public disclosure.
-      </p>
+    <!-- How the Product is Built Grid -->
+    <div class="flex flex-col gap-4">
+      <h3 class="font-semibold text-[clamp(22px,2.6vw,30px)] leading-[1.15] tracking-[-0.02em] text-[#F5F5F5]">
+        How the product is built
+      </h3>
+      <div class="t-g3 grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+        {
+          postureBullets.map((p) => (
+            <div class="bg-[rgba(18,18,18,0.72)] border border-white/[0.09] rounded-lg p-4.5 px-5 flex flex-col gap-2.25">
+              <span class="lic size-4 text-[#858582]">
+                <Fragment set:html={icons[p.icon]} />
+              </span>
+              <div class="font-semibold text-[13.5px] leading-[1.4] text-[#EDEDEB]">{p.title}</div>
+              <div class="font-normal text-[13px] leading-[1.62] text-[#858582] text-pretty">{p.body}</div>
+            </div>
+          ))
+        }
+      </div>
     </div>
-  </section>
+
+    <!-- Where the Boundary Stops -->
+    <div class="flex flex-col gap-4">
+      <h3 class="font-semibold text-[clamp(22px,2.6vw,30px)] leading-[1.15] tracking-[-0.02em] text-[#F5F5F5]">
+        Where the boundary stops
+      </h3>
+      <div class="font-normal text-[15px] leading-[1.65] text-[#858582] max-w-[78ch] text-pretty">
+        A security page that lists only strengths is marketing. These are the limits we would want to read before deploying someone else's network:
+      </div>
+      <div class="t-g2 grid grid-cols-1 md:grid-cols-2 gap-3.5">
+        {
+          limits.map((l) => (
+            <div class="bg-[rgba(18,18,18,0.72)] border border-white/[0.09] rounded-lg p-4.5 px-5 flex gap-3 items-start">
+              <span class="lic size-3.75 shrink-0 text-[#6E6E6B] mt-0.75">
+                <Fragment set:html={icons.ban} />
+              </span>
+              <div class="flex flex-col gap-1.25">
+                <div class="font-semibold text-[13.5px] text-[#EDEDEB]">{l.title}</div>
+                <div class="font-normal text-[13px] leading-[1.62] text-[#858582] text-pretty">{l.body}</div>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+
+    <!-- Anatomy of a Request Section -->
+    <div class="t-rv border-t border-white/10 pt-11 flex flex-col gap-8.5">
+      <div class="flex flex-col gap-3 max-w-[60ch]">
+        <div class="tnx-eyebrow">ANATOMY OF A REQUEST</div>
+        <h2 class="tnx-h2">What happens between "connect" and a packet.</h2>
+        <div class="font-normal text-[15.5px] leading-[1.66] text-[#858582] text-pretty">
+          Five stages, each of which can refuse. A stage that cannot reach its input denies rather than assumes — a gateway that never received policy denies everything, including on cold start.
+        </div>
+      </div>
+
+      <!-- Interactive 5 Stages Grid -->
+      <div class="flex flex-col gap-3.5">
+        <div class="t-g3 grid grid-cols-2 sm:grid-cols-5 gap-2.5">
+          {
+            stages.map((s, i) => (
+              <button
+                type="button"
+                class="stage-tab-btn border rounded-xl p-4 flex flex-col gap-2.5 text-left cursor-pointer transition-all duration-300 focus-visible:outline-none"
+                style={i === 0 ? 'border-color:rgba(255,255,255,.24);background:rgba(255,255,255,.05);transform:translateY(-3px)' : 'border-color:rgba(255,255,255,.08);background:rgba(18,18,18,.5)'}
+                data-stage-index={i}
+              >
+                <div class="flex items-center gap-2.25">
+                  <div class="size-7 shrink-0 rounded-lg bg-[#1A1A1A] border border-[#2E2E2E] flex items-center justify-center text-[#6E6E6B] stage-icon">
+                    <Fragment set:html={icons[s.icon]} />
+                  </div>
+                  <span class="font-mono font-semibold text-[8.5px] tracking-[0.12em] text-[#454542] stage-num">{s.n}</span>
+                </div>
+                <div class="font-semibold text-[13px] leading-[1.3] text-[#A9A9A6] stage-title">{s.title}</div>
+                <div class="font-mono font-medium text-[9px] tracking-[0.06em] text-[#4A4A48] stage-meta">{s.meta}</div>
+              </button>
+            ))
+          }
+        </div>
+
+        <!-- Selected Stage Detail Box -->
+        <div class="t-g2 grid grid-cols-1 md:grid-cols-2 gap-3.5 items-stretch">
+          <div class="border border-white/9 bg-[rgba(18,18,18,0.5)] rounded-xl p-5.5 flex flex-col gap-2.75" id="stage-detail-info">
+            <div class="font-mono font-semibold text-[8.5px] tracking-[0.14em] text-[#454542] uppercase" id="stage-label">
+              {stages[0]!.label}
+            </div>
+            <div class="font-semibold text-[16px] text-[#F5F5F5]" id="stage-title">{stages[0]!.title}</div>
+            <div class="font-normal text-[14px] leading-[1.66] text-[#858582] text-pretty" id="stage-body">
+              {stages[0]!.body}
+            </div>
+            <div class="flex gap-2.75 items-start mt-auto pt-3 border-t border-white/[0.07]">
+              <span class="lic size-3.5 shrink-0 text-[#C4626C] mt-0.5">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-full"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>
+              </span>
+              <div>
+                <span class="font-semibold text-[12.5px] text-[#D6D6D2]">Refuses when: </span>
+                <span class="font-normal text-[12.5px] leading-[1.55] text-[#858582]" id="stage-deny">{stages[0]!.deny}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-[#0B0B0B] border border-[#2E2E2E] rounded-xl p-4.5 md:p-5 overflow-x-auto flex flex-col gap-2.5">
+            <div class="font-mono font-semibold text-[8.5px] tracking-[0.14em] text-[#454542] uppercase">AUDIT RECORD</div>
+            <div class="font-mono font-medium text-[12px] leading-[1.85] text-[#D6D6D2] whitespace-pre" id="stage-code">
+              {stages[0]!.code}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Vulnerability Report Card -->
+    <div class="bg-[rgba(18,18,18,0.72)] border border-white/[0.09] rounded-lg p-5.5 md:p-6 flex flex-col gap-2.25">
+      <div class="font-semibold text-[15px] text-[#EDEDEB]">Found a vulnerability?</div>
+      <div class="font-normal text-[14px] leading-[1.66] text-[#858582] max-w-[80ch] text-pretty">
+        Email <a href="mailto:security@tunnex.io" class="underline underline-offset-4 decoration-[#C9C9C4]/40 hover:text-[#EDEDEB]">security@tunnex.io</a>. A human reads every report, and we will acknowledge yours. We don't run a bug bounty program. Please give us a reasonable window to fix the issue before public disclosure.
+      </div>
+    </div>
+  </div>
 </Base>
+
+<script is:inline>
+  const stagesData = [
+    {
+      label: 'STAGE 01 — IDENTITY',
+      title: 'Identity',
+      body: 'The principal authenticates against your identity provider or a local account. The id_token is verified, the tenant is pinned, and directory groups arrive as policy subjects rather than a list someone mirrors by hand.',
+      deny: 'the token fails verification, the account is disabled in your directory, or MFA is enforced and absent.',
+      code: `actor    alice@acme.io\nmethod   oidc/entra\ngroups   engineering, oncall\nmfa      satisfied`
+    },
+    {
+      label: 'STAGE 02 — DEVICE',
+      title: 'Device',
+      body: 'The device must be approved by an admin before a tunnel is issued, and posture is evaluated continuously with a stale sweep. Posture is client-reported OS version and disk encryption — not hardware attestation, and we label it that way everywhere it appears.',
+      deny: 'the device is unapproved, posture is failing, or the last report went stale. Unknown is reported as unknown, never as compliant.',
+      code: `device   0f62edc39e8d\napproved yes · admin@acme.io\nos       macOS 15.5\nfde      ON · reported 41s ago`
+    },
+    {
+      label: 'STAGE 03 — POLICY',
+      title: 'Policy',
+      body: 'The compiler turns rules into one deterministic artifact: allow-only, subject to destination, scoped to port and protocol. Per-user grants and time-boxed grants compile into the same artifact, so an expiring contractor grant is not a second mechanism.',
+      deny: 'no rule names this subject and destination. That is the default state, not an error condition.',
+      code: `rev      42\nsubject  group:engineering\ndest     10.20.0.0/16:22/tcp\nverdict  ALLOW · rule "eng → prod ssh"`
+    },
+    {
+      label: 'STAGE 04 — ENFORCEMENT',
+      title: 'Enforcement',
+      body: 'The verdict is enforced at the gateway kernel, not merely routed. A node agent owns WireGuard and reconciles toward desired state; the API never touches the data plane, which is why a control-plane outage does not drop live tunnels.',
+      deny: 'the gateway holds no policy artifact — including cold start, where it denies everything until one arrives.',
+      code: `gateway  syd-gw-01\ntunnel   10.99.0.7/32\nhandshake ok · 138ms\nrekey    every 120s`
+    },
+    {
+      label: 'STAGE 05 — AUDIT',
+      title: 'Audit',
+      body: 'Every allow, deny, aggregated deny, and termination is recorded per rule, kernel-stamped. The audit log carries first-class system actors and a stated cause, so an automated change is attributed to what made it rather than to a blank field.',
+      deny: 'nothing — this stage records. A revocation sweeps the peer slot, the pool address, and the live session, and says who did it.',
+      code: `ts       2026-08-04T20:41:19Z\nactor    alice@acme.io\naction   flow.allow · rule 6\ncause    policy rev 42`
+    }
+  ];
+
+  const btns = document.querySelectorAll('.stage-tab-btn');
+  const labelEl = document.getElementById('stage-label');
+  const titleEl = document.getElementById('stage-title');
+  const bodyEl = document.getElementById('stage-body');
+  const denyEl = document.getElementById('stage-deny');
+  const codeEl = document.getElementById('stage-code');
+
+  btns.forEach((btn, idx) => {
+    btn.addEventListener('click', () => {
+      // Style unselected
+      btns.forEach((b) => {
+        b.style.borderColor = 'rgba(255,255,255,.08)';
+        b.style.background = 'rgba(18,18,18,.5)';
+        b.style.transform = 'none';
+        const icon = b.querySelector('.stage-icon');
+        const title = b.querySelector('.stage-title');
+        const meta = b.querySelector('.stage-meta');
+        if (icon) icon.style.color = '#6E6E6B';
+        if (title) title.style.color = '#A9A9A6';
+        if (meta) meta.style.color = '#4A4A48';
+      });
+
+      // Style selected
+      btn.style.borderColor = 'rgba(255,255,255,.24)';
+      btn.style.background = 'rgba(255,255,255,.05)';
+      btn.style.transform = 'translateY(-3px)';
+      const icon = btn.querySelector('.stage-icon');
+      const title = btn.querySelector('.stage-title');
+      const meta = btn.querySelector('.stage-meta');
+      if (icon) icon.style.color = '#F5F5F5';
+      if (title) title.style.color = '#F5F5F5';
+      if (meta) meta.style.color = '#858582';
+
+      // Update content
+      const data = stagesData[idx];
+      if (data) {
+        if (labelEl) labelEl.textContent = data.label;
+        if (titleEl) titleEl.textContent = data.title;
+        if (bodyEl) bodyEl.textContent = data.body;
+        if (denyEl) denyEl.textContent = data.deny;
+        if (codeEl) codeEl.textContent = data.code;
+      }
+    });
+  });
+</script>

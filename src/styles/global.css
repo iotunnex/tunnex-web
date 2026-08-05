@@ -1,5 +1,6 @@
 @import 'tailwindcss';
 @import './theme.css';
+@import './tunnex-ui.css';
 
 /* Dark-mode-first: `dark:` variants and the .dark semantic remap activate via
    a `.dark` class on <html>, toggled by ThemeToggle and persisted. */

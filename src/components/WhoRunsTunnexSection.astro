@@ -1,0 +1,74 @@
+---
+// Who Runs Tunnex Section (Section 8)
+const audiences = [
+  {
+    icon: 'building',
+    title: 'Regulated teams & healthcare',
+    body: 'Audit requirements prohibit vendor-hosted control planes. Zero Trust policies compiled directly to WireGuard peers, with log residency on your own storage.',
+    tags: ['SOC 2', 'HIPAA', 'ISO 27001']
+  },
+  {
+    icon: 'shield-alert',
+    title: 'Defense & critical infrastructure',
+    body: 'Air-gapped networks, offline license key verification, and no cloud dependency. Deployment completes in minutes from local container registries.',
+    tags: ['AIR-GAPPED', 'OFFLINE VERIFY', 'ZERO SAAS']
+  },
+  {
+    icon: 'layers',
+    title: 'Platform engineering & MSPs',
+    body: 'Multi-tenant organization schemas on a single cluster. Delegate org admin roles without giving away global infrastructure rights.',
+    tags: ['MULTI-TENANT', 'DELEGATED RBAC', 'K8S OPERATOR']
+  },
+  {
+    icon: 'cpu',
+    title: 'AI & autonomous workloads',
+    body: 'Attributed non-human principals with expiring time-boxed grants. Model Context Protocol (MCP) and agent-to-agent destinations scoped per route.',
+    tags: ['AGENT PRINCIPALS', 'MCP PROTOCOL', 'AUTO-EXPIRING']
+  }
+];
+
+const icons: Record<string, string> = {
+  building: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-4"><rect width="16" height="20" x="4" y="2" rx="2" ry="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01"/><path d="M16 6h.01"/><path d="M12 6h.01"/><path d="M12 10h.01"/><path d="M12 14h.01"/><path d="M16 10h.01"/><path d="M16 14h.01"/><path d="M8 10h.01"/><path d="M8 14h.01"/></svg>',
+  'shield-alert': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-4"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>',
+  layers: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-4"><path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z"/><path d="m22 12.5-8.58 3.91a2 2 0 0 1-1.66 0L3.18 12.5"/><path d="m22 17.5-8.58 3.91a2 2 0 0 1-1.66 0L3.18 17.5"/></svg>',
+  cpu: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-4"><rect width="16" height="16" x="4" y="4" rx="2"/><rect width="6" height="6" x="9" y="9" rx="1"/><path d="M15 2v2"/><path d="M15 20v2"/><path d="M2 15h2"/><path d="M2 9h2"/><path d="M20 15h2"/><path d="M20 9h2"/><path d="M9 2v2"/><path d="M9 20v2"/></svg>'
+};
+---
+
+<section class="t-rv border-t border-[var(--tnx-line-1)]" id="who-runs-tunnex-section">
+  <div class="mx-auto max-w-[1180px] px-7 py-22 md:py-[88px] max-[620px]:px-[18px]">
+    <!-- Section Header -->
+    <div class="flex flex-col gap-3 mb-10 max-w-[58ch]">
+      <div class="tnx-eyebrow">WHO RUNS TUNNEX</div>
+      <h2 class="tnx-h2">Teams that cannot put the control plane somewhere else.</h2>
+    </div>
+
+    <!-- Clean Minimal Grid -->
+    <div class="t-g2 grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10">
+      {
+        audiences.map((a) => (
+          <div class="border-t border-white/10 pt-5 flex flex-col gap-3.5 group">
+            <div class="flex items-center gap-3">
+              <div class="size-7 shrink-0 rounded-md bg-[#1A1A1A] border border-[#2E2E2E] flex items-center justify-center text-[#C9C9C4]">
+                <Fragment set:html={icons[a.icon]} />
+              </div>
+              <div class="font-semibold text-[16px] text-[#F5F5F5]">{a.title}</div>
+            </div>
+            <div class="font-normal text-[13.5px] leading-[1.62] text-[#858582] text-pretty">
+              {a.body}
+            </div>
+            <div class="flex gap-2 flex-wrap">
+              {
+                a.tags.map((t) => (
+                  <span class="font-mono font-semibold text-[8.5px] tracking-[0.08em] text-[#858582] border border-[#262626] bg-[#141414] rounded-full px-2.5 py-0.75">
+                    {t}
+                  </span>
+                ))
+              }
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>

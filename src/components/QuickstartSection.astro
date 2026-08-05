@@ -1,0 +1,156 @@
+---
+// From Zero to a Tunnel Quickstart Section (Section 7)
+const steps = [
+  { n: '1', title: 'Install the control plane', body: 'One pipe-safe command. Idempotent, and it writes nothing outside its own data directory.' },
+  { n: '2', title: 'Enroll a gateway', body: 'Zero-touch gateway joins on the command emitted by the installer.' },
+  { n: '3', title: 'Add a device', body: 'The config is shown exactly once. A lost profile is revoke-and-reissue, never re-download.' }
+];
+
+const terminalScript = [
+  { pre: '$ ', text: 'curl -fsSL https://get.tunnex.io | sh', fg: '#EDEDEB' },
+  { pre: '', text: '  ✓ prebuilt images pulled from ghcr.io', fg: '#858582' },
+  { pre: '', text: '  ✓ secrets generated · master key sealed at rest', fg: '#858582' },
+  { pre: '', text: '  ✓ control plane up  →  https://vpn.acme.io', fg: '#A9A9A6' },
+  { pre: '$ ', text: 'tnx gateway enroll --site ap-lan', fg: '#EDEDEB' },
+  { pre: '', text: '  ✓ gateway syd-gw-01 joined · wg0 reconciled', fg: '#858582' },
+  { pre: '', text: '  ✓ pool 10.99.0.0/16 · deterministic allocation', fg: '#858582' },
+  { pre: '$ ', text: 'tnx device add --user alice@acme.io', fg: '#EDEDEB' },
+  { pre: '', text: '  ✓ device minted · config shown once, never again', fg: '#858582' },
+  { pre: '', text: '  ✓ policy rev 42 compiled · 6 allow rules, default deny', fg: '#A9A9A6' },
+  { pre: '', text: '  handshake ok · 10.99.0.7/32 · 138ms syd→wus', fg: '#6E9C7C' }
+];
+---
+
+<section class="t-rv border-t border-[var(--tnx-line-1)]" id="quickstart-section">
+  <div class="mx-auto max-w-[1180px] px-7 py-22 md:py-[88px] max-[620px]:px-[18px]">
+    <div class="t-g2 grid grid-cols-1 md:grid-cols-[0.85fr_1.15fr] gap-14 items-center">
+      <!-- Left Column: Copy & Steps -->
+      <div class="flex flex-col gap-5">
+        <div class="flex flex-col gap-3">
+          <div class="tnx-eyebrow">FROM ZERO TO A TUNNEL</div>
+          <h2 class="tnx-h2">Three commands. No SSH after the join.</h2>
+          <div class="font-normal text-[15.5px] leading-[1.68] text-[#A9A9A6] text-pretty">
+            Automated installer generates secrets on boot and outputs your admin URL. Gateways join via one command without requiring SSH access.
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-2.5">
+          {
+            steps.map((q) => (
+              <div class="t-row flex gap-3.25 items-start rounded-lg p-2.5 border border-white/[0.07] bg-[rgba(18,18,18,0.5)]">
+                <div class="size-6 shrink-0 rounded-full border border-[#2E2E2E] bg-[#1A1A1A] flex items-center justify-center font-mono font-semibold text-[10.5px] text-[#C9C9C4]">
+                  {q.n}
+                </div>
+                <div>
+                  <div class="font-semibold text-[13.5px] text-[#EDEDEB]">{q.title}</div>
+                  <div class="font-normal text-[12.5px] leading-[1.55] text-[#858582] mt-0.5 text-pretty">
+                    {q.body}
+                  </div>
+                </div>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+
+      <!-- Right Column: Terminal Window -->
+      <div class="bg-[#0B0B0B] border border-[#2E2E2E] rounded-xl overflow-hidden shadow-[0_26px_64px_-26px_rgba(0,0,0,0.8)] min-w-0">
+        <div class="flex items-center gap-2.25 px-3.5 py-2.75 border-b border-[#1E1E1E] bg-[rgba(18,18,18,0.8)]">
+          <span class="size-2.25 rounded-full bg-[#3A3A38]"></span>
+          <span class="size-2.25 rounded-full bg-[#3A3A38]"></span>
+          <span class="size-2.25 rounded-full bg-[#3A3A38]"></span>
+          <span class="ml-1.5 font-mono font-medium text-[10px] tracking-[0.1em] text-[#5E5E5B]">admin@ops: tunnex</span>
+        </div>
+        <div class="p-4.5 pt-4 pb-5 min-h-[328px] flex flex-col gap-0.75" id="terminal-stream-container">
+          <!-- Terminal lines generated dynamically by JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  const scriptData = [
+    { isCmd: true, text: 'curl -fsSL https://get.tunnex.io | sh', fg: '#EDEDEB' },
+    { isCmd: false, text: '  ✓ prebuilt images pulled from ghcr.io', fg: '#858582' },
+    { isCmd: false, text: '  ✓ secrets generated · master key sealed at rest', fg: '#858582' },
+    { isCmd: false, text: '  ✓ control plane up  →  https://vpn.acme.io', fg: '#A9A9A6' },
+    { isCmd: true, text: 'tnx gateway enroll --site ap-lan', fg: '#EDEDEB' },
+    { isCmd: false, text: '  ✓ gateway syd-gw-01 joined · wg0 reconciled', fg: '#858582' },
+    { isCmd: false, text: '  ✓ pool 10.99.0.0/16 · deterministic allocation', fg: '#858582' },
+    { isCmd: true, text: 'tnx device add --user alice@acme.io', fg: '#EDEDEB' },
+    { isCmd: false, text: '  ✓ device minted · config shown once, never again', fg: '#858582' },
+    { isCmd: false, text: '  ✓ policy rev 42 compiled · 6 allow rules, default deny', fg: '#A9A9A6' },
+    { isCmd: false, text: '  handshake ok · 10.99.0.7/32 · 138ms syd→wus', fg: '#6E9C7C' }
+  ];
+
+  const container = document.getElementById('terminal-stream-container');
+
+  function typeTerminal() {
+    if (!container) return;
+    container.innerHTML = '';
+
+    let lineIndex = 0;
+
+    function nextLine() {
+      if (lineIndex >= scriptData.length) return;
+      const data = scriptData[lineIndex];
+
+      const lineEl = document.createElement('div');
+      lineEl.className = 'font-mono text-[12.5px] leading-[1.72] whitespace-pre-wrap break-words';
+      lineEl.style.color = data.fg;
+
+      if (data.isCmd) {
+        const promptSpan = document.createElement('span');
+        promptSpan.className = 'text-[#4A4A48]';
+        promptSpan.textContent = '$ ';
+        lineEl.appendChild(promptSpan);
+
+        const textSpan = document.createElement('span');
+        lineEl.appendChild(textSpan);
+
+        const cursorSpan = document.createElement('span');
+        cursorSpan.className = 'text-[#EDEDEB] animate-pulse';
+        cursorSpan.textContent = '▌';
+        lineEl.appendChild(cursorSpan);
+
+        container.appendChild(lineEl);
+
+        let charIdx = 0;
+        const typeInterval = setInterval(() => {
+          if (charIdx < data.text.length) {
+            textSpan.textContent += data.text[charIdx];
+            charIdx++;
+          } else {
+            clearInterval(typeInterval);
+            cursorSpan.remove();
+            lineIndex++;
+            setTimeout(nextLine, 180);
+          }
+        }, 32);
+      } else {
+        const textSpan = document.createElement('span');
+        textSpan.textContent = data.text;
+        lineEl.appendChild(textSpan);
+
+        container.appendChild(lineEl);
+        lineIndex++;
+        setTimeout(nextLine, 120);
+      }
+    }
+
+    nextLine();
+  }
+
+  if (container) {
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          typeTerminal();
+          obs.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.2 });
+    obs.observe(container);
+  }
+</script>

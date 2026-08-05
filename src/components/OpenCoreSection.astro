@@ -1,0 +1,39 @@
+---
+// Open Core Section (Section 9)
+const openCoreItems = [
+  { k: 'CORE LICENSE', v: 'Apache-2.0', note: 'Fork it, audit it, run it forever.' },
+  { k: 'ENTERPRISE', v: 'Source-available', note: 'Commercial licence, readable source.' },
+  { k: 'SUPPLY CHAIN', v: 'SBOM published', note: 'govulncheck and CodeQL block the build.' },
+  { k: 'DISCLOSURE', v: 'SECURITY.md', note: 'A stated SLA, and a human replies.' }
+];
+---
+
+<section class="t-rv border-t border-[var(--tnx-line-1)]" id="open-core-section">
+  <div class="mx-auto max-w-[1180px] px-7 py-20 md:py-[80px] max-[620px]:px-[18px]">
+    <div class="t-g2 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+      <!-- Left Column: Copy -->
+      <div class="flex flex-col gap-3.5">
+        <div class="tnx-eyebrow">OPEN CORE</div>
+        <h2 class="tnx-h2">Read the code that terminates your tunnels.</h2>
+        <div class="font-normal text-[15px] leading-[1.68] text-[#A9A9A6] text-pretty">
+          The core is Apache-2.0. Enterprise is source-available: you can read every line that runs inside your network. A security boundary you cannot inspect is a promise, not a boundary.
+        </div>
+      </div>
+
+      <!-- Right Column: Clean Minimal Key-Value Blocks -->
+      <div class="t-g2 grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-6">
+        {
+          openCoreItems.map((o) => (
+            <div class="border-t border-white/10 pt-4 flex flex-col gap-1">
+              <div class="font-mono font-semibold text-[8.5px] tracking-[0.14em] text-[#5E5E5B] uppercase">
+                {o.k}
+              </div>
+              <div class="font-semibold text-[15px] text-[#EDEDEB]">{o.v}</div>
+              <div class="font-normal text-[12.5px] leading-[1.55] text-[#858582]">{o.note}</div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,40 @@
+---
+// Proven on the Wire / Dotted World Map Section (Section 6)
+---
+
+<section class="t-rv border-t border-[var(--tnx-line-1)]" id="proven-on-wire-section">
+  <div class="mx-auto max-w-[1180px] px-7 py-18 md:py-[72px] max-[620px]:px-[18px]">
+    <!-- 2-Column Header -->
+    <div class="t-g2 grid grid-cols-1 md:grid-cols-2 gap-[48px] items-start mb-6">
+      <div class="flex flex-col gap-3">
+        <div class="tnx-eyebrow">PROVEN ON THE WIRE</div>
+        <h2 class="tnx-h2-sm max-w-[20ch]">Cross-cloud, on real infrastructure.</h2>
+      </div>
+      <div class="font-normal text-[15.5px] leading-[1.66] text-[#A9A9A6] text-pretty pt-1">
+        Site-to-site between AWS Sydney and Azure West US, un-NAT'd, under enforcing policy. Capabilities ship after they are demonstrated end to end: the record states which ones were.
+      </div>
+    </div>
+
+    <!-- Dotted Map Web Component Container (No Card Border) -->
+    <div class="w-full relative min-h-[340px]">
+      <tunnex-dotted-map link-label="138 ms"></tunnex-dotted-map>
+
+      <!-- Mono Legend Strip -->
+      <div class="mt-2.5 pt-3 border-t border-white/10 flex items-center justify-between gap-4 flex-wrap text-[9.5px] font-mono font-semibold tracking-[0.14em] text-[#6E6E6B] uppercase">
+        <div class="flex items-center gap-4 flex-wrap">
+          <span>WIREGUARD SITE-TO-SITE</span>
+          <span>138 MS · UN-NAT'D</span>
+          <span>ROUTES RECONCILED BY THE AGENTS</span>
+        </div>
+        <div class="font-medium text-[#454542] tracking-[0.12em] ml-auto">
+          ILLUSTRATIVE · AGENT PRINCIPALS ARE ROADMAP
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Scripts required by tunnex-dotted-map.js Web Component -->
+<script is:inline src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+<script is:inline src="https://cdn.jsdelivr.net/npm/topojson-client@3"></script>
+<script is:inline src="/assets/tunnex-dotted-map.js"></script>
