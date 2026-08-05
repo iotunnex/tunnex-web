@@ -35,13 +35,13 @@ const fonts = [
 
 const svgDataUri = (file) =>
   `data:image/svg+xml;base64,${readFileSync(join(root, 'src/assets', file)).toString('base64')}`;
-const mark = svgDataUri('logo.svg');
-const wordmark = svgDataUri('wordmark.svg');
+const mark = svgDataUri('tunnex-logo.svg');
+const wordmark = svgDataUri('tunnex-wordmark-light.svg');
 
 // Dark brand ground (matches the site's dark surface family).
-const BG = '#0a1220';
-const MUTED = '#9fb1c7';
-const ACCENT = '#22d3ee';
+const BG = '#0B0B0B';
+const MUTED = '#A9A9A6';
+const ACCENT = '#EDEDEB';
 
 function card({ title, eyebrow }) {
   return {
