@@ -40,8 +40,7 @@ export async function processLead(deps: LeadDeps, request: Request): Promise<Res
   const form = await request.formData().catch(() => null);
   if (!form) return jsonError(400, 'invalid_request', 'Send a form POST.');
 
-  const turnstileToken =
-    (form.get('cf-turnstile-response') as string) || 'local-dev-token';
+  const turnstileToken = (form.get('cf-turnstile-response') as string) || 'local-dev-token';
 
   const rawSeats = form.get('seats');
   const seatsInput = rawSeats && String(rawSeats).trim() !== '' ? rawSeats : undefined;

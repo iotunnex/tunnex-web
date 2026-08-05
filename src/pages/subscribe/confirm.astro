@@ -29,9 +29,12 @@ if (!forcedInvalid && token) {
       {
         state === 'valid' && (
           <>
-            <h1 class="font-sans font-semibold text-[20px] text-text tracking-tight">Confirm your subscription</h1>
+            <h1 class="font-sans font-semibold text-[20px] text-text tracking-tight">
+              Confirm your subscription
+            </h1>
             <p class="font-sans font-normal text-[14px] leading-[1.6] text-text-muted">
-              One click and you’re on the list for Tunnex launch news and release notes · nothing else.
+              One click and you’re on the list for Tunnex launch news and release notes · nothing
+              else.
             </p>
             <form method="post" action="/api/subscribe/confirm" class="w-full mt-2">
               <input type="hidden" name="token" value={token} />
@@ -48,7 +51,9 @@ if (!forcedInvalid && token) {
       {
         state === 'expired' && (
           <>
-            <h1 class="font-sans font-semibold text-[20px] text-text tracking-tight">This link has expired</h1>
+            <h1 class="font-sans font-semibold text-[20px] text-text tracking-tight">
+              This link has expired
+            </h1>
             <p class="font-sans font-normal text-[14px] leading-[1.6] text-text-muted">
               Confirmation links are valid for 24 hours. Join the waitlist again and we’ll send a
               fresh one.
@@ -62,7 +67,9 @@ if (!forcedInvalid && token) {
       {
         state === 'invalid' && (
           <>
-            <h1 class="font-sans font-semibold text-[20px] text-text tracking-tight">This link isn’t valid anymore</h1>
+            <h1 class="font-sans font-semibold text-[20px] text-text tracking-tight">
+              This link isn’t valid anymore
+            </h1>
             <p class="font-sans font-normal text-[14px] leading-[1.6] text-text-muted">
               If you just clicked Confirm, you’re all set · you’re on the list. Otherwise this link
               was already used, expired, or mistyped; join the waitlist again for a fresh one.

@@ -46,7 +46,7 @@ const entFeatures = [
             id="form-error-alert"
             class="hidden border border-error/40 bg-error/15 rounded-md p-3.5 mb-4 items-center gap-3 transition-all"
           >
-            <div class="size-2 rounded-full bg-error shrink-0" />
+            <div class="size-2 rounded-full bg-error shrink-0"></div>
             <div id="form-error-text" class="font-normal text-[12.5px] leading-[1.5] text-text">
               Lead request failed. Please check your form input.
             </div>
@@ -63,7 +63,12 @@ const entFeatures = [
               </div>
             )
           }
-          <form id="lead-form" action="/api/enterprise-lead" method="POST" class="flex flex-col gap-4">
+          <form
+            id="lead-form"
+            action="/api/enterprise-lead"
+            method="POST"
+            class="flex flex-col gap-4"
+          >
             <div class="t-g2 grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div class="flex flex-col gap-1.75">
                 <label
@@ -281,7 +286,8 @@ const entFeatures = [
         const errAlert = document.getElementById('form-error-alert');
         const errText = document.getElementById('form-error-text');
         if (errAlert && errText) {
-          errText.textContent = data.message || 'Lead request failed. Please check your form input.';
+          errText.textContent =
+            data.message || 'Lead request failed. Please check your form input.';
           errAlert.classList.remove('hidden');
           errAlert.classList.add('flex');
           errAlert.scrollIntoView({ behavior: 'smooth', block: 'center' });

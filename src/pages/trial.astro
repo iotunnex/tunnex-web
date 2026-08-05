@@ -71,7 +71,7 @@ const steps = [
             id="trial-error-alert"
             class="hidden border border-error/40 bg-error/15 rounded-md p-3.5 mb-4 items-center gap-3 transition-all"
           >
-            <div class="size-2 rounded-full bg-error shrink-0" />
+            <div class="size-2 rounded-full bg-error shrink-0"></div>
             <div id="trial-error-text" class="font-normal text-[12.5px] leading-[1.5] text-text">
               Verification request failed. Please check your email address.
             </div>
@@ -248,7 +248,8 @@ const steps = [
         const errAlert = document.getElementById('trial-error-alert');
         const errText = document.getElementById('trial-error-text');
         if (errAlert && errText) {
-          errText.textContent = data.message || 'Verification request failed. Please check your email address.';
+          errText.textContent =
+            data.message || 'Verification request failed. Please check your email address.';
           errAlert.classList.remove('hidden');
           errAlert.classList.add('flex');
           errAlert.scrollIntoView({ behavior: 'smooth', block: 'center' });

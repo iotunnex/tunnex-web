@@ -42,7 +42,8 @@ const titles = {
         state === 'valid' && (
           <>
             <h1 class="font-sans font-semibold text-[20px] text-text tracking-tight break-words">
-              Confirm your trial for <span class="text-text underline decoration-primary">{domain}</span>
+              Confirm your trial for{' '}
+              <span class="text-text underline decoration-primary">{domain}</span>
             </h1>
             {launchMode === 'prelaunch' ? (
               <p class="font-sans font-normal text-[14px] leading-[1.6] text-text-muted">
@@ -70,7 +71,9 @@ const titles = {
       {
         state === 'expired' && (
           <>
-            <h1 class="font-sans font-semibold text-[20px] text-text tracking-tight">This link has expired</h1>
+            <h1 class="font-sans font-semibold text-[20px] text-text tracking-tight">
+              This link has expired
+            </h1>
             <p class="font-sans font-normal text-[14px] leading-[1.6] text-text-muted">
               Trial links are valid for 30 minutes. Request a fresh one and confirm from your inbox
               · it takes under a minute.
@@ -84,7 +87,9 @@ const titles = {
       {
         state === 'invalid' && (
           <>
-            <h1 class="font-sans font-semibold text-[20px] text-text tracking-tight">This link isn’t valid anymore</h1>
+            <h1 class="font-sans font-semibold text-[20px] text-text tracking-tight">
+              This link isn’t valid anymore
+            </h1>
             <p class="font-sans font-normal text-[14px] leading-[1.6] text-text-muted">
               If you just clicked Confirm, you’re all set · the approval email is on its way to your
               inbox. Otherwise this link was already used, expired, or mistyped · head back to the
@@ -99,7 +104,9 @@ const titles = {
       {
         state === 'exists' && (
           <>
-            <h1 class="font-sans font-semibold text-[20px] text-text tracking-tight">Your domain already has a trial</h1>
+            <h1 class="font-sans font-semibold text-[20px] text-text tracking-tight">
+              Your domain already has a trial
+            </h1>
             <p class="font-sans font-normal text-[14px] leading-[1.6] text-text-muted">
               Your company already started a trial · they’re one per domain. Check with your team
               (it may even be you), or write to us and we’ll sort it out.
