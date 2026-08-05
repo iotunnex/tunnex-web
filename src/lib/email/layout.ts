@@ -34,7 +34,7 @@ export function renderShell(opts: {
 ${preheader}
 <div style="max-width:560px;margin:0 auto;padding:40px 20px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
   <div style="padding-bottom:24px;text-align:center;">
-    <a href="${escapeAttr(opts.assetBaseUrl)}" style="text-decoration:none;display:inline-block;">
+    <a href="${escapeAttr(opts.assetBaseUrl)}" style="text-decoration:none;display:inline-block;background-color:${EMAIL.bg};border:1px solid ${EMAIL.border};border-radius:24px;padding:10px 24px;">
       <img src="${opts.assetBaseUrl}/email/tunnex-logo-2x.png" alt="Tunnex" width="176" height="22" style="display:block;border:0;margin:0 auto;outline:none;">
     </a>
   </div>
