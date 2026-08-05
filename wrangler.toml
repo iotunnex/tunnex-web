@@ -7,10 +7,10 @@ compatibility_date = "2026-07-01"
 compatibility_flags = ["nodejs_compat"]
 
 # Custom Domain routes are attached on Cloudflare Dashboard.
-routes = [
-  { pattern = "tunnex.io", custom_domain = true },
-  { pattern = "www.tunnex.io", custom_domain = true }
-]
+# routes = [
+#   { pattern = "tunnex.io", custom_domain = true },
+#   { pattern = "www.tunnex.io", custom_domain = true }
+# ]
 # Custom entry: the adapter's fetch handler + the lifecycle cron's scheduled
 # handler (the adapter uses this instead of its default entry).
 main = "src/worker.ts"
