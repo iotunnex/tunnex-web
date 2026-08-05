@@ -14,12 +14,18 @@ export function renderShell(opts: {
   preheader?: string;
   /** false = internal notification footer instead of the customer footer. */
   customerFooter?: boolean;
+  nonce?: string;
 }): string {
   const rawAssetBaseUrl = opts.assetBaseUrl || '';
   const assetBaseUrl =
     !rawAssetBaseUrl || rawAssetBaseUrl.includes('workers.dev')
       ? 'https://tunnex.io'
       : rawAssetBaseUrl;
+  const nonce =
+    opts.nonce ??
+    (typeof process !== 'undefined' && process.env.NODE_ENV === 'test'
+      ? 'test-nonce'
+      : `${Date.now().toString(36)}-${Math.random().toString(36).substring(2, 7)}`);
   const preheader = opts.preheader
     ? `<span style="display:none;font-size:1px;color:${EMAIL.bg};max-height:0;max-width:0;opacity:0;overflow:hidden;">${escapeHtml(opts.preheader)}</span>`
     : '';
@@ -50,6 +56,7 @@ ${opts.bodyHtml}
     ${footer}
   </p>
 </div>
+<!-- tnx:${nonce} -->
 </body>
 </html>`;
 }

@@ -24,6 +24,7 @@ exports[`email templates > renders enterprise-lead (html + text snapshot) 1`] = 
     Internal notification · enterprise lead from tunnex.io/enterprise.
   </p>
 </div>
+<!-- tnx:test-nonce -->
 </body>
 </html>",
   "subject": "New enterprise lead: Acme Corp",
@@ -64,6 +65,7 @@ exports[`email templates > renders enterprise-lead-ack (html + text snapshot) 1`
     Questions? Reply to this email or write to <a href="mailto:support@tunnex.io" style="color:#A9A9A6;text-decoration:underline;">support@tunnex.io</a>.
   </p>
 </div>
+<!-- tnx:test-nonce -->
 </body>
 </html>",
   "subject": "We received your Tunnex Enterprise inquiry",
@@ -102,6 +104,7 @@ exports[`email templates > renders newsletter-confirm (html + text snapshot) 1`]
     Questions? Reply to this email or write to <a href="mailto:support@tunnex.io" style="color:#A9A9A6;text-decoration:underline;">support@tunnex.io</a>.
   </p>
 </div>
+<!-- tnx:test-nonce -->
 </body>
 </html>",
   "subject": "Confirm your Tunnex updates subscription",
@@ -139,6 +142,7 @@ exports[`email templates > renders trial-already-exists (html + text snapshot) 1
     Questions? Reply to this email or write to <a href="mailto:support@tunnex.io" style="color:#A9A9A6;text-decoration:underline;">support@tunnex.io</a>.
   </p>
 </div>
+<!-- tnx:test-nonce -->
 </body>
 </html>",
   "subject": "A Tunnex trial already exists for acme.com",
@@ -173,6 +177,7 @@ exports[`email templates > renders trial-approved (html + text snapshot) 1`] = `
     Questions? Reply to this email or write to <a href="mailto:support@tunnex.io" style="color:#A9A9A6;text-decoration:underline;">support@tunnex.io</a>.
   </p>
 </div>
+<!-- tnx:test-nonce -->
 </body>
 </html>",
   "subject": "Your Tunnex trial is approved",
@@ -207,6 +212,7 @@ exports[`email templates > renders trial-d10-reminder (html + text snapshot) 1`]
     Questions? Reply to this email or write to <a href="mailto:support@tunnex.io" style="color:#A9A9A6;text-decoration:underline;">support@tunnex.io</a>.
   </p>
 </div>
+<!-- tnx:test-nonce -->
 </body>
 </html>",
   "subject": "4 days left in your Tunnex trial",
@@ -242,6 +248,7 @@ exports[`email templates > renders trial-d21-followup (html + text snapshot) 1`]
     Questions? Reply to this email or write to <a href="mailto:support@tunnex.io" style="color:#A9A9A6;text-decoration:underline;">support@tunnex.io</a>.
   </p>
 </div>
+<!-- tnx:test-nonce -->
 </body>
 </html>",
   "subject": "How did your Tunnex trial go?",
@@ -276,6 +283,7 @@ exports[`email templates > renders trial-expired-upgrade (html + text snapshot) 
     Questions? Reply to this email or write to <a href="mailto:support@tunnex.io" style="color:#A9A9A6;text-decoration:underline;">support@tunnex.io</a>.
   </p>
 </div>
+<!-- tnx:test-nonce -->
 </body>
 </html>",
   "subject": "Your Tunnex trial has ended",
@@ -311,6 +319,7 @@ exports[`email templates > renders trial-key-delivery (html + text snapshot) 1`]
     Questions? Reply to this email or write to <a href="mailto:support@tunnex.io" style="color:#A9A9A6;text-decoration:underline;">support@tunnex.io</a>.
   </p>
 </div>
+<!-- tnx:test-nonce -->
 </body>
 </html>",
   "subject": "Your Tunnex Enterprise trial key",
@@ -348,6 +357,7 @@ exports[`email templates > renders trial-verify (html + text snapshot) 1`] = `
     Questions? Reply to this email or write to <a href="mailto:support@tunnex.io" style="color:#A9A9A6;text-decoration:underline;">support@tunnex.io</a>.
   </p>
 </div>
+<!-- tnx:test-nonce -->
 </body>
 </html>",
   "subject": "Confirm your Tunnex trial request",
