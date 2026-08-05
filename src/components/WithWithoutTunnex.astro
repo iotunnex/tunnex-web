@@ -2,13 +2,20 @@
 // With / Without Tunnex Comparison Section (Section 2)
 ---
 
-<section class="t-rv border-t border-[var(--tnx-line-1)] bg-[var(--tnx-band)]" id="with-without-tunnex">
-  <div class="mx-auto max-w-[1180px] px-7 py-20 md:py-[88px] flex flex-col gap-6 max-[620px]:px-[18px]">
+<section
+  class="t-rv border-t border-[var(--tnx-line-1)] bg-[var(--tnx-band)]"
+  id="with-without-tunnex"
+>
+  <div
+    class="mx-auto max-w-[1180px] px-7 py-20 md:py-[88px] flex flex-col gap-6 max-[620px]:px-[18px]"
+  >
     <!-- Header with ON / OFF Toggle & Explainer -->
     <div class="flex flex-col items-center gap-[18px] text-center">
       <div class="flex items-center gap-[14px] flex-wrap justify-center">
         <!-- Segmented Toggle -->
-        <div class="flex items-center gap-[3px] border border-[#262626] rounded-[9px] p-[3px] bg-[rgba(18,18,18,0.72)]">
+        <div
+          class="flex items-center gap-[3px] border border-[#262626] rounded-[9px] p-[3px] bg-[rgba(18,18,18,0.72)]"
+        >
           <button
             id="tnx-toggle-on"
             type="button"
@@ -39,7 +46,8 @@
         id="tnx-toggle-explainer"
         class="font-sans text-[16px] md:text-[20px] leading-[1.6] text-[#A9A9A6] max-w-[60ch] text-pretty transition-all duration-300"
       >
-        Tunnex compiles your policy into WireGuard peers and gateway state, so people, sites and services connect directly. The control plane hands out config and never carries a packet.
+        Tunnex compiles your policy into WireGuard peers and gateway state, so people, sites and
+        services connect directly. The control plane hands out config and never carries a packet.
       </div>
     </div>
 
@@ -53,9 +61,15 @@
           aria-labelledby="tnxOnTitle tnxOnDesc"
           class="w-full h-auto block select-none"
         >
-          <title id="tnxOnTitle">With Tunnex: direct encrypted tunnels between people, sites and services</title>
+          <title id="tnxOnTitle">
+            With Tunnex: direct encrypted tunnels between people, sites and services
+          </title>
           <desc id="tnxOnDesc">
-            Two locations on the left — an office and a home — connect over peer-to-peer WireGuard tunnels straight to a cloud environment and a datacenter on the right. A site-to-site tunnel links the cloud and the datacenter. The self-hosted Tunnex control plane in the middle distributes configuration and policy to all four over dotted lines, and never carries traffic.
+            Two locations on the left — an office and a home — connect over peer-to-peer WireGuard
+            tunnels straight to a cloud environment and a datacenter on the right. A site-to-site
+            tunnel links the cloud and the datacenter. The self-hosted Tunnex control plane in the
+            middle distributes configuration and policy to all four over dotted lines, and never
+            carries traffic.
           </desc>
 
           <!-- Animated Peer-to-Peer Tunnels -->
@@ -87,7 +101,13 @@
           </g>
 
           <!-- Corner Region Labels -->
-          <g font-family="var(--tnx-mono)" font-size="11.5" font-weight="600" letter-spacing="1.8" fill="#6E6E6B">
+          <g
+            font-family="var(--tnx-mono)"
+            font-size="11.5"
+            font-weight="600"
+            letter-spacing="1.8"
+            fill="#6E6E6B"
+          >
             <text x="60" y="46">OFFICE</text>
             <text x="60" y="536">HOME</text>
             <text x="740" y="46">CLOUD</text>
@@ -95,25 +115,79 @@
           </g>
 
           <!-- Node 1: OFFICE (Alice) -->
-          <rect x="60" y="60" width="200" height="150" rx="14" fill="rgba(22,22,22,.94)" stroke="rgba(255,255,255,.22)" stroke-width="1.3"></rect>
+          <rect
+            x="60"
+            y="60"
+            width="200"
+            height="150"
+            rx="14"
+            fill="rgba(22,22,22,.94)"
+            stroke="rgba(255,255,255,.22)"
+            stroke-width="1.3"></rect>
           <g fill="none" stroke="#C9C9C4" stroke-width="1.6" stroke-linecap="round">
             <circle cx="160" cy="108" r="11"></circle>
             <path d="M141 145c0-11 8.5-17 19-17s19 6 19 17"></path>
           </g>
-          <text x="160" y="178" text-anchor="middle" fill="#EDEDEB" font-family="var(--tnx-sans)" font-size="14.5" font-weight="600">Alice</text>
-          <text x="160" y="196" text-anchor="middle" fill="#6E6E6B" font-family="var(--tnx-sans)" font-size="12">Engineering</text>
+          <text
+            x="160"
+            y="178"
+            text-anchor="middle"
+            fill="#EDEDEB"
+            font-family="var(--tnx-sans)"
+            font-size="14.5"
+            font-weight="600">Alice</text
+          >
+          <text
+            x="160"
+            y="196"
+            text-anchor="middle"
+            fill="#6E6E6B"
+            font-family="var(--tnx-sans)"
+            font-size="12">Engineering</text
+          >
 
           <!-- Node 2: HOME (Bob) -->
-          <rect x="60" y="350" width="200" height="150" rx="14" fill="rgba(22,22,22,.94)" stroke="rgba(255,255,255,.22)" stroke-width="1.3"></rect>
+          <rect
+            x="60"
+            y="350"
+            width="200"
+            height="150"
+            rx="14"
+            fill="rgba(22,22,22,.94)"
+            stroke="rgba(255,255,255,.22)"
+            stroke-width="1.3"></rect>
           <g fill="none" stroke="#C9C9C4" stroke-width="1.6" stroke-linecap="round">
             <circle cx="160" cy="398" r="11"></circle>
             <path d="M141 435c0-11 8.5-17 19-17s19 6 19 17"></path>
           </g>
-          <text x="160" y="468" text-anchor="middle" fill="#EDEDEB" font-family="var(--tnx-sans)" font-size="14.5" font-weight="600">Bob</text>
-          <text x="160" y="486" text-anchor="middle" fill="#6E6E6B" font-family="var(--tnx-sans)" font-size="12">Support</text>
+          <text
+            x="160"
+            y="468"
+            text-anchor="middle"
+            fill="#EDEDEB"
+            font-family="var(--tnx-sans)"
+            font-size="14.5"
+            font-weight="600">Bob</text
+          >
+          <text
+            x="160"
+            y="486"
+            text-anchor="middle"
+            fill="#6E6E6B"
+            font-family="var(--tnx-sans)"
+            font-size="12">Support</text
+          >
 
           <!-- Node 3: CLOUD (Web server / Database) -->
-          <rect x="740" y="60" width="200" height="150" rx="14" fill="rgba(22,22,22,.94)" stroke="rgba(255,255,255,.22)" stroke-width="1.3"></rect>
+          <rect
+            x="740"
+            y="60"
+            width="200"
+            height="150"
+            rx="14"
+            fill="rgba(22,22,22,.94)"
+            stroke="rgba(255,255,255,.22)"
+            stroke-width="1.3"></rect>
           <line x1="840" y1="80" x2="840" y2="190" stroke="rgba(255,255,255,.12)"></line>
           <g fill="none" stroke="#C9C9C4" stroke-width="1.5" stroke-linecap="round">
             <rect x="775" y="108" width="30" height="10" rx="3"></rect>
@@ -121,11 +195,35 @@
             <ellipse cx="890" cy="110" rx="15" ry="5"></ellipse>
             <path d="M875 110v16c0 2.8 6.7 5 15 5s15-2.2 15-5v-16"></path>
           </g>
-          <text x="790" y="164" text-anchor="middle" fill="#EDEDEB" font-family="var(--tnx-sans)" font-size="13" font-weight="600">Web server</text>
-          <text x="890" y="164" text-anchor="middle" fill="#EDEDEB" font-family="var(--tnx-sans)" font-size="13" font-weight="600">Database</text>
+          <text
+            x="790"
+            y="164"
+            text-anchor="middle"
+            fill="#EDEDEB"
+            font-family="var(--tnx-sans)"
+            font-size="13"
+            font-weight="600">Web server</text
+          >
+          <text
+            x="890"
+            y="164"
+            text-anchor="middle"
+            fill="#EDEDEB"
+            font-family="var(--tnx-sans)"
+            font-size="13"
+            font-weight="600">Database</text
+          >
 
           <!-- Node 4: DATACENTER (CRM / Web server) -->
-          <rect x="740" y="350" width="200" height="150" rx="14" fill="rgba(22,22,22,.94)" stroke="rgba(255,255,255,.22)" stroke-width="1.3"></rect>
+          <rect
+            x="740"
+            y="350"
+            width="200"
+            height="150"
+            rx="14"
+            fill="rgba(22,22,22,.94)"
+            stroke="rgba(255,255,255,.22)"
+            stroke-width="1.3"></rect>
           <line x1="840" y1="370" x2="840" y2="480" stroke="rgba(255,255,255,.12)"></line>
           <g fill="none" stroke="#C9C9C4" stroke-width="1.5" stroke-linecap="round">
             <rect x="775" y="398" width="30" height="24" rx="4"></rect>
@@ -133,25 +231,73 @@
             <rect x="875" y="398" width="30" height="10" rx="3"></rect>
             <rect x="875" y="412" width="30" height="10" rx="3"></rect>
           </g>
-          <text x="790" y="454" text-anchor="middle" fill="#EDEDEB" font-family="var(--tnx-sans)" font-size="13" font-weight="600">CRM</text>
-          <text x="890" y="454" text-anchor="middle" fill="#EDEDEB" font-family="var(--tnx-sans)" font-size="13" font-weight="600">Web server</text>
+          <text
+            x="790"
+            y="454"
+            text-anchor="middle"
+            fill="#EDEDEB"
+            font-family="var(--tnx-sans)"
+            font-size="13"
+            font-weight="600">CRM</text
+          >
+          <text
+            x="890"
+            y="454"
+            text-anchor="middle"
+            fill="#EDEDEB"
+            font-family="var(--tnx-sans)"
+            font-size="13"
+            font-weight="600">Web server</text
+          >
 
           <!-- Center: Control Plane -->
-          <rect x="380" y="230" width="240" height="100" rx="14" fill="rgba(16,16,16,.96)" stroke="rgba(255,255,255,.26)" stroke-width="1.4"></rect>
+          <rect
+            x="380"
+            y="230"
+            width="240"
+            height="100"
+            rx="14"
+            fill="rgba(16,16,16,.96)"
+            stroke="rgba(255,255,255,.26)"
+            stroke-width="1.4"></rect>
           <g transform="translate(422,258) scale(0.197)">
-            <path d="M34.944 116V27.392H1.67638e-08V6.79999H95.16V27.392H60.216V116H34.944ZM178.8 117.872C163.304 117.872 151.188 113.556 142.452 104.924C133.716 96.292 129.348 83.968 129.348 67.952V6.79999H154.62V67.016C154.62 77.416 156.752 84.904 161.016 89.48C165.28 94.056 171.26 96.344 178.956 96.344C186.652 96.344 192.632 94.056 196.896 89.48C201.16 84.904 203.292 77.416 203.292 67.016V6.79999H228.252V67.952C228.252 83.968 223.884 96.292 215.148 104.924C206.412 113.556 194.296 117.872 178.8 117.872ZM276.58 116V6.79999H297.484L361.912 85.424H351.772V6.79999H376.732V116H355.984L291.4 37.376H301.54V116H276.58ZM425.922 116V6.79999H446.826L511.254 85.424H501.114V6.79999H526.074V116H505.326L440.742 37.376H450.882V116H425.922Z" fill="#F5F5F5"></path>
-            <path d="M564.547 0H665.749L655.37 28.5443H554.167L564.547 0Z" fill="url(#tnxWmPlaneA)"></path>
-            <path d="M561.952 45.4114H657.965L650.18 73.9557H554.167L561.952 45.4114Z" fill="url(#tnxWmPlaneA)"></path>
-            <path d="M559.357 90.8228H655.37L644.99 119.367H554.167L559.357 90.8228Z" fill="url(#tnxWmPlaneA)"></path>
-            <path d="M680.635 116L727.591 51.26V69.668L682.663 6.79999H711.367L742.411 50.636L730.399 50.792L760.975 6.79999H788.431L743.815 68.576V50.48L791.083 116H761.911L729.775 69.668H741.319L709.651 116H680.635Z" fill="url(#tnxWmPlaneA)"></path>
+            <path
+              d="M34.944 116V27.392H1.67638e-08V6.79999H95.16V27.392H60.216V116H34.944ZM178.8 117.872C163.304 117.872 151.188 113.556 142.452 104.924C133.716 96.292 129.348 83.968 129.348 67.952V6.79999H154.62V67.016C154.62 77.416 156.752 84.904 161.016 89.48C165.28 94.056 171.26 96.344 178.956 96.344C186.652 96.344 192.632 94.056 196.896 89.48C201.16 84.904 203.292 77.416 203.292 67.016V6.79999H228.252V67.952C228.252 83.968 223.884 96.292 215.148 104.924C206.412 113.556 194.296 117.872 178.8 117.872ZM276.58 116V6.79999H297.484L361.912 85.424H351.772V6.79999H376.732V116H355.984L291.4 37.376H301.54V116H276.58ZM425.922 116V6.79999H446.826L511.254 85.424H501.114V6.79999H526.074V116H505.326L440.742 37.376H450.882V116H425.922Z"
+              fill="#F5F5F5"></path>
+            <path d="M564.547 0H665.749L655.37 28.5443H554.167L564.547 0Z" fill="url(#tnxWmPlaneA)"
+            ></path>
+            <path
+              d="M561.952 45.4114H657.965L650.18 73.9557H554.167L561.952 45.4114Z"
+              fill="url(#tnxWmPlaneA)"></path>
+            <path
+              d="M559.357 90.8228H655.37L644.99 119.367H554.167L559.357 90.8228Z"
+              fill="url(#tnxWmPlaneA)"></path>
+            <path
+              d="M680.635 116L727.591 51.26V69.668L682.663 6.79999H711.367L742.411 50.636L730.399 50.792L760.975 6.79999H788.431L743.815 68.576V50.48L791.083 116H761.911L729.775 69.668H741.319L709.651 116H680.635Z"
+              fill="url(#tnxWmPlaneA)"></path>
             <defs>
-              <linearGradient id="tnxWmPlaneA" x1="554" y1="0" x2="791" y2="119" gradientUnits="userSpaceOnUse">
+              <linearGradient
+                id="tnxWmPlaneA"
+                x1="554"
+                y1="0"
+                x2="791"
+                y2="119"
+                gradientUnits="userSpaceOnUse"
+              >
                 <stop stop-color="#B03A45"></stop>
                 <stop offset="1" stop-color="#6E1520"></stop>
               </linearGradient>
             </defs>
           </g>
-          <text x="500" y="306" text-anchor="middle" fill="#A9A9A6" font-family="var(--tnx-sans)" font-size="14" font-weight="500">Control plane · self-hosted</text>
+          <text
+            x="500"
+            y="306"
+            text-anchor="middle"
+            fill="#A9A9A6"
+            font-family="var(--tnx-sans)"
+            font-size="14"
+            font-weight="500">Control plane · self-hosted</text
+          >
         </svg>
       </div>
 
@@ -163,9 +309,14 @@
           aria-labelledby="tnxOffTitle tnxOffDesc"
           class="w-full h-auto block select-none"
         >
-          <title id="tnxOffTitle">Without Tunnex: every path runs through hand-configured VPN infrastructure</title>
+          <title id="tnxOffTitle">
+            Without Tunnex: every path runs through hand-configured VPN infrastructure
+          </title>
           <desc id="tnxOffDesc">
-            The same office, home, cloud and datacenter, but each path now passes through a stack of hand-managed components: VPN certificates, IP ranges, firewall, NAT, DNS, a VPN gateway, SAML, static routes and security groups. Linking the cloud to the datacenter adds two more VPN gateways plus DNS, firewall and IPSEC configuration.
+            The same office, home, cloud and datacenter, but each path now passes through a stack of
+            hand-managed components: VPN certificates, IP ranges, firewall, NAT, DNS, a VPN gateway,
+            SAML, static routes and security groups. Linking the cloud to the datacenter adds two
+            more VPN gateways plus DNS, firewall and IPSEC configuration.
           </desc>
 
           <g fill="none" stroke="#3A3A38" stroke-width="1.3">
@@ -180,9 +331,22 @@
           </g>
 
           <path d="M330 62 V48 H670 V62" fill="none" stroke="#3A3A38" stroke-width="1.2"></path>
-          <text x="500" y="40" text-anchor="middle" fill="#6E6E6B" font-family="var(--tnx-sans)" font-size="13.5">Complexity</text>
+          <text
+            x="500"
+            y="40"
+            text-anchor="middle"
+            fill="#6E6E6B"
+            font-family="var(--tnx-sans)"
+            font-size="13.5">Complexity</text
+          >
 
-          <g font-family="var(--tnx-mono)" font-size="11.5" font-weight="600" letter-spacing="1.8" fill="#6E6E6B">
+          <g
+            font-family="var(--tnx-mono)"
+            font-size="11.5"
+            font-weight="600"
+            letter-spacing="1.8"
+            fill="#6E6E6B"
+          >
             <text x="60" y="46">OFFICE</text>
             <text x="60" y="536">HOME</text>
             <text x="740" y="46">CLOUD</text>
@@ -242,23 +406,77 @@
           </g>
 
           <!-- De-emphasised Nodes -->
-          <rect x="60" y="60" width="200" height="150" rx="14" fill="rgba(22,22,22,.94)" stroke="rgba(255,255,255,.12)" stroke-width="1.3"></rect>
+          <rect
+            x="60"
+            y="60"
+            width="200"
+            height="150"
+            rx="14"
+            fill="rgba(22,22,22,.94)"
+            stroke="rgba(255,255,255,.12)"
+            stroke-width="1.3"></rect>
           <g fill="none" stroke="#7A7A78" stroke-width="1.6" stroke-linecap="round">
             <circle cx="160" cy="108" r="11"></circle>
             <path d="M141 145c0-11 8.5-17 19-17s19 6 19 17"></path>
           </g>
-          <text x="160" y="178" text-anchor="middle" fill="#D6D6D2" font-family="var(--tnx-sans)" font-size="14.5" font-weight="600">Alice</text>
-          <text x="160" y="196" text-anchor="middle" fill="#5E5E5B" font-family="var(--tnx-sans)" font-size="12">Engineering</text>
+          <text
+            x="160"
+            y="178"
+            text-anchor="middle"
+            fill="#D6D6D2"
+            font-family="var(--tnx-sans)"
+            font-size="14.5"
+            font-weight="600">Alice</text
+          >
+          <text
+            x="160"
+            y="196"
+            text-anchor="middle"
+            fill="#5E5E5B"
+            font-family="var(--tnx-sans)"
+            font-size="12">Engineering</text
+          >
 
-          <rect x="60" y="350" width="200" height="150" rx="14" fill="rgba(22,22,22,.94)" stroke="rgba(255,255,255,.12)" stroke-width="1.3"></rect>
+          <rect
+            x="60"
+            y="350"
+            width="200"
+            height="150"
+            rx="14"
+            fill="rgba(22,22,22,.94)"
+            stroke="rgba(255,255,255,.12)"
+            stroke-width="1.3"></rect>
           <g fill="none" stroke="#7A7A78" stroke-width="1.6" stroke-linecap="round">
             <circle cx="160" cy="398" r="11"></circle>
             <path d="M141 435c0-11 8.5-17 19-17s19 6 19 17"></path>
           </g>
-          <text x="160" y="468" text-anchor="middle" fill="#D6D6D2" font-family="var(--tnx-sans)" font-size="14.5" font-weight="600">Bob</text>
-          <text x="160" y="486" text-anchor="middle" fill="#5E5E5B" font-family="var(--tnx-sans)" font-size="12">Support</text>
+          <text
+            x="160"
+            y="468"
+            text-anchor="middle"
+            fill="#D6D6D2"
+            font-family="var(--tnx-sans)"
+            font-size="14.5"
+            font-weight="600">Bob</text
+          >
+          <text
+            x="160"
+            y="486"
+            text-anchor="middle"
+            fill="#5E5E5B"
+            font-family="var(--tnx-sans)"
+            font-size="12">Support</text
+          >
 
-          <rect x="740" y="60" width="200" height="150" rx="14" fill="rgba(22,22,22,.94)" stroke="rgba(255,255,255,.12)" stroke-width="1.3"></rect>
+          <rect
+            x="740"
+            y="60"
+            width="200"
+            height="150"
+            rx="14"
+            fill="rgba(22,22,22,.94)"
+            stroke="rgba(255,255,255,.12)"
+            stroke-width="1.3"></rect>
           <line x1="840" y1="80" x2="840" y2="190" stroke="rgba(255,255,255,.1)"></line>
           <g fill="none" stroke="#7A7A78" stroke-width="1.5" stroke-linecap="round">
             <rect x="775" y="108" width="30" height="10" rx="3"></rect>
@@ -266,10 +484,34 @@
             <ellipse cx="890" cy="110" rx="15" ry="5"></ellipse>
             <path d="M875 110v16c0 2.8 6.7 5 15 5s15-2.2 15-5v-16"></path>
           </g>
-          <text x="790" y="164" text-anchor="middle" fill="#D6D6D2" font-family="var(--tnx-sans)" font-size="13" font-weight="600">Web server</text>
-          <text x="890" y="164" text-anchor="middle" fill="#D6D6D2" font-family="var(--tnx-sans)" font-size="13" font-weight="600">Database</text>
+          <text
+            x="790"
+            y="164"
+            text-anchor="middle"
+            fill="#D6D6D2"
+            font-family="var(--tnx-sans)"
+            font-size="13"
+            font-weight="600">Web server</text
+          >
+          <text
+            x="890"
+            y="164"
+            text-anchor="middle"
+            fill="#D6D6D2"
+            font-family="var(--tnx-sans)"
+            font-size="13"
+            font-weight="600">Database</text
+          >
 
-          <rect x="740" y="350" width="200" height="150" rx="14" fill="rgba(22,22,22,.94)" stroke="rgba(255,255,255,.12)" stroke-width="1.3"></rect>
+          <rect
+            x="740"
+            y="350"
+            width="200"
+            height="150"
+            rx="14"
+            fill="rgba(22,22,22,.94)"
+            stroke="rgba(255,255,255,.12)"
+            stroke-width="1.3"></rect>
           <line x1="840" y1="370" x2="840" y2="480" stroke="rgba(255,255,255,.1)"></line>
           <g fill="none" stroke="#7A7A78" stroke-width="1.5" stroke-linecap="round">
             <rect x="775" y="398" width="30" height="24" rx="4"></rect>
@@ -277,8 +519,24 @@
             <rect x="875" y="398" width="30" height="10" rx="3"></rect>
             <rect x="875" y="412" width="30" height="10" rx="3"></rect>
           </g>
-          <text x="790" y="454" text-anchor="middle" fill="#D6D6D2" font-family="var(--tnx-sans)" font-size="13" font-weight="600">CRM</text>
-          <text x="890" y="454" text-anchor="middle" fill="#D6D6D2" font-family="var(--tnx-sans)" font-size="13" font-weight="600">Web server</text>
+          <text
+            x="790"
+            y="454"
+            text-anchor="middle"
+            fill="#D6D6D2"
+            font-family="var(--tnx-sans)"
+            font-size="13"
+            font-weight="600">CRM</text
+          >
+          <text
+            x="890"
+            y="454"
+            text-anchor="middle"
+            fill="#D6D6D2"
+            font-family="var(--tnx-sans)"
+            font-size="13"
+            font-weight="600">Web server</text
+          >
         </svg>
       </div>
     </div>
@@ -286,21 +544,51 @@
     <!-- 3 Soft Glass Cards Below Diagram -->
     <div class="t-g3 grid grid-cols-1 md:grid-cols-3 gap-[14px]" id="tnx-cards-container">
       <!-- Card 1 -->
-      <div class="bg-[rgba(18,18,18,0.72)] border border-[rgba(255,255,255,0.09)] rounded-[8px] p-[16px_18px]">
-        <div id="tnx-card-title-1" class="font-semibold text-[13.5px] text-[#EDEDEB] mb-[5px]">One command per host</div>
-        <div id="tnx-card-body-1" class="font-normal text-[13px] leading-[1.6] text-[#858582] text-pretty">A gateway enrolls itself and pulls its config. No keys typed by hand, no per-site firewall edit.</div>
+      <div
+        class="bg-[rgba(18,18,18,0.72)] border border-[rgba(255,255,255,0.09)] rounded-[8px] p-[16px_18px]"
+      >
+        <div id="tnx-card-title-1" class="font-semibold text-[13.5px] text-[#EDEDEB] mb-[5px]">
+          One command per host
+        </div>
+        <div
+          id="tnx-card-body-1"
+          class="font-normal text-[13px] leading-[1.6] text-[#858582] text-pretty"
+        >
+          A gateway enrolls itself and pulls its config. No keys typed by hand, no per-site firewall
+          edit.
+        </div>
       </div>
 
       <!-- Card 2 -->
-      <div class="bg-[rgba(18,18,18,0.72)] border border-[rgba(255,255,255,0.09)] rounded-[8px] p-[16px_18px]">
-        <div id="tnx-card-title-2" class="font-semibold text-[13.5px] text-[#EDEDEB] mb-[5px]">Policy compiles to the wire</div>
-        <div id="tnx-card-body-2" class="font-normal text-[13px] leading-[1.6] text-[#858582] text-pretty">Rules become peer allow-lists and nftables state deterministically: default-deny unless a rule says otherwise.</div>
+      <div
+        class="bg-[rgba(18,18,18,0.72)] border border-[rgba(255,255,255,0.09)] rounded-[8px] p-[16px_18px]"
+      >
+        <div id="tnx-card-title-2" class="font-semibold text-[13.5px] text-[#EDEDEB] mb-[5px]">
+          Policy compiles to the wire
+        </div>
+        <div
+          id="tnx-card-body-2"
+          class="font-normal text-[13px] leading-[1.6] text-[#858582] text-pretty"
+        >
+          Rules become peer allow-lists and nftables state deterministically: default-deny unless a
+          rule says otherwise.
+        </div>
       </div>
 
       <!-- Card 3 -->
-      <div class="bg-[rgba(18,18,18,0.72)] border border-[rgba(255,255,255,0.09)] rounded-[8px] p-[16px_18px]">
-        <div id="tnx-card-title-3" class="font-semibold text-[13.5px] text-[#EDEDEB] mb-[5px]">No single point in the path</div>
-        <div id="tnx-card-body-3" class="font-normal text-[13px] leading-[1.6] text-[#858582] text-pretty">The control plane distributes config and policy. Traffic goes peer to peer; if the plane is down, existing tunnels keep running.</div>
+      <div
+        class="bg-[rgba(18,18,18,0.72)] border border-[rgba(255,255,255,0.09)] rounded-[8px] p-[16px_18px]"
+      >
+        <div id="tnx-card-title-3" class="font-semibold text-[13.5px] text-[#EDEDEB] mb-[5px]">
+          No single point in the path
+        </div>
+        <div
+          id="tnx-card-body-3"
+          class="font-normal text-[13px] leading-[1.6] text-[#858582] text-pretty"
+        >
+          The control plane distributes config and policy. Traffic goes peer to peer; if the plane
+          is down, existing tunnels keep running.
+        </div>
       </div>
     </div>
   </div>
@@ -322,50 +610,80 @@
   const cardBody3 = document.getElementById('tnx-card-body-3');
 
   const onData = {
-    explainer: 'Tunnex compiles policy into WireGuard peers and gateway state for direct connectivity. Control planes distribute config without touching traffic.',
+    explainer:
+      'Tunnex compiles policy into WireGuard peers and gateway state for direct connectivity. Control planes distribute config without touching traffic.',
     cards: [
-      { title: 'One command per host', body: 'Gateways enroll automatically and pull configuration. No manual keys or per-site firewall edits.' },
-      { title: 'Policy compiles to the wire', body: 'Rules become deterministic peer allow-lists and kernel nftables state. Default-deny by design.' },
-      { title: 'Zero single points of failure', body: 'Peer to peer data paths stay active even during control plane maintenance or network outages.' }
-    ]
+      {
+        title: 'One command per host',
+        body: 'Gateways enroll automatically and pull configuration. No manual keys or per-site firewall edits.',
+      },
+      {
+        title: 'Policy compiles to the wire',
+        body: 'Rules become deterministic peer allow-lists and kernel nftables state. Default-deny by design.',
+      },
+      {
+        title: 'Zero single points of failure',
+        body: 'Peer to peer data paths stay active even during control plane maintenance or network outages.',
+      },
+    ],
   };
 
   const offData = {
-    explainer: 'Traditional VPNs require manual wiring for certificates, address pools, NAT, DNS, and per-site gateways.',
+    explainer:
+      'Traditional VPNs require manual wiring for certificates, address pools, NAT, DNS, and per-site gateways.',
     cards: [
-      { title: 'Every path is hand-built', body: 'Certificates, IP plans, NAT, and DNS drift apart as configurations change over time.' },
-      { title: 'Centralized gateway bottleneck', body: 'All traffic funnels through single appliances. Gateway failure brings down entire sites.' },
-      { title: 'Fragmented access control', body: 'Policy is scattered across security groups and route tables without unified audit trails.' }
-    ]
+      {
+        title: 'Every path is hand-built',
+        body: 'Certificates, IP plans, NAT, and DNS drift apart as configurations change over time.',
+      },
+      {
+        title: 'Centralized gateway bottleneck',
+        body: 'All traffic funnels through single appliances. Gateway failure brings down entire sites.',
+      },
+      {
+        title: 'Fragmented access control',
+        body: 'Policy is scattered across security groups and route tables without unified audit trails.',
+      },
+    ],
   };
 
   function setOnOff(isOn) {
     if (isOn) {
-      btnOn.className = "t-btn rounded-[6px] px-3.5 py-1.5 font-mono text-[11px] font-bold tracking-wider uppercase transition-all duration-200 text-[#F5F5F5] bg-gradient-to-r from-[#B03A45] to-[#6E1520]";
-      btnOff.className = "t-btn rounded-[6px] px-3.5 py-1.5 font-mono text-[11px] font-bold tracking-wider uppercase transition-all duration-200 text-[#5E5E5B] bg-transparent hover:text-white";
-      wordmark.style.opacity = "1";
+      btnOn.className =
+        't-btn rounded-[6px] px-3.5 py-1.5 font-mono text-[11px] font-bold tracking-wider uppercase transition-all duration-200 text-[#F5F5F5] bg-gradient-to-r from-[#B03A45] to-[#6E1520]';
+      btnOff.className =
+        't-btn rounded-[6px] px-3.5 py-1.5 font-mono text-[11px] font-bold tracking-wider uppercase transition-all duration-200 text-[#5E5E5B] bg-transparent hover:text-white';
+      wordmark.style.opacity = '1';
       explainer.textContent = onData.explainer;
       diagOn.classList.remove('hidden');
       diagOn.classList.add('block');
       diagOff.classList.remove('block');
       diagOff.classList.add('hidden');
 
-      cardTitle1.textContent = onData.cards[0].title; cardBody1.textContent = onData.cards[0].body;
-      cardTitle2.textContent = onData.cards[1].title; cardBody2.textContent = onData.cards[1].body;
-      cardTitle3.textContent = onData.cards[2].title; cardBody3.textContent = onData.cards[2].body;
+      cardTitle1.textContent = onData.cards[0].title;
+      cardBody1.textContent = onData.cards[0].body;
+      cardTitle2.textContent = onData.cards[1].title;
+      cardBody2.textContent = onData.cards[1].body;
+      cardTitle3.textContent = onData.cards[2].title;
+      cardBody3.textContent = onData.cards[2].body;
     } else {
-      btnOff.className = "t-btn rounded-[6px] px-3.5 py-1.5 font-mono text-[11px] font-bold tracking-wider uppercase transition-all duration-200 text-[#F5F5F5] bg-gradient-to-r from-[#B03A45] to-[#6E1520]";
-      btnOn.className = "t-btn rounded-[6px] px-3.5 py-1.5 font-mono text-[11px] font-bold tracking-wider uppercase transition-all duration-200 text-[#5E5E5B] bg-transparent hover:text-white";
-      wordmark.style.opacity = "0.4";
+      btnOff.className =
+        't-btn rounded-[6px] px-3.5 py-1.5 font-mono text-[11px] font-bold tracking-wider uppercase transition-all duration-200 text-[#F5F5F5] bg-gradient-to-r from-[#B03A45] to-[#6E1520]';
+      btnOn.className =
+        't-btn rounded-[6px] px-3.5 py-1.5 font-mono text-[11px] font-bold tracking-wider uppercase transition-all duration-200 text-[#5E5E5B] bg-transparent hover:text-white';
+      wordmark.style.opacity = '0.4';
       explainer.textContent = offData.explainer;
       diagOff.classList.remove('hidden');
       diagOff.classList.add('block');
       diagOn.classList.remove('block');
       diagOn.classList.add('hidden');
 
-      cardTitle1.textContent = offData.cards[0].title; cardBody1.textContent = offData.cards[0].body;
-      cardTitle2.textContent = offData.cards[1].title; cardBody2.textContent = offData.cards[1].body;
-      cardTitle3.textContent = offData.cards[2].title; cardBody3.textContent = offData.cards[2].body;
+      cardTitle1.textContent = offData.cards[0].title;
+      cardBody1.textContent = offData.cards[0].body;
+      cardTitle2.textContent = offData.cards[1].title;
+      cardBody2.textContent = offData.cards[1].body;
+      cardTitle3.textContent = offData.cards[2].title;
+      cardBody3.textContent = offData.cards[2].body;
     }
   }
 

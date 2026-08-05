@@ -1,25 +1,93 @@
 ---
 // How It Compares 3-Way Comparison Table Component
 const cmpRows = [
-  { label: 'Control plane runs', tnx: 'On your infrastructure', saas: 'On vendor SaaS cloud', vpn: 'On proprietary hardware', tnxOk: true, saasOk: false, vpnOk: true },
-  { label: 'Vendor sees your traffic', tnx: 'Never: zero data path access', saas: 'Coordination metadata', vpn: 'Never', tnxOk: true, saasOk: false, vpnOk: true },
-  { label: 'Keeps working if vendor is down', tnx: 'Yes: offline license verification', saas: 'Degrades or halts', vpn: 'Yes', tnxOk: true, saasOk: false, vpnOk: true },
-  { label: 'Zero Trust policy depth', tnx: 'Per-user, expiring, port-scoped', saas: 'Usually strong', vpn: 'Usually coarse ACLs', tnxOk: true, saasOk: true, vpnOk: false },
-  { label: 'WireGuard and OpenVPN', tnx: 'Both, single unified engine', saas: 'Single protocol only', vpn: 'Typically legacy IPsec/SSL', tnxOk: true, saasOk: false, vpnOk: false },
-  { label: 'Air-gapped deployment', tnx: 'Fully supported', saas: 'Not possible', vpn: 'Supported', tnxOk: true, saasOk: false, vpnOk: true },
-  { label: 'NAT & Peer Traversal', tnx: 'Automatic direct P2P mesh', saas: 'Relay fleet dependent', vpn: 'Requires public static IP', tnxOk: true, saasOk: true, vpnOk: false },
-  { label: 'Zero-downtime upgrades', tnx: 'Automated container rollouts', saas: 'Vendor controlled', vpn: 'Manual firmware patches', tnxOk: true, saasOk: true, vpnOk: false }
+  {
+    label: 'Control plane runs',
+    tnx: 'On your infrastructure',
+    saas: 'On vendor SaaS cloud',
+    vpn: 'On proprietary hardware',
+    tnxOk: true,
+    saasOk: false,
+    vpnOk: true,
+  },
+  {
+    label: 'Vendor sees your traffic',
+    tnx: 'Never: zero data path access',
+    saas: 'Coordination metadata',
+    vpn: 'Never',
+    tnxOk: true,
+    saasOk: false,
+    vpnOk: true,
+  },
+  {
+    label: 'Keeps working if vendor is down',
+    tnx: 'Yes: offline license verification',
+    saas: 'Degrades or halts',
+    vpn: 'Yes',
+    tnxOk: true,
+    saasOk: false,
+    vpnOk: true,
+  },
+  {
+    label: 'Zero Trust policy depth',
+    tnx: 'Per-user, expiring, port-scoped',
+    saas: 'Usually strong',
+    vpn: 'Usually coarse ACLs',
+    tnxOk: true,
+    saasOk: true,
+    vpnOk: false,
+  },
+  {
+    label: 'WireGuard and OpenVPN',
+    tnx: 'Both, single unified engine',
+    saas: 'Single protocol only',
+    vpn: 'Typically legacy IPsec/SSL',
+    tnxOk: true,
+    saasOk: false,
+    vpnOk: false,
+  },
+  {
+    label: 'Air-gapped deployment',
+    tnx: 'Fully supported',
+    saas: 'Not possible',
+    vpn: 'Supported',
+    tnxOk: true,
+    saasOk: false,
+    vpnOk: true,
+  },
+  {
+    label: 'NAT & Peer Traversal',
+    tnx: 'Automatic direct P2P mesh',
+    saas: 'Relay fleet dependent',
+    vpn: 'Requires public static IP',
+    tnxOk: true,
+    saasOk: true,
+    vpnOk: false,
+  },
+  {
+    label: 'Zero-downtime upgrades',
+    tnx: 'Automated container rollouts',
+    saas: 'Vendor controlled',
+    vpn: 'Manual firmware patches',
+    tnxOk: true,
+    saasOk: true,
+    vpnOk: false,
+  },
 ];
 ---
 
-<section class="t-rv border-t border-[var(--tnx-line-1)] bg-white/[0.012]" id="comparison-table-section">
+<section
+  class="t-rv border-t border-[var(--tnx-line-1)] bg-white/[0.012]"
+  id="comparison-table-section"
+>
   <div class="mx-auto max-w-[1180px] px-7 py-22 md:py-[88px] max-[620px]:px-[18px]">
     <!-- Header -->
     <div class="flex flex-col gap-3 mb-8.5 max-w-[62ch]">
       <div class="tnx-eyebrow">HOW IT COMPARES</div>
       <h2 class="tnx-h2">Three ways to run private access.</h2>
       <div class="font-normal text-[15.5px] leading-[1.66] text-[#858582] text-pretty">
-        Why engineering and security teams choose Tunnex over SaaS mesh networks and legacy hardware VPN appliances.
+        Why engineering and security teams choose Tunnex over SaaS mesh networks and legacy hardware
+        VPN appliances.
       </div>
     </div>
 
@@ -27,50 +95,106 @@ const cmpRows = [
     <div class="t-diag border border-white/12 rounded-xl overflow-hidden bg-[rgba(24,24,24,0.5)]">
       <div class="t-cmp grid grid-cols-[1.3fr_1fr_1fr_1fr] min-w-[840px]">
         <!-- Table Headers -->
-        <div class="p-3.5 px-4.5 border-b border-[#1E1E1E] bg-[rgba(16,16,16,0.8)] font-mono font-semibold text-[9px] tracking-[0.14em] text-[#5E5E5B]">
+        <div
+          class="p-3.5 px-4.5 border-b border-[#1E1E1E] bg-[rgba(16,16,16,0.8)] font-mono font-semibold text-[9px] tracking-[0.14em] text-[#5E5E5B]"
+        >
           &nbsp;
         </div>
-        <div class="p-3.5 px-4 border-b border-[#1E1E1E] bg-[rgba(24,24,24,0.9)] border-x border-white/10 flex flex-col gap-0.75">
+        <div
+          class="p-3.5 px-4 border-b border-[#1E1E1E] bg-[rgba(24,24,24,0.9)] border-x border-white/10 flex flex-col gap-0.75"
+        >
           <div class="font-semibold text-[13.5px] text-[#EDEDEB]">Tunnex</div>
-          <div class="font-mono font-medium text-[8.5px] tracking-[0.1em] text-[#6E9C7C]">SELF-HOSTED SUPERIOR</div>
+          <div class="font-mono font-medium text-[8.5px] tracking-[0.1em] text-[#6E9C7C]">
+            SELF-HOSTED SUPERIOR
+          </div>
         </div>
-        <div class="p-3.5 px-4 border-b border-[#1E1E1E] bg-[rgba(16,16,16,0.8)] flex flex-col gap-0.75">
+        <div
+          class="p-3.5 px-4 border-b border-[#1E1E1E] bg-[rgba(16,16,16,0.8)] flex flex-col gap-0.75"
+        >
           <div class="font-semibold text-[13px] text-[#A9A9A6]">Hosted mesh VPN</div>
-          <div class="font-mono font-medium text-[8.5px] tracking-[0.1em] text-[#5E5E5B]">VENDOR SAAS</div>
+          <div class="font-mono font-medium text-[8.5px] tracking-[0.1em] text-[#5E5E5B]">
+            VENDOR SAAS
+          </div>
         </div>
-        <div class="p-3.5 px-4 border-b border-[#1E1E1E] bg-[rgba(16,16,16,0.8)] flex flex-col gap-0.75">
+        <div
+          class="p-3.5 px-4 border-b border-[#1E1E1E] bg-[rgba(16,16,16,0.8)] flex flex-col gap-0.75"
+        >
           <div class="font-semibold text-[13px] text-[#A9A9A6]">Legacy VPN appliance</div>
-          <div class="font-mono font-medium text-[8.5px] tracking-[0.1em] text-[#5E5E5B]">CONCENTRATOR</div>
+          <div class="font-mono font-medium text-[8.5px] tracking-[0.1em] text-[#5E5E5B]">
+            CONCENTRATOR
+          </div>
         </div>
 
         <!-- Table Rows -->
         {
           cmpRows.map((r) => (
             <>
-              <!-- Row Label -->
+              {/* Row Label */}
               <div class="p-3.25 px-4.5 border-b border-[#1A1A1A] bg-[rgba(16,16,16,0.4)] flex items-start gap-2.25">
                 <span class="font-semibold text-[13px] text-[#EDEDEB] text-pretty">{r.label}</span>
               </div>
-              <!-- Tunnex Cell (100% Checks) -->
+              {/* Tunnex Cell (100% Checks) */}
               <div class="p-3.25 px-4 border-b border-[#1A1A1A] bg-white/[0.03] border-x border-white/8 flex items-start gap-2.25">
                 <span class="lic size-3.5 shrink-0 mt-0.5 text-[#6E9C7C]">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-full"><path d="M21.801 10A10 10 0 1 1 17 3.335"/><path d="m9 11 3 3L22 4"/></svg>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.6"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="size-full"
+                  >
+                    <>
+                      <path d="M21.801 10A10 10 0 1 1 17 3.335" />
+                      <path d="m9 11 3 3L22 4" />
+                    </>
+                  </svg>
                 </span>
-                <span class="font-semibold text-[12.5px] leading-[1.5] text-[#EDEDEB] text-pretty">{r.tnx}</span>
+                <span class="font-semibold text-[12.5px] leading-[1.5] text-[#EDEDEB] text-pretty">
+                  {r.tnx}
+                </span>
               </div>
-              <!-- Vendor SaaS Cell -->
+              {/* Vendor SaaS Cell */}
               <div class="p-3.25 px-4 border-b border-[#1A1A1A] flex items-start gap-2.25">
-                <span class:list={['lic size-3.5 shrink-0 mt-0.5', r.saasOk ? 'text-[#6E9C7C]' : 'text-[#6E6E6B]']}>
-                  <Fragment set:html={r.saasOk ? '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-full"><path d="M21.801 10A10 10 0 1 1 17 3.335"/><path d="m9 11 3 3L22 4"/></svg>' : '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-full"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>'} />
+                <span
+                  class:list={[
+                    'lic size-3.5 shrink-0 mt-0.5',
+                    r.saasOk ? 'text-[#6E9C7C]' : 'text-[#6E6E6B]',
+                  ]}
+                >
+                  <Fragment
+                    set:html={
+                      r.saasOk
+                        ? '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-full"><path d="M21.801 10A10 10 0 1 1 17 3.335"/><path d="m9 11 3 3L22 4"/></svg>'
+                        : '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-full"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>'
+                    }
+                  />
                 </span>
-                <span class="font-normal text-[12.5px] leading-[1.5] text-[#858582] text-pretty">{r.saas}</span>
+                <span class="font-normal text-[12.5px] leading-[1.5] text-[#858582] text-pretty">
+                  {r.saas}
+                </span>
               </div>
-              <!-- Concentrator Cell -->
+              {/* Concentrator Cell */}
               <div class="p-3.25 px-4 border-b border-[#1A1A1A] flex items-start gap-2.25">
-                <span class:list={['lic size-3.5 shrink-0 mt-0.5', r.vpnOk ? 'text-[#6E9C7C]' : 'text-[#6E6E6B]']}>
-                  <Fragment set:html={r.vpnOk ? '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-full"><path d="M21.801 10A10 10 0 1 1 17 3.335"/><path d="m9 11 3 3L22 4"/></svg>' : '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-full"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>'} />
+                <span
+                  class:list={[
+                    'lic size-3.5 shrink-0 mt-0.5',
+                    r.vpnOk ? 'text-[#6E9C7C]' : 'text-[#6E6E6B]',
+                  ]}
+                >
+                  <Fragment
+                    set:html={
+                      r.vpnOk
+                        ? '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-full"><path d="M21.801 10A10 10 0 1 1 17 3.335"/><path d="m9 11 3 3L22 4"/></svg>'
+                        : '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-full"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>'
+                    }
+                  />
                 </span>
-                <span class="font-normal text-[12.5px] leading-[1.5] text-[#858582] text-pretty">{r.vpn}</span>
+                <span class="font-normal text-[12.5px] leading-[1.5] text-[#858582] text-pretty">
+                  {r.vpn}
+                </span>
               </div>
             </>
           ))

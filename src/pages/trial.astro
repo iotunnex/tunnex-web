@@ -7,13 +7,23 @@ const isBeta = launchMode === 'beta';
 const trialBullets = [
   'Everything in Enterprise: SSO, Zero Trust policies, multi-org',
   'No card, no sales call required',
-  'Lapses to the free Open tier — the VPN keeps running'
+  'Lapses to the free Open tier — the VPN keeps running',
 ];
 
 const steps = [
-  { n: '1', title: 'Request', body: 'Enter your work email and we send a verification link, valid for 30 minutes.' },
+  {
+    n: '1',
+    title: 'Request',
+    body: 'Enter your work email and we send a verification link, valid for 30 minutes.',
+  },
   { n: '2', title: 'Confirm', body: 'Click the link and the trial is reserved for your domain.' },
-  { n: '3', title: 'Get your key', body: isBeta ? 'Your license key is issued on confirmation — your 14 days start then.' : 'Your license key arrives when the beta opens — your 14 days start then.' }
+  {
+    n: '3',
+    title: 'Get your key',
+    body: isBeta
+      ? 'Your license key is issued on confirmation — your 14 days start then.'
+      : 'Your license key arrives when the beta opens — your 14 days start then.',
+  },
 ];
 ---
 
@@ -21,7 +31,9 @@ const steps = [
   title="Start your 14-day Enterprise trial — Tunnex"
   description="Request a 14-day Tunnex Enterprise trial for your company domain. One trial per domain, bound to a verified work email."
 >
-  <div class="mx-auto max-w-[1180px] px-7 py-18 md:py-[72px] flex flex-col gap-10 max-[620px]:px-[18px]">
+  <div
+    class="mx-auto max-w-[1180px] px-7 py-18 md:py-[72px] flex flex-col gap-10 max-[620px]:px-[18px]"
+  >
     <!-- Header -->
     <div class="flex flex-col gap-3.5 max-w-[68ch]">
       <div class="tnx-eyebrow">ENTERPRISE TRIAL</div>
@@ -37,19 +49,29 @@ const steps = [
 
     <div class="t-g2 grid grid-cols-1 md:grid-cols-[1.05fr_0.95fr] gap-3.5 items-start">
       <!-- Left Column: Form -->
-      <div class="t-card border border-white/9 rounded-lg bg-[rgba(18,18,18,0.72)] p-6.5 flex flex-col gap-4.5">
+      <div
+        class="t-card border border-white/9 rounded-lg bg-[rgba(18,18,18,0.72)] p-6.5 flex flex-col gap-4.5"
+      >
         <div id="trial-form-container">
-          {!isBeta && (
-            <div class="border border-[#C9989C]/30 bg-[#B03A45]/12 rounded-md p-3.5 mb-4.5 flex items-center gap-3">
-              <div class="size-2 rounded-full bg-[#B03A45] shrink-0 animate-pulse"></div>
-              <div class="font-normal text-[12.5px] leading-[1.5] text-[#EDEDEB]">
-                <strong class="font-semibold text-[#F5F5F5]">PRELAUNCH · COMING SOON:</strong> We are currently building Tunnex! Requesting access reserves your license key to be delivered as Public Beta opens.
+          {
+            !isBeta && (
+              <div class="border border-[#C9989C]/30 bg-[#B03A45]/12 rounded-md p-3.5 mb-4.5 flex items-center gap-3">
+                <div class="size-2 rounded-full bg-[#B03A45] shrink-0 animate-pulse" />
+                <div class="font-normal text-[12.5px] leading-[1.5] text-[#EDEDEB]">
+                  <strong class="font-semibold text-[#F5F5F5]">PRELAUNCH · COMING SOON:</strong> We
+                  are currently building Tunnex! Requesting access reserves your license key to be
+                  delivered as Public Beta opens.
+                </div>
               </div>
-            </div>
-          )}
+            )
+          }
           <form id="trial-form" class="flex flex-col gap-4.5" novalidate>
             <div class="flex flex-col gap-2.25">
-              <label for="trial-email" class="font-mono font-semibold text-[9px] tracking-[0.16em] text-[#5E5E5B] uppercase">WORK EMAIL</label>
+              <label
+                for="trial-email"
+                class="font-mono font-semibold text-[9px] tracking-[0.16em] text-[#5E5E5B] uppercase"
+                >WORK EMAIL</label
+              >
               <input
                 id="trial-email"
                 name="email"
@@ -60,15 +82,22 @@ const steps = [
                 class="bg-[#121212] border border-[#2E2E2E] rounded-md px-3.25 py-3 font-normal text-[14.5px] text-[#EDEDEB] shadow-[inset_0_1px_3px_rgba(0,0,0,0.22)] focus:outline-none"
               />
               <div class="font-normal text-[12.5px] leading-[1.6] text-[#5E5E5B]">
-                The trial binds to your company domain — consumer and disposable addresses won’t work.
+                The trial binds to your company domain — consumer and disposable addresses won’t
+                work.
               </div>
             </div>
 
             <!-- Turnstile Mock -->
-            <div class="flex items-center gap-2.75 bg-[rgba(18,18,18,0.72)] border border-white/[0.09] rounded-lg p-3.25 px-3.75">
+            <div
+              class="flex items-center gap-2.75 bg-[rgba(18,18,18,0.72)] border border-white/[0.09] rounded-lg p-3.25 px-3.75"
+            >
               <div class="size-5 rounded border border-[#3A3A3A] bg-[#151515] shrink-0"></div>
               <div class="font-normal text-[12.5px] text-[#6E6E6B]">Verify you are human</div>
-              <div class="ml-auto font-mono font-medium text-[8.5px] tracking-[0.1em] text-[#454542]">TURNSTILE</div>
+              <div
+                class="ml-auto font-mono font-medium text-[8.5px] tracking-[0.1em] text-[#454542]"
+              >
+                TURNSTILE
+              </div>
             </div>
 
             <button
@@ -80,7 +109,11 @@ const steps = [
             </button>
 
             <div class="font-normal text-[12.5px] leading-[1.6] text-[#5E5E5B]">
-              Questions first? Write to <a href="mailto:sales@tunnex.io" class="underline underline-offset-4 decoration-[#C9C9C4]/40 hover:text-[#EDEDEB]">sales@tunnex.io</a>.
+              Questions first? Write to <a
+                href="mailto:sales@tunnex.io"
+                class="underline underline-offset-4 decoration-[#C9C9C4]/40 hover:text-[#EDEDEB]"
+                >sales@tunnex.io</a
+              >.
             </div>
           </form>
         </div>
@@ -88,12 +121,26 @@ const steps = [
         <div id="trial-sent-box" class="hidden flex flex-col gap-2.75">
           <div class="flex items-center gap-2.5">
             <span class="lic size-4.5 shrink-0 text-[#6E9C7C]">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-full"><path d="M21.801 10A10 10 0 1 1 17 3.335"/><path d="m9 11 3 3L22 4"/></svg>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="size-full"
+                ><path d="M21.801 10A10 10 0 1 1 17 3.335"></path><path d="m9 11 3 3L22 4"
+                ></path></svg
+              >
             </span>
-            <div class="font-semibold text-[16px] text-[#F5F5F5]">If your domain is eligible, a verification link is on its way</div>
+            <div class="font-semibold text-[16px] text-[#F5F5F5]">
+              If your domain is eligible, a verification link is on its way
+            </div>
           </div>
           <div class="font-normal text-[14px] leading-[1.66] text-[#858582]">
-            The link is valid for 30 minutes. Clicking it opens a confirmation page — nothing is reserved until you confirm there.
+            The link is valid for 30 minutes. Clicking it opens a confirmation page — nothing is
+            reserved until you confirm there.
           </div>
           <button
             id="trial-reset-btn"
@@ -107,12 +154,28 @@ const steps = [
 
       <!-- Right Column: Benefits & Steps -->
       <div class="flex flex-col gap-3.5">
-        <div class="bg-[rgba(18,18,18,0.72)] border border-white/[0.09] rounded-lg p-5 flex flex-col gap-2.75">
+        <div
+          class="bg-[rgba(18,18,18,0.72)] border border-white/[0.09] rounded-lg p-5 flex flex-col gap-2.75"
+        >
           {
             trialBullets.map((b) => (
               <div class="flex items-start gap-2.5">
                 <span class="lic size-3.75 shrink-0 text-[#6E9C7C] mt-0.5">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-full"><path d="M21.801 10A10 10 0 1 1 17 3.335"/><path d="m9 11 3 3L22 4"/></svg>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.6"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="size-full"
+                  >
+                    <>
+                      <path d="M21.801 10A10 10 0 1 1 17 3.335" />
+                      <path d="m9 11 3 3L22 4" />
+                    </>
+                  </svg>
                 </span>
                 <span class="font-normal text-[13.5px] leading-[1.55] text-[#A9A9A6]">{b}</span>
               </div>
@@ -120,8 +183,14 @@ const steps = [
           }
         </div>
 
-        <div class="t-card border border-white/9 rounded-lg bg-[rgba(18,18,18,0.72)] p-5.5 flex flex-col gap-4">
-          <div class="font-mono font-semibold text-[9px] tracking-[0.16em] text-[#5E5E5B] uppercase">HOW IT WORKS</div>
+        <div
+          class="t-card border border-white/9 rounded-lg bg-[rgba(18,18,18,0.72)] p-5.5 flex flex-col gap-4"
+        >
+          <div
+            class="font-mono font-semibold text-[9px] tracking-[0.16em] text-[#5E5E5B] uppercase"
+          >
+            HOW IT WORKS
+          </div>
           {
             steps.map((s) => (
               <div class="t-row flex gap-3.25 items-start rounded-lg p-1">
@@ -130,7 +199,9 @@ const steps = [
                 </div>
                 <div>
                   <div class="font-semibold text-[13.5px] text-[#EDEDEB]">{s.title}</div>
-                  <div class="font-normal text-[12.5px] leading-[1.6] text-[#858582] mt-0.75">{s.body}</div>
+                  <div class="font-normal text-[12.5px] leading-[1.6] text-[#858582] mt-0.75">
+                    {s.body}
+                  </div>
                 </div>
               </div>
             ))

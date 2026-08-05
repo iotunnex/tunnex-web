@@ -12,7 +12,7 @@ const openFeatures = [
   'Desktop clients for macOS and Windows, fail-closed kill-switch',
   'tunnex CLI, .ovpn export, mobile via the official WireGuard apps',
   'Flow and audit logs, Prometheus metrics, backup and restore',
-  'Community support'
+  'Community support',
 ];
 
 const entFeatures = [
@@ -24,26 +24,26 @@ const entFeatures = [
   'Org-wide MFA enforcement',
   'Multi-org (multi-tenant) management',
   'Kubernetes operator, CRDs, and machine principals',
-  'Priority support'
+  'Priority support',
 ];
 
 const vendorQuestions = [
   {
     q: 'Can your support engineers see my network topology or read my logs?',
-    a: 'With Tunnex, no: the control plane and logs live inside your infrastructure. Ask any SaaS VPN vendor for their SOC 2 report and read the section on employee access to tenant telemetry.'
+    a: 'With Tunnex, no: the control plane and logs live inside your infrastructure. Ask any SaaS VPN vendor for their SOC 2 report and read the section on employee access to tenant telemetry.',
   },
   {
     q: 'What happens to my tunnels if your cloud has an outage?',
-    a: 'Tunnex gateways keep reconciling and tunnels stay up. If a vendor’s control plane is in their cloud, ask what happens during their next S3 or BGP incident.'
+    a: 'Tunnex gateways keep reconciling and tunnels stay up. If a vendor’s control plane is in their cloud, ask what happens during their next S3 or BGP incident.',
   },
   {
     q: 'Can I verify license compliance without sending device inventories to your servers?',
-    a: 'Tunnex verifies keys offline with asymmetric cryptography. Ask other vendors if their license check sends hostname, IP, or user lists to their API.'
+    a: 'Tunnex verifies keys offline with asymmetric cryptography. Ask other vendors if their license check sends hostname, IP, or user lists to their API.',
   },
   {
     q: 'If I offboard a user in my IdP, how many seconds until their WireGuard session drops?',
-    a: 'Tunnex sweeps sessions, pool addresses, and peer slots on directory revocation. Ask if the vendor relies on token expiry windows (often up to 1 hour) before access is actually cut.'
-  }
+    a: 'Tunnex sweeps sessions, pool addresses, and peer slots on directory revocation. Ask if the vendor relies on token expiry windows (often up to 1 hour) before access is actually cut.',
+  },
 ];
 ---
 
@@ -51,20 +51,25 @@ const vendorQuestions = [
   title="Pricing & Editions: Tunnex"
   description="Self-hosted either way. The free Open tier is unlimited; Enterprise adds SSO, Zero Trust policies, and multi-org management."
 >
-  <div class="mx-auto max-w-[1180px] px-7 py-18 md:py-[72px] flex flex-col gap-11 max-[620px]:px-[18px]">
+  <div
+    class="mx-auto max-w-[1180px] px-7 py-18 md:py-[72px] flex flex-col gap-11 max-[620px]:px-[18px]"
+  >
     <!-- Header -->
     <div class="flex flex-col gap-3.5 max-w-[66ch]">
       <div class="tnx-eyebrow">PRICING</div>
       <h1 class="tnx-h1">Pricing</h1>
       <div class="font-normal text-[17px] leading-[1.65] text-[#A9A9A6] text-pretty">
-        Self-hosted either way. Your network runs on your infrastructure whether you pay us or not: Enterprise is for teams that need identity, policy, and scale.
+        Self-hosted either way. Your network runs on your infrastructure whether you pay us or not:
+        Enterprise is for teams that need identity, policy, and scale.
       </div>
     </div>
 
     <!-- 2 Tier Cards Grid -->
     <div class="t-g2 grid grid-cols-1 md:grid-cols-2 gap-3.5 items-start">
       <!-- Open Tier -->
-      <div class="t-card border border-white/9 rounded-lg bg-[rgba(18,18,18,0.72)] p-6.5 flex flex-col gap-4.5">
+      <div
+        class="t-card border border-white/9 rounded-lg bg-[rgba(18,18,18,0.72)] p-6.5 flex flex-col gap-4.5"
+      >
         <div>
           <div class="font-semibold text-[18px] text-[#F5F5F5]">Open</div>
           <div class="font-bold text-[40px] text-[#EDEDEB] tracking-[-0.02em] mt-2">Free</div>
@@ -80,7 +85,21 @@ const vendorQuestions = [
             openFeatures.map((f) => (
               <div class="flex items-start gap-2.5">
                 <span class="lic size-3.75 shrink-0 text-[#6E9C7C] mt-0.5">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-full"><path d="M21.801 10A10 10 0 1 1 17 3.335"/><path d="m9 11 3 3L22 4"/></svg>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.6"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="size-full"
+                  >
+                    <>
+                      <path d="M21.801 10A10 10 0 1 1 17 3.335" />
+                      <path d="m9 11 3 3L22 4" />
+                    </>
+                  </svg>
                 </span>
                 <span class="font-normal text-[13.5px] leading-[1.5] text-[#A9A9A6]">{f}</span>
               </div>
@@ -99,11 +118,15 @@ const vendorQuestions = [
       </div>
 
       <!-- Enterprise Tier -->
-      <div class="t-card border border-white/9 rounded-lg bg-[rgba(18,18,18,0.72)] p-6.5 flex flex-col gap-4.5">
+      <div
+        class="t-card border border-white/9 rounded-lg bg-[rgba(18,18,18,0.72)] p-6.5 flex flex-col gap-4.5"
+      >
         <div>
           <div class="flex items-center gap-2.5">
             <div class="font-semibold text-[18px] text-[#F5F5F5]">Enterprise</div>
-            <span class="font-mono font-semibold text-[8.5px] tracking-[0.08em] text-[#C9989C] border border-[#B03A45]/50 bg-[#B03A45]/16 rounded-full px-2.25 py-0.75">
+            <span
+              class="font-mono font-semibold text-[8.5px] tracking-[0.08em] text-[#C9989C] border border-[#B03A45]/50 bg-[#B03A45]/16 rounded-full px-2.25 py-0.75"
+            >
               14-DAY FREE TRIAL
             </span>
           </div>
@@ -122,7 +145,21 @@ const vendorQuestions = [
             entFeatures.map((f) => (
               <div class="flex items-start gap-2.5">
                 <span class="lic size-3.75 shrink-0 text-[#6E9C7C] mt-0.5">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-full"><path d="M21.801 10A10 10 0 1 1 17 3.335"/><path d="m9 11 3 3L22 4"/></svg>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.6"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="size-full"
+                  >
+                    <>
+                      <path d="M21.801 10A10 10 0 1 1 17 3.335" />
+                      <path d="m9 11 3 3L22 4" />
+                    </>
+                  </svg>
                 </span>
                 <span class="font-normal text-[13.5px] leading-[1.5] text-[#A9A9A6]">{f}</span>
               </div>
@@ -148,10 +185,14 @@ const vendorQuestions = [
     </div>
 
     <!-- "Not sure which tier?" Banner -->
-    <div class="bg-[rgba(18,18,18,0.72)] border border-white/[0.09] rounded-lg p-5.5 md:p-6 flex flex-col gap-2">
+    <div
+      class="bg-[rgba(18,18,18,0.72)] border border-white/[0.09] rounded-lg p-5.5 md:p-6 flex flex-col gap-2"
+    >
       <div class="font-semibold text-[14.5px] text-[#EDEDEB]">Not sure which tier?</div>
       <div class="font-normal text-[14px] leading-[1.65] text-[#858582] max-w-[80ch] text-pretty">
-        If your team signs in with Google or Microsoft, needs per-resource access policies, or runs more than one organization, you want Enterprise. Otherwise start with Open — upgrading later is a license key, not a migration.
+        If your team signs in with Google or Microsoft, needs per-resource access policies, or runs
+        more than one organization, you want Enterprise. Otherwise start with Open — upgrading later
+        is a license key, not a migration.
       </div>
     </div>
   </div>
@@ -165,7 +206,9 @@ const vendorQuestions = [
   <!-- Extra Vendor Questions Grid -->
   <div class="mx-auto max-w-[1180px] px-7 pb-22 md:pb-[92px] max-[620px]:px-[18px]">
     <div class="flex flex-col gap-4">
-      <h3 class="font-semibold text-[clamp(24px,2.8vw,32px)] leading-[1.15] tracking-[-0.02em] text-[#F5F5F5]">
+      <h3
+        class="font-semibold text-[clamp(24px,2.8vw,32px)] leading-[1.15] tracking-[-0.02em] text-[#F5F5F5]"
+      >
         Questions you should ask a VPN vendor
       </h3>
       <div class="t-g2 grid grid-cols-1 md:grid-cols-2 gap-3.5">
@@ -173,7 +216,9 @@ const vendorQuestions = [
           vendorQuestions.map((q) => (
             <div class="t-card border border-white/9 rounded-lg bg-[rgba(18,18,18,0.72)] p-5 flex flex-col gap-2.25">
               <div class="font-semibold text-[14px] leading-[1.4] text-[#EDEDEB]">{q.q}</div>
-              <div class="font-normal text-[13.5px] leading-[1.62] text-[#858582] text-pretty">{q.a}</div>
+              <div class="font-normal text-[13.5px] leading-[1.62] text-[#858582] text-pretty">
+                {q.a}
+              </div>
             </div>
           ))
         }

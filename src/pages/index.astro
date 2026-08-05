@@ -44,17 +44,19 @@ const isBeta = launchMode === 'beta';
       <div class="flex flex-col gap-[22px]">
         <!-- Status Pill -->
         <div>
-          <div class="inline-flex items-center gap-2 rounded-full border border-[var(--tnx-line-4)] bg-white/[0.02] px-3 py-1">
+          <div
+            class="inline-flex items-center gap-2 rounded-full border border-[var(--tnx-line-4)] bg-white/[0.02] px-3 py-1"
+          >
             <div class="t-dot size-1.5 rounded-full bg-[#B03A45]"></div>
-            <span class="tnx-tag uppercase">{isBeta ? 'BETA · DOWNLOADS OPEN' : 'LAUNCHING SOON · BETA'}</span>
+            <span class="tnx-tag uppercase"
+              >{isBeta ? 'BETA · DOWNLOADS OPEN' : 'LAUNCHING SOON · BETA'}</span
+            >
           </div>
         </div>
 
         <!-- H1 & Sub-headline -->
         <div>
-          <h1 class="tnx-h1 text-balance">
-            Self-hosted Zero&nbsp;Trust VPN.
-          </h1>
+          <h1 class="tnx-h1 text-balance">Self-hosted Zero&nbsp;Trust VPN.</h1>
           <p class="tnx-h1-sub mt-1">
             Connect everything. <span class="text-[#EDEDEB]">Trust nothing.</span>
           </p>
@@ -62,9 +64,17 @@ const isBeta = launchMode === 'beta';
 
         <!-- One-command Install Row -->
         <div class="flex flex-col gap-2 max-w-xl">
-          <div class="font-mono text-[9px] font-semibold tracking-[0.18em] text-[#5E5E5B] uppercase">ONE-COMMAND INSTALL</div>
-          <div class="flex items-center justify-between rounded-[7px] border border-[#2E2E2E] bg-[#101010] px-[14px] py-[13px]">
-            <div class="flex items-center gap-2 font-mono text-[13px] text-[#D6D6D2] overflow-x-auto">
+          <div
+            class="font-mono text-[9px] font-semibold tracking-[0.18em] text-[#5E5E5B] uppercase"
+          >
+            ONE-COMMAND INSTALL
+          </div>
+          <div
+            class="flex items-center justify-between rounded-[7px] border border-[#2E2E2E] bg-[#101010] px-[14px] py-[13px]"
+          >
+            <div
+              class="flex items-center gap-2 font-mono text-[13px] text-[#D6D6D2] overflow-x-auto"
+            >
               <span class="text-[#5E5E5B]">$</span>
               <span>curl -fsSL https://get.tunnex.io | sh</span>
             </div>
@@ -135,8 +145,12 @@ const isBeta = launchMode === 'beta';
 
   <!-- Section 11: Final Closing CTA -->
   <section class="t-rv border-t border-[var(--tnx-line-1)]">
-    <div class="mx-auto flex max-w-[1180px] flex-col items-center gap-5 px-7 py-[88px] text-center max-[620px]:px-[18px]">
-      <h2 class="font-semibold text-[clamp(28px,3.6vw,42px)] leading-[1.12] tracking-[-0.025em] text-[#F5F5F5]">
+    <div
+      class="mx-auto flex max-w-[1180px] flex-col items-center gap-5 px-7 py-[88px] text-center max-[620px]:px-[18px]"
+    >
+      <h2
+        class="font-semibold text-[clamp(28px,3.6vw,42px)] leading-[1.12] tracking-[-0.025em] text-[#F5F5F5]"
+      >
         {isBeta ? 'Up and running in minutes.' : 'Be first in line.'}
       </h2>
       <p class="max-w-[56ch] font-normal text-[16px] leading-[1.65] text-[#A9A9A6]">
@@ -167,22 +181,26 @@ const isBeta = launchMode === 'beta';
   <script is:inline>
     const revealElems = document.querySelectorAll('section, .t-rv, .t-rise');
 
-    revealElems.forEach(el => {
+    revealElems.forEach((el) => {
       el.style.opacity = '0';
       el.style.transform = 'translateY(16px)';
-      el.style.transition = 'opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
+      el.style.transition =
+        'opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
     });
 
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.style.opacity = '1';
-          entry.target.style.transform = 'translateY(0)';
-          observer.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.style.opacity = '1';
+            entry.target.style.transform = 'translateY(0)';
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.1, rootMargin: '0px 0px -40px 0px' },
+    );
 
-    revealElems.forEach(el => observer.observe(el));
+    revealElems.forEach((el) => observer.observe(el));
   </script>
 </Base>

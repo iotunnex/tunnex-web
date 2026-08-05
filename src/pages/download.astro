@@ -5,16 +5,41 @@ import { launchMode } from '../config';
 const isBeta = launchMode === 'beta';
 
 const builds = [
-  { icon: 'monitor', title: 'macOS', meta: 'TUNNEX.PKG · APPLE SILICON + INTEL', body: 'Menu-bar client with the fail-closed kill-switch.', cta: 'Download .pkg', href: 'https://dl.tunnex.io/latest/tunnex-desktop-latest.pkg' },
-  { icon: 'monitor-smartphone', title: 'Windows', meta: 'TUNNEX-SETUP.EXE · X64', body: 'Desktop client with WireGuard and OpenVPN transports.', cta: 'Download .exe', href: 'https://dl.tunnex.io/latest/tunnex-desktop-setup-latest.exe' },
-  { icon: 'terminal', title: 'Server CLI', meta: 'TNX · LINUX X64 + ARM64', body: 'Enroll gateways, mint credentials, run backups.', cta: 'Download CLI', href: 'https://dl.tunnex.io/latest/tnx-linux-amd64' }
+  {
+    icon: 'monitor',
+    title: 'macOS',
+    meta: 'TUNNEX.PKG · APPLE SILICON + INTEL',
+    body: 'Menu-bar client with the fail-closed kill-switch.',
+    cta: 'Download .pkg',
+    href: 'https://dl.tunnex.io/latest/tunnex-desktop-latest.pkg',
+  },
+  {
+    icon: 'monitor-smartphone',
+    title: 'Windows',
+    meta: 'TUNNEX-SETUP.EXE · X64',
+    body: 'Desktop client with WireGuard and OpenVPN transports.',
+    cta: 'Download .exe',
+    href: 'https://dl.tunnex.io/latest/tunnex-desktop-setup-latest.exe',
+  },
+  {
+    icon: 'terminal',
+    title: 'Server CLI',
+    meta: 'TNX · LINUX X64 + ARM64',
+    body: 'Enroll gateways, mint credentials, run backups.',
+    cta: 'Download CLI',
+    href: 'https://dl.tunnex.io/latest/tnx-linux-amd64',
+  },
 ];
 
 const icons: Record<string, string> = {
-  monitor: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-4.25"><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></svg>',
-  'monitor-smartphone': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-4.25"><path d="M18 8V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h8"/><path d="M10 19v-3.96 3.15"/><path d="M7 19h5"/><rect width="6" height="10" x="16" y="12" rx="2"/></svg>',
-  terminal: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-4.25"><polyline points="4 17 10 11 4 5"/><line x1="12" x2="20" y1="19" y2="19"/></svg>',
-  download: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-3.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>'
+  monitor:
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-4.25"><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></svg>',
+  'monitor-smartphone':
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-4.25"><path d="M18 8V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h8"/><path d="M10 19v-3.96 3.15"/><path d="M7 19h5"/><rect width="6" height="10" x="16" y="12" rx="2"/></svg>',
+  terminal:
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-4.25"><polyline points="4 17 10 11 4 5"/><line x1="12" x2="20" y1="19" y2="19"/></svg>',
+  download:
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-3.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>',
 };
 ---
 
@@ -22,7 +47,9 @@ const icons: Record<string, string> = {
   title="Download: Tunnex"
   description="Download Tunnex desktop clients for macOS and Windows, or the server CLI."
 >
-  <div class="mx-auto max-w-[1180px] px-7 py-18 md:py-[72px] flex flex-col gap-10 max-[620px]:px-[18px]">
+  <div
+    class="mx-auto max-w-[1180px] px-7 py-18 md:py-[72px] flex flex-col gap-10 max-[620px]:px-[18px]"
+  >
     <!-- Header -->
     <div class="flex flex-col gap-3.5 max-w-[66ch]">
       <div class="tnx-eyebrow">DOWNLOAD</div>
@@ -39,7 +66,7 @@ const icons: Record<string, string> = {
     {
       !isBeta && (
         <div class="t-g2 grid grid-cols-1 md:grid-cols-[1.1fr_0.9fr] gap-3.5 items-start">
-          <!-- Card 1: Waitlist Form -->
+          {/* Card 1: Waitlist Form */}
           <div class="t-card border border-white/9 rounded-lg bg-[rgba(18,18,18,0.72)] p-6.5 flex flex-col gap-4">
             <div class="flex items-center gap-2.5">
               <div class="font-semibold text-[16px] text-[#F5F5F5]">Coming soon</div>
@@ -48,11 +75,18 @@ const icons: Record<string, string> = {
               </span>
             </div>
             <div class="font-normal text-[14.5px] leading-[1.66] text-[#A9A9A6] text-pretty">
-              The beta ships the macOS and Windows desktop clients plus the server CLI. Join the waitlist and we will email you the moment downloads open: nothing else, no marketing drip.
+              The beta ships the macOS and Windows desktop clients plus the server CLI. Join the
+              waitlist and we will email you the moment downloads open: nothing else, no marketing
+              drip.
             </div>
 
             <div class="flex flex-col gap-2.25 mt-1" id="dl-waitlist-form">
-              <label for="tnxWaitDl" class="font-mono font-semibold text-[9px] tracking-[0.16em] text-[#5E5E5B] uppercase">WORK EMAIL</label>
+              <label
+                for="tnxWaitDl"
+                class="font-mono font-semibold text-[9px] tracking-[0.16em] text-[#5E5E5B] uppercase"
+              >
+                WORK EMAIL
+              </label>
               <div class="flex gap-2.25 flex-wrap">
                 <input
                   id="tnxWaitDl"
@@ -73,20 +107,38 @@ const icons: Record<string, string> = {
               </div>
             </div>
 
-            <div id="dl-waitlist-sent" class="hidden bg-[rgba(18,18,18,0.72)] border border-white/[0.09] rounded-lg p-4 flex gap-2.75 items-start">
+            <div
+              id="dl-waitlist-sent"
+              class="hidden bg-[rgba(18,18,18,0.72)] border border-white/[0.09] rounded-lg p-4 flex gap-2.75 items-start"
+            >
               <span class="lic size-4 shrink-0 text-[#6E9C7C] mt-0.5">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-full"><path d="M21.801 10A10 10 0 1 1 17 3.335"/><path d="m9 11 3 3L22 4"/></svg>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="size-full"
+                >
+                  <>
+                    <path d="M21.801 10A10 10 0 1 1 17 3.335" />
+                    <path d="m9 11 3 3L22 4" />
+                  </>
+                </svg>
               </span>
               <div>
                 <div class="font-semibold text-[13.5px] text-[#EDEDEB]">Check your inbox</div>
                 <div class="font-normal text-[13px] leading-[1.6] text-[#858582] mt-0.75">
-                  If that address is valid you will get a confirmation link. It is good for 24 hours.
+                  If that address is valid you will get a confirmation link. It is good for 24
+                  hours.
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- Card 2: Trial Link -->
+          {/* Card 2: Trial Link */}
           <div class="t-card border border-white/9 rounded-lg bg-[rgba(18,18,18,0.72)] p-5.5 flex flex-col gap-3.5">
             <div class="font-semibold text-[14px] text-[#F5F5F5]">Need it sooner?</div>
             <div class="font-normal text-[13.5px] leading-[1.62] text-[#858582]">
@@ -106,58 +158,70 @@ const icons: Record<string, string> = {
     {
       isBeta && (
         <div class="flex flex-col gap-3.5">
-          <!-- 3 Build Cards Grid -->
+          {/* 3 Build Cards Grid */}
           <div class="t-g3 grid grid-cols-1 sm:grid-cols-3 gap-3.5">
-            {
-              builds.map((b) => (
-                <div class="t-card border border-white/9 rounded-lg bg-[rgba(18,18,18,0.72)] p-5.5 flex flex-col gap-3.25">
-                  <div class="size-[34px] rounded-[9px] bg-[#1A1A1A] border border-[#2E2E2E] flex items-center justify-center text-[#C9C9C4]">
-                    <Fragment set:html={icons[b.icon]} />
-                  </div>
-                  <div class="font-semibold text-[15px] text-[#EDEDEB]">{b.title}</div>
-                  <div class="font-mono font-medium text-[10px] tracking-[0.06em] text-[#6E6E6B]">{b.meta}</div>
-                  <div class="font-normal text-[13px] leading-[1.6] text-[#858582]">{b.body}</div>
-                  <a
-                    href={b.href}
-                    class="t-btn t-sec mt-auto flex items-center justify-center gap-2 rounded-[9px] px-4 py-2.75 font-semibold text-[13px]"
-                  >
-                    <Fragment set:html={icons.download} />
-                    <span>{b.cta}</span>
-                  </a>
+            {builds.map((b) => (
+              <div class="t-card border border-white/9 rounded-lg bg-[rgba(18,18,18,0.72)] p-5.5 flex flex-col gap-3.25">
+                <div class="size-[34px] rounded-[9px] bg-[#1A1A1A] border border-[#2E2E2E] flex items-center justify-center text-[#C9C9C4]">
+                  <Fragment set:html={icons[b.icon]} />
                 </div>
-              ))
-            }
+                <div class="font-semibold text-[15px] text-[#EDEDEB]">{b.title}</div>
+                <div class="font-mono font-medium text-[10px] tracking-[0.06em] text-[#6E6E6B]">
+                  {b.meta}
+                </div>
+                <div class="font-normal text-[13px] leading-[1.6] text-[#858582]">{b.body}</div>
+                <a
+                  href={b.href}
+                  class="t-btn t-sec mt-auto flex items-center justify-center gap-2 rounded-[9px] px-4 py-2.75 font-semibold text-[13px]"
+                >
+                  <Fragment set:html={icons.download} />
+                  <span>{b.cta}</span>
+                </a>
+              </div>
+            ))}
           </div>
 
-          <!-- Verify Before You Run -->
+          {/* Verify Before You Run */}
           <div class="bg-[rgba(18,18,18,0.72)] border border-white/[0.09] rounded-lg p-5 flex flex-col gap-3">
             <div class="font-semibold text-[14px] text-[#EDEDEB]">Verify before you run</div>
             <div class="font-normal text-[13.5px] leading-[1.65] text-[#858582] max-w-[80ch]">
-              Download, check the hash against <span class="font-mono font-medium text-[12.5px] text-[#C9C9C4]">SHA256SUMS</span>, inspect the script, then run it. The one-liner is the same artifact for people who would rather not.
+              Download, check the hash against{' '}
+              <span class="font-mono font-medium text-[12.5px] text-[#C9C9C4]">SHA256SUMS</span>,
+              inspect the script, then run it. The one-liner is the same artifact for people who
+              would rather not.
             </div>
             <div class="bg-[#101010] border border-[#2E2E2E] rounded-[7px] p-4 font-mono font-medium text-[12.5px] leading-[1.85] text-[#D6D6D2] overflow-x-auto whitespace-pre">
-              curl -fsSLO https://dl.tunnex.io/latest/install.sh
-              curl -fsSLO https://dl.tunnex.io/latest/SHA256SUMS
-              sha256sum -c SHA256SUMS --ignore-missing
-              less install.sh && sh install.sh
+              curl -fsSLO https://dl.tunnex.io/latest/install.sh curl -fsSLO
+              https://dl.tunnex.io/latest/SHA256SUMS sha256sum -c SHA256SUMS --ignore-missing less
+              install.sh && sh install.sh
             </div>
             <div class="font-normal text-[12.5px] leading-[1.6] text-[#5E5E5B]">
               Any VPS with Docker and a public address.
             </div>
           </div>
 
-          <!-- OS Unsigned Notes Grid -->
+          {/* OS Unsigned Notes Grid */}
           <div class="t-g2 grid grid-cols-1 md:grid-cols-2 gap-3.5">
             <div class="bg-[rgba(18,18,18,0.72)] border border-white/[0.09] rounded-lg p-4.5">
-              <div class="font-semibold text-[13.5px] text-[#EDEDEB] mb-1.5">macOS: unsigned builds</div>
+              <div class="font-semibold text-[13.5px] text-[#EDEDEB] mb-1.5">
+                macOS: unsigned builds
+              </div>
               <div class="font-normal text-[13px] leading-[1.62] text-[#858582]">
-                Gatekeeper blocks the first open. Right-click the .pkg and choose Open, or clear the quarantine flag with <span class="font-mono font-medium text-[12px] text-[#C9C9C4]">xattr -d com.apple.quarantine</span>. Signed builds come at GA.
+                Gatekeeper blocks the first open. Right-click the .pkg and choose Open, or clear the
+                quarantine flag with{' '}
+                <span class="font-mono font-medium text-[12px] text-[#C9C9C4]">
+                  xattr -d com.apple.quarantine
+                </span>
+                . Signed builds come at GA.
               </div>
             </div>
             <div class="bg-[rgba(18,18,18,0.72)] border border-white/[0.09] rounded-lg p-4.5">
-              <div class="font-semibold text-[13.5px] text-[#EDEDEB] mb-1.5">Windows: SmartScreen</div>
+              <div class="font-semibold text-[13.5px] text-[#EDEDEB] mb-1.5">
+                Windows: SmartScreen
+              </div>
               <div class="font-normal text-[13px] leading-[1.62] text-[#858582]">
-                SmartScreen will warn on an unsigned installer. Choose More info, then Run anyway. Signed builds come at GA.
+                SmartScreen will warn on an unsigned installer. Choose More info, then Run anyway.
+                Signed builds come at GA.
               </div>
             </div>
           </div>

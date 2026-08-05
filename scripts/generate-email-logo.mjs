@@ -11,14 +11,18 @@ const fonts = [
     name: 'Inter',
     weight: 700,
     style: 'normal',
-    data: readFileSync(join(root, 'node_modules/@fontsource/inter/files/inter-latin-700-normal.woff')),
+    data: readFileSync(
+      join(root, 'node_modules/@fontsource/inter/files/inter-latin-700-normal.woff'),
+    ),
   },
 ];
 
 const logoSvg = readFileSync(join(root, 'src/assets/tunnex-logo.svg')).toString('base64');
 const logoUri = `data:image/svg+xml;base64,${logoSvg}`;
 
-const wordmarkSvg = readFileSync(join(root, 'src/assets/tunnex-wordmark-light.svg')).toString('base64');
+const wordmarkSvg = readFileSync(join(root, 'src/assets/tunnex-wordmark-light.svg')).toString(
+  'base64',
+);
 const wordmarkUri = `data:image/svg+xml;base64,${wordmarkSvg}`;
 
 // Combined Horizontal Lockup for Email Header (352x44 @ 2x -> 176x22 display)

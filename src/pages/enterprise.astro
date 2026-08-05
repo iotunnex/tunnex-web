@@ -13,7 +13,7 @@ const entFeatures = [
   'Org-wide MFA enforcement',
   'Multi-org (multi-tenant) management',
   'Kubernetes operator, CRDs, and machine principals',
-  'Priority support'
+  'Priority support',
 ];
 ---
 
@@ -21,32 +21,45 @@ const entFeatures = [
   title="Contact Sales: Tunnex Enterprise"
   description="Talk to Tunnex about Enterprise: seat pricing, procurement paperwork, air-gapped deployments, or a technical review of the architecture."
 >
-  <div class="mx-auto max-w-[1180px] px-7 py-18 md:py-[72px] flex flex-col gap-10 max-[620px]:px-[18px]">
+  <div
+    class="mx-auto max-w-[1180px] px-7 py-18 md:py-[72px] flex flex-col gap-10 max-[620px]:px-[18px]"
+  >
     <!-- Header -->
     <div class="flex flex-col gap-3.5 max-w-[66ch]">
       <div class="tnx-eyebrow">CONTACT SALES</div>
       <h1 class="tnx-h1">Talk to us about Enterprise</h1>
       <div class="font-normal text-[16px] leading-[1.68] text-[#A9A9A6] text-pretty">
-        Seat pricing, procurement paperwork, air-gapped deployments, or a technical review of the architecture. Tell us what you need and a human replies: no sequence, no drip.
+        Seat pricing, procurement paperwork, air-gapped deployments, or a technical review of the
+        architecture. Tell us what you need and a human replies: no sequence, no drip.
       </div>
     </div>
 
     <div class="t-g2 grid grid-cols-1 md:grid-cols-[1.1fr_0.9fr] gap-3.5 items-start">
       <!-- Left Column: Form -->
-      <div class="t-card border border-white/9 rounded-lg bg-[rgba(18,18,18,0.72)] p-6.5 flex flex-col gap-4">
+      <div
+        class="t-card border border-white/9 rounded-lg bg-[rgba(18,18,18,0.72)] p-6.5 flex flex-col gap-4"
+      >
         <div id="lead-form-container">
-          {!isBeta && (
-            <div class="border border-[#C9989C]/30 bg-[#B03A45]/12 rounded-md p-3.5 mb-4 flex items-center gap-3">
-              <div class="size-2 rounded-full bg-[#B03A45] shrink-0 animate-pulse"></div>
-              <div class="font-normal text-[12.5px] leading-[1.5] text-[#EDEDEB]">
-                <strong class="font-semibold text-[#F5F5F5]">PRELAUNCH · COMING SOON:</strong> We are currently building Tunnex! Submit your details to request enterprise access for the upcoming Public Beta.
+          {
+            !isBeta && (
+              <div class="border border-[#C9989C]/30 bg-[#B03A45]/12 rounded-md p-3.5 mb-4 flex items-center gap-3">
+                <div class="size-2 rounded-full bg-[#B03A45] shrink-0 animate-pulse" />
+                <div class="font-normal text-[12.5px] leading-[1.5] text-[#EDEDEB]">
+                  <strong class="font-semibold text-[#F5F5F5]">PRELAUNCH · COMING SOON:</strong> We
+                  are currently building Tunnex! Submit your details to request enterprise access
+                  for the upcoming Public Beta.
+                </div>
               </div>
-            </div>
-          )}
+            )
+          }
           <form id="lead-form" class="flex flex-col gap-4" novalidate>
             <div class="t-g2 grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div class="flex flex-col gap-1.75">
-                <label for="tnxName" class="font-mono font-semibold text-[9px] tracking-[0.16em] text-[#5E5E5B] uppercase">NAME</label>
+                <label
+                  for="tnxName"
+                  class="font-mono font-semibold text-[9px] tracking-[0.16em] text-[#5E5E5B] uppercase"
+                  >NAME</label
+                >
                 <input
                   id="tnxName"
                   type="text"
@@ -55,7 +68,11 @@ const entFeatures = [
                 />
               </div>
               <div class="flex flex-col gap-1.75">
-                <label for="tnxCo" class="font-mono font-semibold text-[9px] tracking-[0.16em] text-[#5E5E5B] uppercase">COMPANY</label>
+                <label
+                  for="tnxCo"
+                  class="font-mono font-semibold text-[9px] tracking-[0.16em] text-[#5E5E5B] uppercase"
+                  >COMPANY</label
+                >
                 <input
                   id="tnxCo"
                   type="text"
@@ -64,7 +81,11 @@ const entFeatures = [
                 />
               </div>
               <div class="flex flex-col gap-1.75">
-                <label for="tnxMail" class="font-mono font-semibold text-[9px] tracking-[0.16em] text-[#5E5E5B] uppercase">WORK EMAIL</label>
+                <label
+                  for="tnxMail"
+                  class="font-mono font-semibold text-[9px] tracking-[0.16em] text-[#5E5E5B] uppercase"
+                  >WORK EMAIL</label
+                >
                 <input
                   id="tnxMail"
                   type="email"
@@ -73,7 +94,11 @@ const entFeatures = [
                 />
               </div>
               <div class="flex flex-col gap-1.75">
-                <label for="tnxSeats" class="font-mono font-semibold text-[9px] tracking-[0.16em] text-[#5E5E5B] uppercase">SEATS</label>
+                <label
+                  for="tnxSeats"
+                  class="font-mono font-semibold text-[9px] tracking-[0.16em] text-[#5E5E5B] uppercase"
+                  >SEATS</label
+                >
                 <input
                   id="tnxSeats"
                   type="text"
@@ -84,7 +109,11 @@ const entFeatures = [
             </div>
 
             <div class="flex flex-col gap-1.75">
-              <label for="tnxMsg" class="font-mono font-semibold text-[9px] tracking-[0.16em] text-[#5E5E5B] uppercase">MESSAGE</label>
+              <label
+                for="tnxMsg"
+                class="font-mono font-semibold text-[9px] tracking-[0.16em] text-[#5E5E5B] uppercase"
+                >MESSAGE</label
+              >
               <textarea
                 id="tnxMsg"
                 rows="4"
@@ -94,10 +123,16 @@ const entFeatures = [
             </div>
 
             <!-- Turnstile Mock -->
-            <div class="flex items-center gap-2.75 bg-[rgba(18,18,18,0.72)] border border-white/[0.09] rounded-lg p-3.25 px-3.75">
+            <div
+              class="flex items-center gap-2.75 bg-[rgba(18,18,18,0.72)] border border-white/[0.09] rounded-lg p-3.25 px-3.75"
+            >
               <div class="size-5 rounded border border-[#3A3A3A] bg-[#151515] shrink-0"></div>
               <div class="font-normal text-[12.5px] text-[#6E6E6B]">Verify you are human</div>
-              <div class="ml-auto font-mono font-medium text-[8.5px] tracking-[0.1em] text-[#454542]">TURNSTILE</div>
+              <div
+                class="ml-auto font-mono font-medium text-[8.5px] tracking-[0.1em] text-[#454542]"
+              >
+                TURNSTILE
+              </div>
             </div>
 
             <button
@@ -113,12 +148,26 @@ const entFeatures = [
         <div id="lead-sent-box" class="hidden flex flex-col gap-2.75">
           <div class="flex items-center gap-2.5">
             <span class="lic size-4.5 shrink-0 text-[#6E9C7C]">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-full"><path d="M21.801 10A10 10 0 1 1 17 3.335"/><path d="m9 11 3 3L22 4"/></svg>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="size-full"
+                ><path d="M21.801 10A10 10 0 1 1 17 3.335"></path><path d="m9 11 3 3L22 4"
+                ></path></svg
+              >
             </span>
-            <div class="font-semibold text-[16px] text-[#F5F5F5]">Thanks — that reached sales@tunnex.io</div>
+            <div class="font-semibold text-[16px] text-[#F5F5F5]">
+              Thanks — that reached sales@tunnex.io
+            </div>
           </div>
           <div class="font-normal text-[14px] leading-[1.66] text-[#858582]">
-            We reply within one business day. If it is urgent, mail sales@tunnex.io directly and reference your company name.
+            We reply within one business day. If it is urgent, mail sales@tunnex.io directly and
+            reference your company name.
           </div>
           <button
             id="lead-reset-btn"
@@ -132,13 +181,33 @@ const entFeatures = [
 
       <!-- Right Column: Enterprise Features & Trial Box -->
       <div class="flex flex-col gap-3.5">
-        <div class="bg-[rgba(18,18,18,0.72)] border border-white/[0.09] rounded-lg p-5 flex flex-col gap-2.75">
-          <div class="font-mono font-semibold text-[9px] tracking-[0.16em] text-[#5E5E5B] uppercase mb-1">WHAT ENTERPRISE ADDS</div>
+        <div
+          class="bg-[rgba(18,18,18,0.72)] border border-white/[0.09] rounded-lg p-5 flex flex-col gap-2.75"
+        >
+          <div
+            class="font-mono font-semibold text-[9px] tracking-[0.16em] text-[#5E5E5B] uppercase mb-1"
+          >
+            WHAT ENTERPRISE ADDS
+          </div>
           {
             entFeatures.map((f) => (
               <div class="flex items-start gap-2.5">
                 <span class="lic size-3.75 shrink-0 text-[#6E9C7C] mt-0.5">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-full"><path d="M21.801 10A10 10 0 1 1 17 3.335"/><path d="m9 11 3 3L22 4"/></svg>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.6"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="size-full"
+                  >
+                    <>
+                      <path d="M21.801 10A10 10 0 1 1 17 3.335" />
+                      <path d="m9 11 3 3L22 4" />
+                    </>
+                  </svg>
                 </span>
                 <span class="font-normal text-[13.5px] leading-[1.55] text-[#A9A9A6]">{f}</span>
               </div>
@@ -146,9 +215,13 @@ const entFeatures = [
           }
         </div>
 
-        <div class="bg-[rgba(18,18,18,0.72)] border border-white/[0.09] rounded-lg p-5 flex flex-col gap-2">
+        <div
+          class="bg-[rgba(18,18,18,0.72)] border border-white/[0.09] rounded-lg p-5 flex flex-col gap-2"
+        >
           <div class="font-semibold text-[13.5px] text-[#EDEDEB]">Rather try it first?</div>
-          <div class="font-normal text-[13px] leading-[1.6] text-[#858582]">The 14-day trial needs no card and no call.</div>
+          <div class="font-normal text-[13px] leading-[1.6] text-[#858582]">
+            The 14-day trial needs no card and no call.
+          </div>
           <a
             href="/trial"
             class="t-btn t-sec self-start rounded-[9px] px-4.5 py-2.75 font-semibold text-[13px] mt-1"

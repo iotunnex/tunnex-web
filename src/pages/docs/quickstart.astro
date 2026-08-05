@@ -7,29 +7,47 @@ const docNav = [
   { id: 'architecture', label: 'Architecture', icon: 'network', href: '/docs/architecture/' },
   { id: 'desktop-client', label: 'Desktop client', icon: 'monitor', href: '/docs/desktop-client/' },
   { id: 'cli', label: 'CLI', icon: 'terminal', href: '/docs/cli/' },
-  { id: 'sso-setup', label: 'SSO setup', icon: 'key', href: '/docs/sso-setup/' }
+  { id: 'sso-setup', label: 'SSO setup', icon: 'key', href: '/docs/sso-setup/' },
 ];
 
 const prereqs = [
   'Any VPS with Docker and a public address.',
   'A DNS record pointing at that address.',
-  'Ports 51820/udp for WireGuard and 443/tcp for the control plane.'
+  'Ports 51820/udp for WireGuard and 443/tcp for the control plane.',
 ];
 
 const qsSteps = [
-  { n: '1', title: 'Enroll a gateway', body: 'Run tnx gateway enroll on the host that will carry traffic. It registers and pulls its config — no keys are typed by hand.' },
-  { n: '2', title: 'Add a device', body: 'Pick a transport: WireGuard gives you a QR code for the native client, OpenVPN exports a .ovpn profile.' },
-  { n: '3', title: 'Connect', body: 'Open the desktop client and connect. The status line reports the handshake, not an optimistic guess.' }
+  {
+    n: '1',
+    title: 'Enroll a gateway',
+    body: 'Run tnx gateway enroll on the host that will carry traffic. It registers and pulls its config — no keys are typed by hand.',
+  },
+  {
+    n: '2',
+    title: 'Add a device',
+    body: 'Pick a transport: WireGuard gives you a QR code for the native client, OpenVPN exports a .ovpn profile.',
+  },
+  {
+    n: '3',
+    title: 'Connect',
+    body: 'Open the desktop client and connect. The status line reports the handshake, not an optimistic guess.',
+  },
 ];
 
 const icons: Record<string, string> = {
-  'file-text': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-3.5"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>',
-  rocket: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-3.5"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>',
-  network: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-3.5"><rect x="16" y="16" width="6" height="6" rx="1"/><rect x="2" y="16" width="6" height="6" rx="1"/><rect x="9" y="2" width="6" height="6" rx="1"/><path d="M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3"/><path d="M12 12V8"/></svg>',
-  monitor: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-3.5"><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></svg>',
-  terminal: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-3.5"><polyline points="4 17 10 11 4 5"/><line x1="12" x2="20" y1="19" y2="19"/></svg>',
+  'file-text':
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-3.5"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>',
+  rocket:
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-3.5"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>',
+  network:
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-3.5"><rect x="16" y="16" width="6" height="6" rx="1"/><rect x="2" y="16" width="6" height="6" rx="1"/><rect x="9" y="2" width="6" height="6" rx="1"/><path d="M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3"/><path d="M12 12V8"/></svg>',
+  monitor:
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-3.5"><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></svg>',
+  terminal:
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-3.5"><polyline points="4 17 10 11 4 5"/><line x1="12" x2="20" y1="19" y2="19"/></svg>',
   key: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-3.5"><path d="m21 2-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0 3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>',
-  shield: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-3.75"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>'
+  shield:
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-3.75"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>',
 };
 ---
 
@@ -41,23 +59,44 @@ const icons: Record<string, string> = {
     <div class="t-docs grid grid-cols-1 md:grid-cols-[236px_minmax(0,1fr)_220px] gap-9 items-start">
       <!-- Left Sidebar Nav -->
       <div class="t-docsnav sticky top-16 py-7 flex flex-col gap-4">
-        <div class="flex items-center gap-2.25 bg-[rgba(18,18,18,0.72)] border border-white/9 rounded-lg p-2.25 px-3 text-[#5E5E5B] font-normal text-[12.5px]">
+        <div
+          class="flex items-center gap-2.25 bg-[rgba(18,18,18,0.72)] border border-white/9 rounded-lg p-2.25 px-3 text-[#5E5E5B] font-normal text-[12.5px]"
+        >
           <span class="lic size-3.25 shrink-0">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-full"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="size-full"
+              ><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg
+            >
           </span>
           <span>Search docs</span>
-          <span class="ml-auto font-mono font-medium text-[9.5px] border border-[#2E2E2E] rounded px-1.25 py-0.25">⌘K</span>
+          <span
+            class="ml-auto font-mono font-medium text-[9.5px] border border-[#2E2E2E] rounded px-1.25 py-0.25"
+            >⌘K</span
+          >
         </div>
 
         <div class="flex flex-col gap-0.5">
-          <div class="font-mono font-semibold text-[9px] tracking-[0.16em] text-[#3D4358] p-2 px-3 pb-1.5">DOCUMENTATION</div>
+          <div
+            class="font-mono font-semibold text-[9px] tracking-[0.16em] text-[#3D4358] p-2 px-3 pb-1.5"
+          >
+            DOCUMENTATION
+          </div>
           {
             docNav.map((d) => (
               <a
                 href={d.href}
                 class:list={[
                   't-nav flex items-center gap-2.5 p-1.75 px-3 rounded-lg font-medium text-[12.5px]',
-                  d.id === 'quickstart' ? 'text-[#EDEDEB] bg-white/10' : 'text-[#858582] hover:text-white'
+                  d.id === 'quickstart'
+                    ? 'text-[#EDEDEB] bg-white/10'
+                    : 'text-[#858582] hover:text-white',
                 ]}
               >
                 <span class="lic size-3.5 shrink-0">
@@ -72,48 +111,70 @@ const icons: Record<string, string> = {
 
       <!-- Main Content -->
       <div class="t-rise py-11 pb-22 flex flex-col gap-5.5 min-w-0">
-        <div class="flex items-center gap-2 font-mono font-medium text-[10px] tracking-[0.1em] text-[#5E5E5B]">
+        <div
+          class="flex items-center gap-2 font-mono font-medium text-[10px] tracking-[0.1em] text-[#5E5E5B]"
+        >
           <span>DOCS</span>
           <span class="text-[#3D4358]">/</span>
           <span class="text-[#858582]">Quickstart</span>
         </div>
 
-        <h1 class="font-semibold text-[clamp(30px,3.6vw,42px)] leading-[1.08] tracking-[-0.03em] text-[#F5F5F5]">
+        <h1
+          class="font-semibold text-[clamp(30px,3.6vw,42px)] leading-[1.08] tracking-[-0.03em] text-[#F5F5F5]"
+        >
           Quickstart
         </h1>
 
         <p class="font-normal text-[16.5px] leading-[1.78] text-[#A9A9A6] max-w-[74ch] text-pretty">
-          Install the control plane, enroll a gateway, and connect your first device. Two questions, one command.
+          Install the control plane, enroll a gateway, and connect your first device. Two questions,
+          one command.
         </p>
 
         <div class="flex flex-col gap-5 mt-1">
-          <h2 id="prerequisites" class="font-semibold text-[clamp(21px,2.2vw,26px)] leading-[1.2] text-[#F5F5F5] tracking-[-0.02em]">
+          <h2
+            id="prerequisites"
+            class="font-semibold text-[clamp(21px,2.2vw,26px)] leading-[1.2] text-[#F5F5F5] tracking-[-0.02em]"
+          >
             Prerequisites
           </h2>
           <div class="flex flex-col gap-2.25">
             {
               prereqs.map((p) => (
                 <div class="flex gap-3 items-start">
-                  <span class="size-1.25 rounded-full bg-[#5E5E5B] shrink-0 mt-2.5"></span>
+                  <span class="size-1.25 rounded-full bg-[#5E5E5B] shrink-0 mt-2.5" />
                   <span class="font-normal text-[15.5px] leading-[1.7] text-[#A9A9A6]">{p}</span>
                 </div>
               ))
             }
           </div>
 
-          <h2 id="install" class="font-semibold text-[clamp(21px,2.2vw,26px)] leading-[1.2] text-[#F5F5F5] tracking-[-0.02em] mt-3">
+          <h2
+            id="install"
+            class="font-semibold text-[clamp(21px,2.2vw,26px)] leading-[1.2] text-[#F5F5F5] tracking-[-0.02em] mt-3"
+          >
             Install the control plane
           </h2>
           <div class="bg-[#101010] border border-[#2E2E2E] rounded-lg p-4 px-4.5 overflow-x-auto">
-            <div class="font-mono font-semibold text-[8.5px] tracking-[0.14em] text-[#454542] mb-2.5">SHELL</div>
-            <div class="font-mono font-medium text-[13px] leading-[1.85] text-[#D6D6D2] whitespace-pre">curl -fsSL https://get.tunnex.io | sh
-tnx init --domain vpn.acme.io</div>
+            <div
+              class="font-mono font-semibold text-[8.5px] tracking-[0.14em] text-[#454542] mb-2.5"
+            >
+              SHELL
+            </div>
+            <div
+              class="font-mono font-medium text-[13px] leading-[1.85] text-[#D6D6D2] whitespace-pre"
+            >
+              curl -fsSL https://get.tunnex.io | sh tnx init --domain vpn.acme.io
+            </div>
           </div>
           <p class="font-normal text-[16.5px] leading-[1.78] text-[#A9A9A6] max-w-[74ch]">
-            The installer asks two questions and writes nothing outside its own data directory. It prints the admin URL and a one-time owner invite when it finishes.
+            The installer asks two questions and writes nothing outside its own data directory. It
+            prints the admin URL and a one-time owner invite when it finishes.
           </p>
 
-          <h2 id="first-device" class="font-semibold text-[clamp(21px,2.2vw,26px)] leading-[1.2] text-[#F5F5F5] tracking-[-0.02em] mt-3">
+          <h2
+            id="first-device"
+            class="font-semibold text-[clamp(21px,2.2vw,26px)] leading-[1.2] text-[#F5F5F5] tracking-[-0.02em] mt-3"
+          >
             Connect your first device
           </h2>
           <div class="flex flex-col gap-3">
@@ -125,37 +186,48 @@ tnx init --domain vpn.acme.io</div>
                   </div>
                   <div>
                     <div class="font-semibold text-[14px] text-[#EDEDEB]">{s.title}</div>
-                    <div class="font-normal text-[13.5px] leading-[1.62] text-[#858582] mt-0.75">{s.body}</div>
+                    <div class="font-normal text-[13.5px] leading-[1.62] text-[#858582] mt-0.75">
+                      {s.body}
+                    </div>
                   </div>
                 </div>
               ))
             }
           </div>
 
-          <div class="flex gap-2.75 items-start bg-[rgba(18,18,18,0.72)] border border-white/9 rounded-lg p-4">
+          <div
+            class="flex gap-2.75 items-start bg-[rgba(18,18,18,0.72)] border border-white/9 rounded-lg p-4"
+          >
             <span class="lic size-3.75 shrink-0 text-[#C9C9C4] mt-0.5">
               <Fragment set:html={icons.shield} />
             </span>
             <div class="font-normal text-[13.5px] leading-[1.62] text-[#858582]">
-              The device config is shown exactly once. The private key never leaves that screen — a lost profile is recovered by revoke-and-reissue, never re-download.
+              The device config is shown exactly once. The private key never leaves that screen — a
+              lost profile is recovered by revoke-and-reissue, never re-download.
             </div>
           </div>
         </div>
 
         <!-- Prev / Next Navigation -->
-        <div class="flex items-center justify-between gap-3 mt-5.5 pt-5.5 border-t border-[#1E1E1E]">
+        <div
+          class="flex items-center justify-between gap-3 mt-5.5 pt-5.5 border-t border-[#1E1E1E]"
+        >
           <a
             href="/docs/"
             class="t-btn t-sec rounded-[9px] p-3 px-4.5 text-left flex flex-col gap-0.5"
           >
-            <span class="font-mono font-semibold text-[8.5px] tracking-[0.12em] text-[#5E5E5B]">PREVIOUS</span>
+            <span class="font-mono font-semibold text-[8.5px] tracking-[0.12em] text-[#5E5E5B]"
+              >PREVIOUS</span
+            >
             <span class="font-semibold text-[13px] text-[#EDEDEB]">Overview</span>
           </a>
           <a
             href="/docs/architecture/"
             class="t-btn t-sec rounded-[9px] p-3 px-4.5 text-right flex flex-col gap-0.5"
           >
-            <span class="font-mono font-semibold text-[8.5px] tracking-[0.12em] text-[#5E5E5B]">NEXT</span>
+            <span class="font-mono font-semibold text-[8.5px] tracking-[0.12em] text-[#5E5E5B]"
+              >NEXT</span
+            >
             <span class="font-semibold text-[13px] text-[#EDEDEB]">Architecture</span>
           </a>
         </div>
@@ -163,11 +235,19 @@ tnx init --domain vpn.acme.io</div>
 
       <!-- Right Sidebar TOC -->
       <div class="t-navlinks sticky top-22 py-13 flex flex-col gap-2.75">
-        <div class="font-mono font-semibold text-[9px] tracking-[0.16em] text-[#454542]">ON THIS PAGE</div>
+        <div class="font-mono font-semibold text-[9px] tracking-[0.16em] text-[#454542]">
+          ON THIS PAGE
+        </div>
         <div class="flex flex-col gap-2 border-l border-[#1E1E1E] pl-3.5">
-          <a href="#prerequisites" class="font-medium text-[12.5px] text-[#858582] hover:text-white">Prerequisites</a>
-          <a href="#install" class="font-medium text-[12.5px] text-[#858582] hover:text-white">Install the control plane</a>
-          <a href="#first-device" class="font-medium text-[12.5px] text-[#858582] hover:text-white">Connect your first device</a>
+          <a href="#prerequisites" class="font-medium text-[12.5px] text-[#858582] hover:text-white"
+            >Prerequisites</a
+          >
+          <a href="#install" class="font-medium text-[12.5px] text-[#858582] hover:text-white"
+            >Install the control plane</a
+          >
+          <a href="#first-device" class="font-medium text-[12.5px] text-[#858582] hover:text-white"
+            >Connect your first device</a
+          >
         </div>
       </div>
     </div>

@@ -69,7 +69,7 @@ describe('run_worker_first covers every SSR route', () => {
 
   it('found the pattern list and at least the known SSR routes', () => {
     expect(patterns.length).toBeGreaterThan(0);
-    expect(routes).toEqual(expect.arrayContaining(['/api/subscribe', '/enterprise']));
+    expect(routes).toEqual(expect.arrayContaining(['/api/subscribe', '/api/enterprise-lead']));
   });
 
   for (const route of routes) {

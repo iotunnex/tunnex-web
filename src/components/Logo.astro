@@ -12,12 +12,17 @@ const { variant = 'lockup', class: className = 'h-6' } = Astro.props;
 
 const logoHtml = logoSvg.replace('<svg ', `<svg class="size-full object-contain" `);
 const wordmarkDark = wordmarkSvg.replace('<svg ', `<svg class="logo-variant-dark ${className}" `);
-const wordmarkLight = wordmarkLightSvg.replace('<svg ', `<svg class="logo-variant-light ${className}" `);
+const wordmarkLight = wordmarkLightSvg.replace(
+  '<svg ',
+  `<svg class="logo-variant-light ${className}" `,
+);
 ---
 
 {
   variant === 'vertical' ? (
-    <span class={`inline-flex flex-col items-center gap-4 ${className.replace(/h-\S+/, '')}`.trim()}>
+    <span
+      class={`inline-flex flex-col items-center gap-4 ${className.replace(/h-\S+/, '')}`.trim()}
+    >
       <span class="t-logo-sheen inline-flex size-16 items-center justify-center rounded-[14px] bg-[#0A0A0A] p-2 shadow-[0_6px_18px_rgba(255,255,255,0.14)] overflow-hidden">
         <Fragment set:html={logoHtml} />
       </span>

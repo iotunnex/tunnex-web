@@ -21,12 +21,23 @@ const isActive = (href: string) => {
 };
 ---
 
-<header class="sticky top-0 z-[60] h-[64px] w-full border-b border-[var(--tnx-line-2)] bg-[var(--tnx-topbar)] backdrop-blur-[24px] backdrop-saturate-[140%]">
-  <nav aria-label="Main" class="mx-auto flex h-full max-w-[1180px] items-center justify-between gap-[22px] px-[28px] max-[620px]:px-[18px]">
+<header
+  class="sticky top-0 z-[60] h-[64px] w-full border-b border-[var(--tnx-line-2)] bg-[var(--tnx-topbar)] backdrop-blur-[24px] backdrop-saturate-[140%]"
+>
+  <nav
+    aria-label="Main"
+    class="mx-auto flex h-full max-w-[1180px] items-center justify-between gap-[22px] px-[28px] max-[620px]:px-[18px]"
+  >
     <!-- Brand / Logo -->
-    <a href="/" aria-label="Tunnex — Home" class="flex items-center gap-2.5 group focus-visible:outline-none">
+    <a
+      href="/"
+      aria-label="Tunnex — Home"
+      class="flex items-center gap-2.5 group focus-visible:outline-none"
+    >
       <!-- 30px Logo Lozenge -->
-      <div class="t-logo-sheen flex size-[30px] items-center justify-center rounded-[9px] bg-[#0A0A0A] p-[5px] shadow-[0_6px_18px_rgba(255,255,255,0.14)] overflow-hidden transition-transform duration-200 group-hover:scale-105">
+      <div
+        class="t-logo-sheen flex size-[30px] items-center justify-center rounded-[9px] bg-[#0A0A0A] p-[5px] shadow-[0_6px_18px_rgba(255,255,255,0.14)] overflow-hidden transition-transform duration-200 group-hover:scale-105"
+      >
         <img src="/assets/tunnex-logo.svg" alt="Tunnex" class="size-full object-contain block" />
       </div>
 
@@ -59,7 +70,9 @@ const isActive = (href: string) => {
     <!-- Right Controls / CTA -->
     <div class="flex items-center gap-3">
       <!-- Mode Badge / Segmented Chip (Desktop) -->
-      <div class="hidden items-center rounded-[9px] border border-[#262626] bg-[rgba(18,18,18,0.72)] px-2.5 py-1 text-[10.5px] font-mono font-semibold uppercase tracking-wider text-[#858582] md:flex">
+      <div
+        class="hidden items-center rounded-[9px] border border-[#262626] bg-[rgba(18,18,18,0.72)] px-2.5 py-1 text-[10.5px] font-mono font-semibold uppercase tracking-wider text-[#858582] md:flex"
+      >
         <span>{isBeta ? 'BETA' : 'PRELAUNCH'}</span>
       </div>
 
@@ -99,7 +112,10 @@ const isActive = (href: string) => {
   </nav>
 
   <!-- Mobile Dropdown Panel -->
-  <div id="nav-menu" class="hidden border-b border-[var(--tnx-line-2)] bg-[rgba(13,13,13,0.95)] px-[18px] py-4 backdrop-blur-xl max-[960px]:block">
+  <div
+    id="nav-menu"
+    class="hidden border-b border-[var(--tnx-line-2)] bg-[rgba(13,13,13,0.95)] px-[18px] py-4 backdrop-blur-xl max-[960px]:block"
+  >
     <ul class="flex flex-col gap-1">
       {
         links.map((l) => (

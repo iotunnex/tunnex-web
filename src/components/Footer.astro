@@ -30,12 +30,17 @@ const productLinks = [
 
       <!-- Column 2: Product Links -->
       <div class="flex flex-col gap-2.75">
-        <div class="font-mono font-semibold text-[9px] tracking-[0.16em] text-[#454542] uppercase">PRODUCT</div>
+        <div class="font-mono font-semibold text-[9px] tracking-[0.16em] text-[#454542] uppercase">
+          PRODUCT
+        </div>
         <ul class="flex flex-col gap-2">
           {
             productLinks.map((l) => (
               <li>
-                <a href={l.href} class="font-sans font-normal text-[13px] text-[#858582] hover:text-[#EDEDEA] transition-colors">
+                <a
+                  href={l.href}
+                  class="font-sans font-normal text-[13px] text-[#858582] hover:text-[#EDEDEA] transition-colors"
+                >
                   {l.label}
                 </a>
               </li>
@@ -46,15 +51,23 @@ const productLinks = [
 
       <!-- Column 3: Contact Links -->
       <div class="flex flex-col gap-2.75">
-        <div class="font-mono font-semibold text-[9px] tracking-[0.16em] text-[#454542] uppercase">CONTACT</div>
+        <div class="font-mono font-semibold text-[9px] tracking-[0.16em] text-[#454542] uppercase">
+          CONTACT
+        </div>
         <ul class="flex flex-col gap-2">
           <li>
-            <a href="mailto:sales@tunnex.io" class="font-sans font-normal text-[13px] text-[#858582] hover:text-[#EDEDEA] transition-colors">
+            <a
+              href="mailto:sales@tunnex.io"
+              class="font-sans font-normal text-[13px] text-[#858582] hover:text-[#EDEDEA] transition-colors"
+            >
               sales@tunnex.io
             </a>
           </li>
           <li>
-            <a href="mailto:security@tunnex.io" class="font-sans font-normal text-[13px] text-[#858582] hover:text-[#EDEDEA] transition-colors">
+            <a
+              href="mailto:security@tunnex.io"
+              class="font-sans font-normal text-[13px] text-[#858582] hover:text-[#EDEDEA] transition-colors"
+            >
               security@tunnex.io
             </a>
           </li>
@@ -63,15 +76,23 @@ const productLinks = [
 
       <!-- Column 4: Legal Links -->
       <div class="flex flex-col gap-2.75">
-        <div class="font-mono font-semibold text-[9px] tracking-[0.16em] text-[#454542] uppercase">LEGAL</div>
+        <div class="font-mono font-semibold text-[9px] tracking-[0.16em] text-[#454542] uppercase">
+          LEGAL
+        </div>
         <ul class="flex flex-col gap-2">
           <li>
-            <a href="/privacy" class="font-sans font-normal text-[13px] text-[#858582] hover:text-[#EDEDEA] transition-colors">
+            <a
+              href="/privacy"
+              class="font-sans font-normal text-[13px] text-[#858582] hover:text-[#EDEDEA] transition-colors"
+            >
               Privacy
             </a>
           </li>
           <li>
-            <a href="/terms" class="font-sans font-normal text-[13px] text-[#858582] hover:text-[#EDEDEA] transition-colors">
+            <a
+              href="/terms"
+              class="font-sans font-normal text-[13px] text-[#858582] hover:text-[#EDEDEA] transition-colors"
+            >
               Terms
             </a>
           </li>
@@ -80,11 +101,15 @@ const productLinks = [
     </div>
 
     <!-- Bottom Copyright & Mode Bar -->
-    <div class="mt-10 pt-5 border-t border-white/[0.06] flex items-center justify-between gap-3 flex-wrap">
+    <div
+      class="mt-10 pt-5 border-t border-white/[0.06] flex items-center justify-between gap-3 flex-wrap"
+    >
       <div class="font-sans font-normal text-[12px] text-[#4A4A48]">
         © {year} Tunnex. All rights reserved.
       </div>
-      <div class="font-mono font-medium text-[9px] tracking-[0.14em] text-[#3D4358] uppercase ml-auto">
+      <div
+        class="font-mono font-medium text-[9px] tracking-[0.14em] text-[#3D4358] uppercase ml-auto"
+      >
         LAUNCH_MODE · {isBeta ? 'BETA' : 'PRELAUNCH'}
       </div>
     </div>

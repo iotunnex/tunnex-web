@@ -3,40 +3,40 @@
 const faqData = [
   {
     q: 'Is the hosted service ever in my traffic path?',
-    a: 'No. Our hosted service holds billing and license records only. The control plane, the gateways, and the clients all run on infrastructure you own. Packets never route through anything we operate, and there is no key escrow.'
+    a: 'No. Our hosted service holds billing and license records only. The control plane, the gateways, and the clients all run on infrastructure you own. Packets never route through anything we operate, and there is no key escrow.',
   },
   {
     q: 'What happens if tunnex.io goes down?',
-    a: 'Your VPN keeps running. License keys verify offline against a public key that ships in the binary, so there is no phone-home and no license server in your critical path. Air-gapped deployments are fully supported.'
+    a: 'Your VPN keeps running. License keys verify offline against a public key that ships in the binary, so there is no phone-home and no license server in your critical path. Air-gapped deployments are fully supported.',
   },
   {
     q: 'Can I connect from behind CGNAT?',
-    a: 'Gateways currently require public reachability or a port forward. We do not run a relay fleet today. Relay fleet support and NAT traversal features are on the product roadmap.'
+    a: 'Gateways currently require public reachability or a port forward. We do not run a relay fleet today. Relay fleet support and NAT traversal features are on the product roadmap.',
   },
   {
     q: 'Do WireGuard and OpenVPN have separate policy rules?',
-    a: 'No. An OpenVPN device is a subject in the same compiled artifact as a WireGuard peer. Two protocols, one Zero Trust engine without separate rule stacks.'
+    a: 'No. An OpenVPN device is a subject in the same compiled artifact as a WireGuard peer. Two protocols, one Zero Trust engine without separate rule stacks.',
   },
   {
     q: 'Does device posture mean hardware attestation?',
-    a: 'No. Posture is client-reported OS version and disk encryption status. A device flips its own gate on its next report, and unknown states are reported as unknown rather than compliant.'
+    a: 'No. Posture is client-reported OS version and disk encryption status. A device flips its own gate on its next report, and unknown states are reported as unknown rather than compliant.',
   },
   {
     q: 'What happens when the trial or a license expires?',
-    a: 'A grace period with warnings is provided, after which Enterprise features lapse to the Open tier. The VPN keeps running as license state never touches the data plane.'
+    a: 'A grace period with warnings is provided, after which Enterprise features lapse to the Open tier. The VPN keeps running as license state never touches the data plane.',
   },
   {
     q: 'Can I read the source?',
-    a: 'The core engine is Apache-2.0. Enterprise modules are source-available so you can inspect every line running inside your network.'
+    a: 'The core engine is Apache-2.0. Enterprise modules are source-available so you can inspect every line running inside your network.',
   },
   {
     q: 'How does Tunnex govern AI agents and MCP servers?',
-    a: 'Tunnex issues non-human agent principals with time-boxed, port-scoped access to MCP (Model Context Protocol) servers. Under prompt injection, network-level default-deny bounds the blast radius, preventing compromised AI agents from pivoting to unauthorized internal infrastructure.'
+    a: 'Tunnex issues non-human agent principals with time-boxed, port-scoped access to MCP (Model Context Protocol) servers. Under prompt injection, network-level default-deny bounds the blast radius, preventing compromised AI agents from pivoting to unauthorized internal infrastructure.',
   },
   {
     q: 'Are the desktop clients signed?',
-    a: 'Not yet. Gatekeeper and SmartScreen will prompt on first open until code-signing lands. Code-signed and notarized desktop releases are currently on the roadmap.'
-  }
+    a: 'Not yet. Gatekeeper and SmartScreen will prompt on first open until code-signing lands. Code-signed and notarized desktop releases are currently on the roadmap.',
+  },
 ];
 ---
 
@@ -48,7 +48,11 @@ const faqData = [
         <div class="tnx-eyebrow">QUESTIONS</div>
         <h2 class="tnx-h2">The ones worth asking any VPN vendor.</h2>
         <div class="font-normal text-[14.5px] leading-[1.65] text-[#858582] text-pretty">
-          Ask ours the same way. If an answer here is vaguer than you need, write to <a href="mailto:sales@tunnex.io" class="underline underline-offset-4 decoration-[#C9C9C4]/40 hover:text-[#EDEDEB]">sales@tunnex.io</a>.
+          Ask ours the same way. If an answer here is vaguer than you need, write to <a
+            href="mailto:sales@tunnex.io"
+            class="underline underline-offset-4 decoration-[#C9C9C4]/40 hover:text-[#EDEDEB]"
+            >sales@tunnex.io</a
+          >.
         </div>
       </div>
 

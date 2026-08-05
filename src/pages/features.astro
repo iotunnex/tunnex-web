@@ -20,8 +20,8 @@ const capGroups = [
       'Control plane / data plane split: the API never touches WireGuard; a node agent owns it',
       'Desired-state reconciliation: data-plane state is reconciled, never assumed in sync',
       'Full-tunnel and split-tunnel routing, gateway egress NAT and IP forwarding',
-      'A control-plane outage never kills running tunnels: agents keep reconciling'
-    ]
+      'A control-plane outage never kills running tunnels: agents keep reconciling',
+    ],
   },
   {
     icon: 'route',
@@ -36,8 +36,8 @@ const capGroups = [
       'Hub high availability: multi-hub failover with warm standby tunnels',
       'Cross-site DNS with split-horizon per-site forwarding',
       'Routed subnets and push routes (Pritunl parity)',
-      'Zero-touch gateway: a gateway joins on one emitted command; no SSH after join'
-    ]
+      'Zero-touch gateway: a gateway joins on one emitted command; no SSH after join',
+    ],
   },
   {
     icon: 'shield',
@@ -53,8 +53,8 @@ const capGroups = [
       'Enforcement at the gateway kernel: routed is not permitted',
       'Fail-closed cold start: a gateway that never received policy denies all',
       'Revocation is a full sweep: peer slot, pool address, live telemetry, all released',
-      'Differentiated gateway health with named remedies'
-    ]
+      'Differentiated gateway health with named remedies',
+    ],
   },
   {
     icon: 'key',
@@ -68,8 +68,8 @@ const capGroups = [
       'Directory sync with two-tier health and a manual sync trigger',
       'RBAC: owner, admin, member (permission per feature)',
       'DNS-TXT verified domain capture, globally unique, public domains blocked',
-      'Invitations, deactivation, and a full sweep of sessions and CLI credentials on reset'
-    ]
+      'Invitations, deactivation, and a full sweep of sessions and CLI credentials on reset',
+    ],
   },
   {
     icon: 'monitor-smartphone',
@@ -80,8 +80,8 @@ const capGroups = [
       'Posture checks for OS version and disk encryption, configured per org',
       'Three-way honesty: compliant, blocked, or unknown (absence is never compliance)',
       'Continuous evaluation with a stale sweep',
-      'Client-reported, not hardware attestation: stated plainly wherever it appears'
-    ]
+      'Client-reported, not hardware attestation: stated plainly wherever it appears',
+    ],
   },
   {
     icon: 'monitor',
@@ -93,8 +93,8 @@ const capGroups = [
       'Split-tunnel toggle, server picker, tray, notifications',
       'Revocation-aware teardown: no stale "Connected"',
       'tunnex CLI with browser-based login, SSO and MFA included',
-      'Mobile via the official WireGuard apps; gateway-side Zero Trust still applies'
-    ]
+      'Mobile via the official WireGuard apps; gateway-side Zero Trust still applies',
+    ],
   },
   {
     icon: 'arrow-right-left',
@@ -105,8 +105,8 @@ const capGroups = [
       '.ovpn export for standard clients: OpenVPN Connect, Tunnelblick, mobile',
       'CRL revocation with the identical full sweep — cert, address, status',
       'OpenVPN devices are Zero Trust subjects in the same compiled artifact, not a second door',
-      'Per-org and per-gateway opt-in, off by default'
-    ]
+      'Per-org and per-gateway opt-in, off by default',
+    ],
   },
   {
     icon: 'boxes',
@@ -117,8 +117,8 @@ const capGroups = [
       'In-cluster gateway exposes Services at synthetic VIPs, reachable by name over the tunnel',
       'GitOps operator and CRDs: TunnexCluster, TunnexExposedService, TunnexGrant',
       'Machine principals for automation with attributed audit',
-      'Drift detection and self-healing'
-    ]
+      'Drift detection and self-healing',
+    ],
   },
   {
     icon: 'line-chart',
@@ -132,8 +132,8 @@ const capGroups = [
       'Backup and restore with a keyed fingerprint; a wrong-key restore is refused',
       'Forward-only upgrades, restore-as-rollback, N/N-1 agent contract',
       'A preflight that refuses rather than warns',
-      'Self-hosting guide with an honest-limits table'
-    ]
+      'Self-hosting guide with an honest-limits table',
+    ],
   },
   {
     icon: 'file-text',
@@ -143,8 +143,8 @@ const capGroups = [
       'Secrets encrypted at rest under a bootstrap master key',
       'Blocking CI security tier: govulncheck, CodeQL, gofmt and vet, SBOM',
       'Published SECURITY.md with a disclosure SLA',
-      'Open core: Apache-2.0 core, Enterprise is source-available'
-    ]
+      'Open core: Apache-2.0 core, Enterprise is source-available',
+    ],
   },
   {
     icon: 'bot',
@@ -156,16 +156,32 @@ const capGroups = [
       'Time-boxed access grants (expires_at) with automatic background sweep',
       'Attributed audit logging linking AI agent network requests to initiating triggers',
       'Prompt injection blast-radius containment: network-level default-deny prevents pivoting to unauthorized internal infrastructure',
-      'Machine principal lifecycle: issuance, revocation, and automated session sweeps'
-    ]
-  }
+      'Machine principal lifecycle: issuance, revocation, and automated session sweeps',
+    ],
+  },
 ];
 
 const agentCards = [
-  { icon: 'user-plus', title: 'Agents are owned', body: 'Every agent principal belongs to a human account. An ownerless principal sits outside the device cap and outside every accountability link while still costing an address, so we do not keep one.' },
-  { icon: 'shield', title: 'Its own role, not the operator’s', body: 'An agent gets a role of its own. A machine credential that can write access rules is the threat model inverted: a compromised agent would grant itself what it was denied.' },
-  { icon: 'refresh-cw', title: 'Grants that expire on their own', body: 'Access is a rule with an expiry that sweeps itself. A thirty-minute agent grant needs no new mechanism — extend moves the expiry in place, never delete-and-recreate.' },
-  { icon: 'scroll-text', title: 'Attribution, including non-human actors', body: 'The audit log already carries a system actor and the cause of a change. A request from an agent is attributed to that agent, not to a blank field.' }
+  {
+    icon: 'user-plus',
+    title: 'Agents are owned',
+    body: 'Every agent principal belongs to a human account. An ownerless principal sits outside the device cap and outside every accountability link while still costing an address, so we do not keep one.',
+  },
+  {
+    icon: 'shield',
+    title: 'Its own role, not the operator’s',
+    body: 'An agent gets a role of its own. A machine credential that can write access rules is the threat model inverted: a compromised agent would grant itself what it was denied.',
+  },
+  {
+    icon: 'refresh-cw',
+    title: 'Grants that expire on their own',
+    body: 'Access is a rule with an expiry that sweeps itself. A thirty-minute agent grant needs no new mechanism — extend moves the expiry in place, never delete-and-recreate.',
+  },
+  {
+    icon: 'scroll-text',
+    title: 'Attribution, including non-human actors',
+    body: 'The audit log already carries a system actor and the cause of a change. A request from an agent is attributed to that agent, not to a blank field.',
+  },
 ];
 
 const roadmap = [
@@ -180,7 +196,7 @@ const roadmap = [
   'NAT-mapped subnets for colliding branch LANs',
   'IPsec site-to-site for endpoints that cannot run an agent',
   'Rate limiting and API abuse protection',
-  'EDR presence checks and hardware attestation'
+  'EDR presence checks and hardware attestation',
 ];
 
 const platforms = [
@@ -190,27 +206,50 @@ const platforms = [
   { icon: 'boxes', name: 'Docker', note: 'COMPOSE · PREBUILT IMAGES', fg: '#6E6E6B' },
   { icon: 'boxes', name: 'Kubernetes', note: 'HELM + OPERATOR', fg: '#6E6E6B' },
   { icon: 'network', name: 'Any VPS', note: 'PUBLIC ADDRESS REQUIRED', fg: '#6E6E6B' },
-  { icon: 'monitor-smartphone', name: 'iOS · Android', note: 'OFFICIAL WIREGUARD APPS', fg: '#C39A4E' },
-  { icon: 'arrow-right-left', name: 'OpenVPN clients', note: '.OVPN EXPORT · CONNECT, TUNNELBLICK', fg: '#6E6E6B' },
-  { icon: 'shield', name: 'Air-gapped', note: 'OFFLINE LICENCE VERIFY', fg: '#6E6E6B' }
+  {
+    icon: 'monitor-smartphone',
+    name: 'iOS · Android',
+    note: 'OFFICIAL WIREGUARD APPS',
+    fg: '#C39A4E',
+  },
+  {
+    icon: 'arrow-right-left',
+    name: 'OpenVPN clients',
+    note: '.OVPN EXPORT · CONNECT, TUNNELBLICK',
+    fg: '#6E6E6B',
+  },
+  { icon: 'shield', name: 'Air-gapped', note: 'OFFLINE LICENCE VERIFY', fg: '#6E6E6B' },
 ];
 
 const icons: Record<string, string> = {
-  network: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-4"><rect x="16" y="16" width="6" height="6" rx="1"/><rect x="2" y="16" width="6" height="6" rx="1"/><rect x="9" y="2" width="6" height="6" rx="1"/><path d="M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3"/><path d="M12 12V8"/></svg>',
-  route: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-4"><circle cx="6" cy="19" r="3"/><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"/><circle cx="18" cy="5" r="3"/></svg>',
-  shield: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-4"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>',
+  network:
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-4"><rect x="16" y="16" width="6" height="6" rx="1"/><rect x="2" y="16" width="6" height="6" rx="1"/><rect x="9" y="2" width="6" height="6" rx="1"/><path d="M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3"/><path d="M12 12V8"/></svg>',
+  route:
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-4"><circle cx="6" cy="19" r="3"/><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"/><circle cx="18" cy="5" r="3"/></svg>',
+  shield:
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-4"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>',
   key: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-4"><path d="m21 2-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0 3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>',
-  'monitor-smartphone': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-4"><path d="M18 8V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h8"/><path d="M10 19v-3.96 3.15"/><path d="M7 19h5"/><rect width="6" height="10" x="16" y="12" rx="2"/></svg>',
-  monitor: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-4"><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></svg>',
-  'arrow-right-left': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-4"><path d="m16 3 4 4-4 4"/><path d="M20 7H4"/><path d="m8 21-4-4 4-4"/><path d="M4 17h16"/></svg>',
-  boxes: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-4"><path d="M2.97 12.92A2 2 0 0 0 2 14.63v3.24a2 2 0 0 0 .97 1.71l3 1.8a2 2 0 0 0 2.06 0L12 19v-5.5l-5-3-4.03 2.42Z"/><path d="m7 16.5-4.74-2.85"/><path d="m7 16.5 5-3"/><path d="M7 16.5v5.17"/><path d="M12 13.5V19l3.97 2.38a2 2 0 0 0 2.06 0l3-1.8a2 2 0 0 0 .97-1.71v-3.24a2 2 0 0 0-.97-1.71L17 10.5l-5 3Z"/><path d="m17 16.5-5-3"/><path d="m17 16.5 4.74-2.85"/><path d="M17 16.5v5.17"/><path d="M7.97 4.42A2 2 0 0 0 7 6.13v4.37l5 3 5-3V6.13a2 2 0 0 0-.97-1.71l-3-1.8a2 2 0 0 0-2.06 0l-3 1.8Z"/><path d="M12 8 7.26 5.15"/><path d="m12 8 4.74-2.85"/><path d="M12 13.5V8"/></svg>',
-  'line-chart': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-4"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>',
-  'file-text': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-4"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>',
-  'user-plus': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-4"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" x2="19" y1="8" y2="14"/><line x1="22" x2="16" y1="11" y2="11"/></svg>',
-  'refresh-cw': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-4"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>',
-  'scroll-text': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-4"><path d="M15 12h-5"/><path d="M15 8h-5"/><path d="M19 17V5a2 2 0 0 0-2-2H4"/><path d="M8 21h12a2 2 0 0 0 2-2v-1a1 1 0 0 0-1-1H11a1 1 0 0 0-1 1v1a2 2 0 1 1-4 0V5a2 2 0 1 0-4 0v2a1 1 0 0 0 1 1h3"/></svg>',
-  terminal: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-4"><polyline points="4 17 10 11 4 5"/><line x1="12" x2="20" y1="19" y2="19"/></svg>',
-  bot: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-4"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>'
+  'monitor-smartphone':
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-4"><path d="M18 8V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h8"/><path d="M10 19v-3.96 3.15"/><path d="M7 19h5"/><rect width="6" height="10" x="16" y="12" rx="2"/></svg>',
+  monitor:
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-4"><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></svg>',
+  'arrow-right-left':
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-4"><path d="m16 3 4 4-4 4"/><path d="M20 7H4"/><path d="m8 21-4-4 4-4"/><path d="M4 17h16"/></svg>',
+  boxes:
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-4"><path d="M2.97 12.92A2 2 0 0 0 2 14.63v3.24a2 2 0 0 0 .97 1.71l3 1.8a2 2 0 0 0 2.06 0L12 19v-5.5l-5-3-4.03 2.42Z"/><path d="m7 16.5-4.74-2.85"/><path d="m7 16.5 5-3"/><path d="M7 16.5v5.17"/><path d="M12 13.5V19l3.97 2.38a2 2 0 0 0 2.06 0l3-1.8a2 2 0 0 0 .97-1.71v-3.24a2 2 0 0 0-.97-1.71L17 10.5l-5 3Z"/><path d="m17 16.5-5-3"/><path d="m17 16.5 4.74-2.85"/><path d="M17 16.5v5.17"/><path d="M7.97 4.42A2 2 0 0 0 7 6.13v4.37l5 3 5-3V6.13a2 2 0 0 0-.97-1.71l-3-1.8a2 2 0 0 0-2.06 0l-3 1.8Z"/><path d="M12 8 7.26 5.15"/><path d="m12 8 4.74-2.85"/><path d="M12 13.5V8"/></svg>',
+  'line-chart':
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-4"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>',
+  'file-text':
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-4"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>',
+  'user-plus':
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-4"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" x2="19" y1="8" y2="14"/><line x1="22" x2="16" y1="11" y2="11"/></svg>',
+  'refresh-cw':
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-4"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>',
+  'scroll-text':
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-4"><path d="M15 12h-5"/><path d="M15 8h-5"/><path d="M19 17V5a2 2 0 0 0-2-2H4"/><path d="M8 21h12a2 2 0 0 0 2-2v-1a1 1 0 0 0-1-1H11a1 1 0 0 0-1 1v1a2 2 0 1 1-4 0V5a2 2 0 1 0-4 0v2a1 1 0 0 0 1 1h3"/></svg>',
+  terminal:
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-4"><polyline points="4 17 10 11 4 5"/><line x1="12" x2="20" y1="19" y2="19"/></svg>',
+  bot: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-4"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>',
 };
 ---
 
@@ -218,32 +257,47 @@ const icons: Record<string, string> = {
   title="Features & Capabilities — Tunnex Zero Trust VPN"
   description="Explore the complete capability inventory of Tunnex: Core VPN, Site-to-site, Zero Trust access, SSO, AI Agent & MCP governance, OpenVPN, and Kubernetes."
 >
-  <div class="mx-auto max-w-[1180px] px-7 py-18 md:py-[72px] flex flex-col gap-9 max-[620px]:px-[18px]">
+  <div
+    class="mx-auto max-w-[1180px] px-7 py-18 md:py-[72px] flex flex-col gap-9 max-[620px]:px-[18px]"
+  >
     <!-- Header -->
     <div class="flex flex-col gap-3.5 max-w-[66ch]">
       <div class="tnx-eyebrow">CAPABILITIES</div>
       <h1 class="tnx-h1">Everything Tunnex ships today</h1>
       <div class="font-normal text-[17px] leading-[1.65] text-[#A9A9A6] text-pretty">
-        Self-hosted capabilities for both Open and Enterprise editions. Enterprise features are badged accordingly.
+        Self-hosted capabilities for both Open and Enterprise editions. Enterprise features are
+        badged accordingly.
       </div>
     </div>
 
     <!-- 3 Stat Badges -->
     <div class="t-g3 grid grid-cols-1 sm:grid-cols-3 gap-3.5">
       <div class="bg-[rgba(18,18,18,0.72)] border border-white/[0.09] rounded-lg p-4.5">
-        <div class="font-mono font-semibold text-[9px] tracking-[0.16em] text-[#454542]">CROSS-CLOUD SITE-TO-SITE</div>
+        <div class="font-mono font-semibold text-[9px] tracking-[0.16em] text-[#454542]">
+          CROSS-CLOUD SITE-TO-SITE
+        </div>
         <div class="font-semibold text-[24px] text-[#EDEDEB] mt-1.5 tabular-nums">138ms</div>
-        <div class="font-normal text-[12.5px] leading-[1.55] text-[#858582] mt-0.75">AWS Sydney to Azure West US, un-NAT'd, on a live wire.</div>
+        <div class="font-normal text-[12.5px] leading-[1.55] text-[#858582] mt-0.75">
+          AWS Sydney to Azure West US, un-NAT'd, on a live wire.
+        </div>
       </div>
       <div class="bg-[rgba(18,18,18,0.72)] border border-white/[0.09] rounded-lg p-4.5">
-        <div class="font-mono font-semibold text-[9px] tracking-[0.16em] text-[#454542]">INSTALL</div>
+        <div class="font-mono font-semibold text-[9px] tracking-[0.16em] text-[#454542]">
+          INSTALL
+        </div>
         <div class="font-semibold text-[24px] text-[#EDEDEB] mt-1.5">One command</div>
-        <div class="font-normal text-[12.5px] leading-[1.55] text-[#858582] mt-0.75">Prebuilt images, every secret generated on first boot. No building from source.</div>
+        <div class="font-normal text-[12.5px] leading-[1.55] text-[#858582] mt-0.75">
+          Prebuilt images, every secret generated on first boot. No building from source.
+        </div>
       </div>
       <div class="bg-[rgba(18,18,18,0.72)] border border-white/[0.09] rounded-lg p-4.5">
-        <div class="font-mono font-semibold text-[9px] tracking-[0.16em] text-[#454542]">CONTROL-PLANE OUTAGE</div>
+        <div class="font-mono font-semibold text-[9px] tracking-[0.16em] text-[#454542]">
+          CONTROL-PLANE OUTAGE
+        </div>
         <div class="font-semibold text-[24px] text-[#EDEDEB] mt-1.5">Tunnels stay up</div>
-        <div class="font-normal text-[12.5px] leading-[1.55] text-[#858582] mt-0.75">Agents keep reconciling. The plane hands out config; it never carries a packet.</div>
+        <div class="font-normal text-[12.5px] leading-[1.55] text-[#858582] mt-0.75">
+          Agents keep reconciling. The plane hands out config; it never carries a packet.
+        </div>
       </div>
     </div>
   </div>
@@ -281,9 +335,23 @@ const icons: Record<string, string> = {
               {g.items.map((it) => (
                 <div class="flex gap-2.5 items-start">
                   <span class="lic size-3.5 shrink-0 text-[#6E9C7C] mt-0.75">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-full"><path d="M21.801 10A10 10 0 1 1 17 3.335"/><path d="m9 11 3 3L22 4"/></svg>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="size-full"
+                    >
+                      <path d="M21.801 10A10 10 0 1 1 17 3.335" />
+                      <path d="m9 11 3 3L22 4" />
+                    </svg>
                   </span>
-                  <span class="font-normal text-[13.5px] leading-[1.58] text-[#A9A9A6] text-pretty">{it}</span>
+                  <span class="font-normal text-[13.5px] leading-[1.58] text-[#A9A9A6] text-pretty">
+                    {it}
+                  </span>
                 </div>
               ))}
             </div>
@@ -298,22 +366,44 @@ const icons: Record<string, string> = {
         <div class="flex flex-col gap-3">
           <div class="flex items-center gap-2.5 flex-wrap">
             <div class="tnx-eyebrow">ZERO TRUST FOR AI AGENTS</div>
-            <span class="font-mono font-semibold text-[8.5px] tracking-[0.1em] text-[#C39A4E] border border-[#2E2E2E] bg-[#1A1A1A] rounded-full px-2.25 py-0.75">ROADMAP</span>
+            <span
+              class="font-mono font-semibold text-[8.5px] tracking-[0.1em] text-[#C39A4E] border border-[#2E2E2E] bg-[#1A1A1A] rounded-full px-2.25 py-0.75"
+              >ROADMAP</span
+            >
           </div>
           <h2 class="tnx-h2">An agent is a principal that runs unattended, at machine rate.</h2>
         </div>
         <div class="flex flex-col gap-4">
           <div class="font-normal text-[16px] leading-[1.68] text-[#A9A9A6] text-pretty">
-            MCP servers today are deployed either on localhost — safe because unreachable — or on the public internet behind a bearer token and nothing else. There is no network boundary and no device identity between those two positions.
+            MCP servers today are deployed either on localhost — safe because unreachable — or on
+            the public internet behind a bearer token and nothing else. There is no network boundary
+            and no device identity between those two positions.
           </div>
-          <div class="bg-[rgba(199,116,116,0.06)] border border-[rgba(199,116,116,0.24)] rounded-lg p-4 flex gap-3 items-start">
+          <div
+            class="bg-[rgba(199,116,116,0.06)] border border-[rgba(199,116,116,0.24)] rounded-lg p-4 flex gap-3 items-start"
+          >
             <span class="lic size-4 shrink-0 text-[#C77474] mt-0.5">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-full"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 20h16a2 2 0 0 0 1.73-2z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="size-full"
+                ><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 20h16a2 2 0 0 0 1.73-2z"
+                ></path><path d="M12 9v4"></path><path d="M12 17h.01"></path></svg
+              >
             </span>
             <div>
-              <div class="font-semibold text-[13px] text-[#D6D6D2]">What a boundary does, and does not do</div>
+              <div class="font-semibold text-[13px] text-[#D6D6D2]">
+                What a boundary does, and does not do
+              </div>
               <div class="font-normal text-[13px] leading-[1.62] text-[#858582] mt-1 text-pretty">
-                Zero trust bounds the blast radius of a correctly authenticated principal. It does not detect prompt injection. Under injection, authentication is intact and authorization is intact — only intent is corrupted.
+                Zero trust bounds the blast radius of a correctly authenticated principal. It does
+                not detect prompt injection. Under injection, authentication is intact and
+                authorization is intact — only intent is corrupted.
               </div>
             </div>
           </div>
@@ -324,7 +414,7 @@ const icons: Record<string, string> = {
         {
           agentCards.map((a) => (
             <div class="t-card t-bento border border-white/9 rounded-lg bg-[rgba(18,18,18,0.72)] p-5 flex flex-col gap-2.25">
-              <div class="t-bdots"></div>
+              <div class="t-bdots" />
               <div class="t-bcontent relative z-10 flex flex-col gap-2.25">
                 <div class="flex items-center gap-2.5">
                   <div class="t-bicon size-[30px] rounded-[9px] bg-[#1A1A1A] border border-[#2E2E2E] flex items-center justify-center text-[#C9C9C4] shrink-0">
@@ -348,7 +438,8 @@ const icons: Record<string, string> = {
         <div class="tnx-eyebrow">ROADMAP</div>
         <h2 class="tnx-h2-sm">Not shipped yet</h2>
         <div class="font-normal text-[14.5px] leading-[1.65] text-[#858582] text-pretty">
-          Published for the same reason the limits are: you should be able to tell what Tunnex does today from what it intends to do. Nothing on this list is sold as present tense.
+          Published for the same reason the limits are: you should be able to tell what Tunnex does
+          today from what it intends to do. Nothing on this list is sold as present tense.
         </div>
       </div>
 
@@ -382,7 +473,10 @@ const icons: Record<string, string> = {
               </div>
               <div class="min-w-0">
                 <div class="font-semibold text-[13.5px] text-[#EDEDEB]">{p.name}</div>
-                <div class="font-mono font-medium text-[9.5px] tracking-[0.06em] mt-0.5" style={`color:${p.fg}`}>
+                <div
+                  class="font-mono font-medium text-[9.5px] tracking-[0.06em] mt-0.5"
+                  style={`color:${p.fg}`}
+                >
                   {p.note}
                 </div>
               </div>
@@ -397,7 +491,11 @@ const icons: Record<string, string> = {
       <div class="t-g2 grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
         <div class="flex flex-col gap-3 max-w-[54ch]">
           <div class="tnx-eyebrow">USE LAYER</div>
-          <h2 class="font-semibold text-[clamp(28px,3.4vw,40px)] leading-[1.12] tracking-[-0.025em] text-[#F5F5F5]">Six boxes, one plane.</h2>
+          <h2
+            class="font-semibold text-[clamp(28px,3.4vw,40px)] leading-[1.12] tracking-[-0.025em] text-[#F5F5F5]"
+          >
+            Six boxes, one plane.
+          </h2>
           <div class="font-normal text-[15.5px] leading-[1.68] text-[#A9A9A6] text-pretty">
             Collapse multiple network tools into one unified policy boundary and audit log.
           </div>
@@ -409,52 +507,206 @@ const icons: Record<string, string> = {
         <div class="flex flex-col gap-3.5" id="stack-collapse-area">
           <!-- Collapsing the stack header -->
           <div class="flex items-center justify-between">
-            <div class="font-mono font-semibold text-[9px] tracking-[0.14em] text-[#5E5E5B]">COLLAPSING THE STACK</div>
+            <div class="font-mono font-semibold text-[9px] tracking-[0.14em] text-[#5E5E5B]">
+              COLLAPSING THE STACK
+            </div>
             <div class="flex items-center gap-3">
-              <span class="font-mono font-medium text-[9px] tracking-[0.1em] text-[#454542]" id="stack-counter">0 OF 6 FOLDED IN</span>
-              <button id="stack-replay" class="font-mono font-semibold text-[9px] tracking-[0.1em] text-[#858582] hover:text-white cursor-pointer bg-transparent border-none">REPLAY</button>
+              <span
+                class="font-mono font-medium text-[9px] tracking-[0.1em] text-[#454542]"
+                id="stack-counter">0 OF 6 FOLDED IN</span
+              >
+              <button
+                id="stack-replay"
+                class="font-mono font-semibold text-[9px] tracking-[0.1em] text-[#858582] hover:text-white cursor-pointer bg-transparent border-none"
+                >REPLAY</button
+              >
             </div>
           </div>
 
           <!-- The 6 legacy boxes -->
           <div class="grid grid-cols-2 gap-2.5" id="stack-boxes">
-            <div class="stack-box flex items-center gap-2.5 border border-white/8 bg-[rgba(18,18,18,0.5)] rounded-lg p-3 px-3.5 transition-all duration-500">
-              <span class="lic size-3.5 shrink-0 text-[#5E5E5B]"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-full"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg></span>
+            <div
+              class="stack-box flex items-center gap-2.5 border border-white/8 bg-[rgba(18,18,18,0.5)] rounded-lg p-3 px-3.5 transition-all duration-500"
+            >
+              <span class="lic size-3.5 shrink-0 text-[#5E5E5B]"
+                ><svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="size-full"
+                  ><path
+                    d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"
+                  ></path></svg
+                ></span
+              >
               <span class="font-medium text-[13px] text-[#EDEDEB]">VPN concentrator</span>
             </div>
-            <div class="stack-box flex items-center gap-2.5 border border-white/8 bg-[rgba(18,18,18,0.5)] rounded-lg p-3 px-3.5 transition-all duration-500">
-              <span class="lic size-3.5 shrink-0 text-[#5E5E5B]"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-full"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg></span>
+            <div
+              class="stack-box flex items-center gap-2.5 border border-white/8 bg-[rgba(18,18,18,0.5)] rounded-lg p-3 px-3.5 transition-all duration-500"
+            >
+              <span class="lic size-3.5 shrink-0 text-[#5E5E5B]"
+                ><svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="size-full"
+                  ><path d="M3 3v18h18"></path><path d="m19 9-5 5-4-4-3 3"></path></svg
+                ></span
+              >
               <span class="font-medium text-[13px] text-[#EDEDEB]">Firewall ACL sprawl</span>
             </div>
-            <div class="stack-box flex items-center gap-2.5 border border-white/8 bg-[rgba(18,18,18,0.5)] rounded-lg p-3 px-3.5 transition-all duration-500">
-              <span class="lic size-3.5 shrink-0 text-[#5E5E5B]"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-full"><polyline points="4 17 10 11 4 5"/><line x1="12" x2="20" y1="19" y2="19"/></svg></span>
+            <div
+              class="stack-box flex items-center gap-2.5 border border-white/8 bg-[rgba(18,18,18,0.5)] rounded-lg p-3 px-3.5 transition-all duration-500"
+            >
+              <span class="lic size-3.5 shrink-0 text-[#5E5E5B]"
+                ><svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="size-full"
+                  ><polyline points="4 17 10 11 4 5"></polyline><line
+                    x1="12"
+                    x2="20"
+                    y1="19"
+                    y2="19"></line></svg
+                ></span
+              >
               <span class="font-medium text-[13px] text-[#EDEDEB]">Bastion host + SSH keys</span>
             </div>
-            <div class="stack-box flex items-center gap-2.5 border border-white/8 bg-[rgba(18,18,18,0.5)] rounded-lg p-3 px-3.5 transition-all duration-500">
-              <span class="lic size-3.5 shrink-0 text-[#5E5E5B]"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-full"><rect x="16" y="16" width="6" height="6" rx="1"/><rect x="2" y="16" width="6" height="6" rx="1"/><rect x="9" y="2" width="6" height="6" rx="1"/><path d="M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3"/><path d="M12 12V8"/></svg></span>
+            <div
+              class="stack-box flex items-center gap-2.5 border border-white/8 bg-[rgba(18,18,18,0.5)] rounded-lg p-3 px-3.5 transition-all duration-500"
+            >
+              <span class="lic size-3.5 shrink-0 text-[#5E5E5B]"
+                ><svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="size-full"
+                  ><rect x="16" y="16" width="6" height="6" rx="1"></rect><rect
+                    x="2"
+                    y="16"
+                    width="6"
+                    height="6"
+                    rx="1"></rect><rect x="9" y="2" width="6" height="6" rx="1"></rect><path
+                    d="M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3"></path><path d="M12 12V8"
+                  ></path></svg
+                ></span
+              >
               <span class="font-medium text-[13px] text-[#EDEDEB]">Separate OpenVPN stack</span>
             </div>
-            <div class="stack-box flex items-center gap-2.5 border border-white/8 bg-[rgba(18,18,18,0.5)] rounded-lg p-3 px-3.5 transition-all duration-500">
-              <span class="lic size-3.5 shrink-0 text-[#5E5E5B]"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-full"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" x2="19" y1="8" y2="14"/><line x1="22" x2="16" y1="11" y2="11"/></svg></span>
+            <div
+              class="stack-box flex items-center gap-2.5 border border-white/8 bg-[rgba(18,18,18,0.5)] rounded-lg p-3 px-3.5 transition-all duration-500"
+            >
+              <span class="lic size-3.5 shrink-0 text-[#5E5E5B]"
+                ><svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="size-full"
+                  ><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle
+                    cx="9"
+                    cy="7"
+                    r="4"></circle><line x1="19" x2="19" y1="8" y2="14"></line><line
+                    x1="22"
+                    x2="16"
+                    y1="11"
+                    y2="11"></line></svg
+                ></span
+              >
               <span class="font-medium text-[13px] text-[#EDEDEB]">Manual group mirroring</span>
             </div>
-            <div class="stack-box flex items-center gap-2.5 border border-white/8 bg-[rgba(18,18,18,0.5)] rounded-lg p-3 px-3.5 transition-all duration-500">
-              <span class="lic size-3.5 shrink-0 text-[#5E5E5B]"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-full"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg></span>
+            <div
+              class="stack-box flex items-center gap-2.5 border border-white/8 bg-[rgba(18,18,18,0.5)] rounded-lg p-3 px-3.5 transition-all duration-500"
+            >
+              <span class="lic size-3.5 shrink-0 text-[#5E5E5B]"
+                ><svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="size-full"
+                  ><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"></path><path
+                    d="M14 2v4a2 2 0 0 0 2 2h4"></path><path d="M10 9H8"></path><path d="M16 13H8"
+                  ></path><path d="M16 17H8"></path></svg
+                ></span
+              >
               <span class="font-medium text-[13px] text-[#EDEDEB]">Logs across four systems</span>
             </div>
           </div>
 
           <!-- Tunnex access plane result -->
-          <div class="flex items-center gap-3 border border-white/8 bg-[rgba(18,18,18,0.5)] rounded-lg p-3.5 px-4" id="stack-result">
+          <div
+            class="flex items-center gap-3 border border-white/8 bg-[rgba(18,18,18,0.5)] rounded-lg p-3.5 px-4"
+            id="stack-result"
+          >
             <span class="lic size-4 shrink-0 text-[#5E5E5B]">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-full"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="size-full"
+                ><circle cx="12" cy="12" r="10"></circle><path
+                  d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path><path d="M2 12h20"
+                ></path></svg
+              >
             </span>
             <div>
-              <div class="font-semibold text-[14px] text-[#EDEDEB]">Tunnex access plane: <span class="text-[#5E5E5B]" id="stack-status">assembling</span></div>
-              <div class="font-mono font-medium text-[9px] tracking-[0.1em] text-[#454542]" id="stack-folded-label">0 OF 6 FOLDED IN</div>
+              <div class="font-semibold text-[14px] text-[#EDEDEB]">
+                Tunnex access plane: <span class="text-[#5E5E5B]" id="stack-status">assembling</span
+                >
+              </div>
+              <div
+                class="font-mono font-medium text-[9px] tracking-[0.1em] text-[#454542]"
+                id="stack-folded-label"
+              >
+                0 OF 6 FOLDED IN
+              </div>
             </div>
-            <span class="ml-auto lic size-3 text-[#454542]" id="stack-star" style="opacity:0;transition:opacity .5s">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-full"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <span
+              class="ml-auto lic size-3 text-[#454542]"
+              id="stack-star"
+              style="opacity:0;transition:opacity .5s"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="size-full"
+                ><polygon
+                  points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                ></polygon></svg
+              >
             </span>
           </div>
         </div>
@@ -468,34 +720,108 @@ const icons: Record<string, string> = {
         <div class="flex flex-col gap-4">
           <div class="flex items-center gap-2.5">
             <div class="tnx-eyebrow">SINGLE SIGN-ON</div>
-            <span class="font-mono font-semibold text-[8.5px] tracking-[0.08em] text-[#C39A4E] border border-[#2E2E2E] bg-[#1A1A1A] rounded-full px-2.25 py-0.75">ENTERPRISE</span>
+            <span
+              class="font-mono font-semibold text-[8.5px] tracking-[0.08em] text-[#C39A4E] border border-[#2E2E2E] bg-[#1A1A1A] rounded-full px-2.25 py-0.75"
+              >ENTERPRISE</span
+            >
           </div>
-          <h2 class="font-semibold text-[clamp(28px,3.4vw,40px)] leading-[1.12] tracking-[-0.025em] text-[#F5F5F5] max-w-[20ch]">Your directory decides who connects.</h2>
-          <div class="font-normal text-[15.5px] leading-[1.68] text-[#A9A9A6] text-pretty max-w-[52ch]">
-            OIDC identity provider integration with automatic group sync into Zero Trust access policies. Revoking access in your directory instantly revokes network tunnels.
+          <h2
+            class="font-semibold text-[clamp(28px,3.4vw,40px)] leading-[1.12] tracking-[-0.025em] text-[#F5F5F5] max-w-[20ch]"
+          >
+            Your directory decides who connects.
+          </h2>
+          <div
+            class="font-normal text-[15.5px] leading-[1.68] text-[#A9A9A6] text-pretty max-w-[52ch]"
+          >
+            OIDC identity provider integration with automatic group sync into Zero Trust access
+            policies. Revoking access in your directory instantly revokes network tunnels.
           </div>
 
           <!-- SSO features list -->
           <div class="flex flex-col gap-3.5 mt-2">
             <div class="flex gap-3 items-start">
-              <span class="lic size-4 shrink-0 text-[#C9C9C4] mt-0.5"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-full"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" x2="19" y1="8" y2="14"/><line x1="22" x2="16" y1="11" y2="11"/></svg></span>
+              <span class="lic size-4 shrink-0 text-[#C9C9C4] mt-0.5"
+                ><svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="size-full"
+                  ><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle
+                    cx="9"
+                    cy="7"
+                    r="4"></circle><line x1="19" x2="19" y1="8" y2="14"></line><line
+                    x1="22"
+                    x2="16"
+                    y1="11"
+                    y2="11"></line></svg
+                ></span
+              >
               <div>
-                <div class="font-semibold text-[14px] text-[#EDEDEB]">Groups become policy subjects</div>
-                <div class="font-normal text-[13px] leading-[1.55] text-[#858582]">An IdP group is a rule's subject directly. Directory sync runs on a schedule with two-tier health and a manual trigger.</div>
+                <div class="font-semibold text-[14px] text-[#EDEDEB]">
+                  Groups become policy subjects
+                </div>
+                <div class="font-normal text-[13px] leading-[1.55] text-[#858582]">
+                  An IdP group is a rule's subject directly. Directory sync runs on a schedule with
+                  two-tier health and a manual trigger.
+                </div>
               </div>
             </div>
             <div class="flex gap-3 items-start">
-              <span class="lic size-4 shrink-0 text-[#C9C9C4] mt-0.5"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-full"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 19v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+              <span class="lic size-4 shrink-0 text-[#C9C9C4] mt-0.5"
+                ><svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="size-full"
+                  ><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle
+                    cx="9"
+                    cy="7"
+                    r="4"></circle><path d="M22 19v-2a4 4 0 0 0-3-3.87"></path><path
+                    d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg
+                ></span
+              >
               <div>
-                <div class="font-semibold text-[14px] text-[#EDEDEB]">Offboarding is one action</div>
-                <div class="font-normal text-[13px] leading-[1.55] text-[#858582]">Disable in your directory and the sweep follows: sessions, CLI credentials, peer slot, pool address. No stale tunnel survives it.</div>
+                <div class="font-semibold text-[14px] text-[#EDEDEB]">
+                  Offboarding is one action
+                </div>
+                <div class="font-normal text-[13px] leading-[1.55] text-[#858582]">
+                  Disable in your directory and the sweep follows: sessions, CLI credentials, peer
+                  slot, pool address. No stale tunnel survives it.
+                </div>
               </div>
             </div>
             <div class="flex gap-3 items-start">
-              <span class="lic size-4 shrink-0 text-[#C9C9C4] mt-0.5"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-full"><path d="m21 2-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0 3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg></span>
+              <span class="lic size-4 shrink-0 text-[#C9C9C4] mt-0.5"
+                ><svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="size-full"
+                  ><path
+                    d="m21 2-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0 3 3L22 7l-3-3m-3.5 3.5L19 4"
+                  ></path></svg
+                ></span
+              >
               <div>
-                <div class="font-semibold text-[14px] text-[#EDEDEB]">MFA where you already enforce it</div>
-                <div class="font-normal text-[13px] leading-[1.55] text-[#858582]">Your IdP's conditional access still applies. For local accounts, TOTP with recovery codes can be enforced org-wide.</div>
+                <div class="font-semibold text-[14px] text-[#EDEDEB]">
+                  MFA where you already enforce it
+                </div>
+                <div class="font-normal text-[13px] leading-[1.55] text-[#858582]">
+                  Your IdP's conditional access still applies. For local accounts, TOTP with
+                  recovery codes can be enforced org-wide.
+                </div>
               </div>
             </div>
           </div>
@@ -505,71 +831,186 @@ const icons: Record<string, string> = {
         <div class="flex flex-col gap-3.5">
           <!-- IdP provider rail -->
           <div class="flex items-center gap-2 flex-wrap">
-            <div class="flex items-center gap-2 border border-[#2E2E2E] bg-[#1A1A1A] rounded-full px-3 py-1.5 opacity-40">
+            <div
+              class="flex items-center gap-2 border border-[#2E2E2E] bg-[#1A1A1A] rounded-full px-3 py-1.5 opacity-40"
+            >
               <span class="size-3 rounded-full bg-[#3A3A38]"></span>
               <span class="font-medium text-[11px] text-[#858582]">JumpCloud</span>
-              <span class="font-mono font-medium text-[7.5px] tracking-[0.08em] text-[#454542]">SOON</span>
+              <span class="font-mono font-medium text-[7.5px] tracking-[0.08em] text-[#454542]"
+                >SOON</span
+              >
             </div>
-            <div class="flex items-center gap-2 border border-white/14 bg-[rgba(31,31,31,0.72)] rounded-full px-3 py-1.5">
-              <svg viewBox="0 0 24 24" class="size-3.5"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+            <div
+              class="flex items-center gap-2 border border-white/14 bg-[rgba(31,31,31,0.72)] rounded-full px-3 py-1.5"
+            >
+              <svg viewBox="0 0 24 24" class="size-3.5"
+                ><path
+                  d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"
+                  fill="#4285F4"></path><path
+                  d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                  fill="#34A853"></path><path
+                  d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+                  fill="#FBBC05"></path><path
+                  d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                  fill="#EA4335"></path></svg
+              >
               <span class="font-semibold text-[11px] text-[#EDEDEB]">Google</span>
-              <span class="font-mono font-semibold text-[7.5px] tracking-[0.08em] text-[#858582]">NATIVE</span>
+              <span class="font-mono font-semibold text-[7.5px] tracking-[0.08em] text-[#858582]"
+                >NATIVE</span
+              >
             </div>
-            <div class="flex items-center gap-2 border border-white/14 bg-[rgba(31,31,31,0.72)] rounded-full px-3 py-1.5">
-              <svg viewBox="0 0 21 21" class="size-3"><path d="M0 0h10v10H0z" fill="#F25022"/><path d="M11 0h10v10H11z" fill="#7FBA00"/><path d="M0 11h10v10H0z" fill="#00A4EF"/><path d="M11 11h10v10H11z" fill="#FFB900"/></svg>
+            <div
+              class="flex items-center gap-2 border border-white/14 bg-[rgba(31,31,31,0.72)] rounded-full px-3 py-1.5"
+            >
+              <svg viewBox="0 0 21 21" class="size-3"
+                ><path d="M0 0h10v10H0z" fill="#F25022"></path><path
+                  d="M11 0h10v10H11z"
+                  fill="#7FBA00"></path><path d="M0 11h10v10H0z" fill="#00A4EF"></path><path
+                  d="M11 11h10v10H11z"
+                  fill="#FFB900"></path></svg
+              >
               <span class="font-semibold text-[11px] text-[#EDEDEB]">Entra ID</span>
-              <span class="font-mono font-semibold text-[7.5px] tracking-[0.08em] text-[#858582]">NATIVE</span>
+              <span class="font-mono font-semibold text-[7.5px] tracking-[0.08em] text-[#858582]"
+                >NATIVE</span
+              >
             </div>
           </div>
 
           <!-- Sign-in card -->
-          <div class="t-card border border-white/9 rounded-lg bg-[rgba(18,18,18,0.72)] p-6 flex flex-col gap-3.5">
+          <div
+            class="t-card border border-white/9 rounded-lg bg-[rgba(18,18,18,0.72)] p-6 flex flex-col gap-3.5"
+          >
             <div class="text-center mb-1">
               <div class="font-semibold text-[16px] text-[#F5F5F5]">Sign in to Tunnex</div>
-              <div class="font-mono font-medium text-[8.5px] tracking-[0.12em] text-[#5E5E5B] mt-0.5">VPN.ACME.IO</div>
+              <div
+                class="font-mono font-medium text-[8.5px] tracking-[0.12em] text-[#5E5E5B] mt-0.5"
+              >
+                VPN.ACME.IO
+              </div>
             </div>
 
             <!-- SSO Buttons -->
-            <button class="flex items-center gap-3 w-full border border-white/9 bg-[rgba(18,18,18,0.72)] rounded-lg p-3 px-4 cursor-default">
+            <button
+              class="flex items-center gap-3 w-full border border-white/9 bg-[rgba(18,18,18,0.72)] rounded-lg p-3 px-4 cursor-default"
+            >
               <div class="size-[20px] shrink-0 rounded bg-white flex items-center justify-center">
-                <svg viewBox="0 0 24 24" class="size-3.5"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+                <svg viewBox="0 0 24 24" class="size-3.5"
+                  ><path
+                    d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"
+                    fill="#4285F4"></path><path
+                    d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                    fill="#34A853"></path><path
+                    d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+                    fill="#FBBC05"></path><path
+                    d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                    fill="#EA4335"></path></svg
+                >
               </div>
               <span class="font-medium text-[13.5px] text-[#EDEDEB]">Continue with Google</span>
-              <span class="ml-auto font-mono font-medium text-[8.5px] tracking-[0.08em] text-[#454542]">OIDC</span>
+              <span
+                class="ml-auto font-mono font-medium text-[8.5px] tracking-[0.08em] text-[#454542]"
+                >OIDC</span
+              >
             </button>
-            <button class="flex items-center gap-3 w-full border border-white/9 bg-[rgba(18,18,18,0.72)] rounded-lg p-3 px-4 cursor-default">
+            <button
+              class="flex items-center gap-3 w-full border border-white/9 bg-[rgba(18,18,18,0.72)] rounded-lg p-3 px-4 cursor-default"
+            >
               <div class="size-[20px] shrink-0 rounded bg-white flex items-center justify-center">
-                <svg viewBox="0 0 21 21" class="size-3"><path d="M0 0h10v10H0z" fill="#F25022"/><path d="M11 0h10v10H11z" fill="#7FBA00"/><path d="M0 11h10v10H0z" fill="#00A4EF"/><path d="M11 11h10v10H11z" fill="#FFB900"/></svg>
+                <svg viewBox="0 0 21 21" class="size-3"
+                  ><path d="M0 0h10v10H0z" fill="#F25022"></path><path
+                    d="M11 0h10v10H11z"
+                    fill="#7FBA00"></path><path d="M0 11h10v10H0z" fill="#00A4EF"></path><path
+                    d="M11 11h10v10H11z"
+                    fill="#FFB900"></path></svg
+                >
               </div>
               <span class="font-medium text-[13.5px] text-[#EDEDEB]">Continue with Microsoft</span>
-              <span class="ml-auto font-mono font-medium text-[8.5px] tracking-[0.08em] text-[#454542]">ENTRA ID</span>
+              <span
+                class="ml-auto font-mono font-medium text-[8.5px] tracking-[0.08em] text-[#454542]"
+                >ENTRA ID</span
+              >
             </button>
-            <div class="flex items-center gap-3 w-full border border-white/9 bg-[rgba(18,18,18,0.72)] rounded-lg p-3 px-4">
-              <div class="size-[20px] shrink-0 rounded bg-[#1A1A1A] border border-[#2E2E2E] flex items-center justify-center text-[#858582]">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-3"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+            <div
+              class="flex items-center gap-3 w-full border border-white/9 bg-[rgba(18,18,18,0.72)] rounded-lg p-3 px-4"
+            >
+              <div
+                class="size-[20px] shrink-0 rounded bg-[#1A1A1A] border border-[#2E2E2E] flex items-center justify-center text-[#858582]"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="size-3"
+                  ><rect width="20" height="16" x="2" y="4" rx="2"></rect><path
+                    d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg
+                >
               </div>
               <span class="font-medium text-[13.5px] text-[#EDEDEB]">Sign in with email</span>
-              <span class="ml-auto font-mono font-medium text-[8.5px] tracking-[0.08em] text-[#454542]">ALL TIERS</span>
+              <span
+                class="ml-auto font-mono font-medium text-[8.5px] tracking-[0.08em] text-[#454542]"
+                >ALL TIERS</span
+              >
             </div>
 
             <!-- OIDC Flow Details -->
             <div class="border-t border-[#1E1E1E] pt-3 flex flex-col gap-1.5">
-              <div class="font-mono font-semibold text-[8.5px] tracking-[0.12em] text-[#454542]">OIDC FLOW</div>
-              <div class="flex items-center gap-2">
-                <span class="lic size-3 shrink-0 text-[#858582]"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-full"><circle cx="12" cy="12" r="10"/><path d="M12 8v8"/><path d="m8 12 4 4 4-4"/></svg></span>
-                <span class="font-mono font-medium text-[11.5px] text-[#A9A9A6]">redirect → login.microsoftonline.com</span>
+              <div class="font-mono font-semibold text-[8.5px] tracking-[0.12em] text-[#454542]">
+                OIDC FLOW
               </div>
               <div class="flex items-center gap-2">
-                <span class="lic size-3 shrink-0 text-[#6E9C7C]"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-full"><path d="m21 2-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0 3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg></span>
-                <span class="font-mono font-medium text-[11.5px] text-[#A9A9A6]">id_token verified · tenant pinned</span>
+                <span class="lic size-3 shrink-0 text-[#858582]"
+                  ><svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.6"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="size-full"
+                    ><circle cx="12" cy="12" r="10"></circle><path d="M12 8v8"></path><path
+                      d="m8 12 4 4 4-4"></path></svg
+                  ></span
+                >
+                <span class="font-mono font-medium text-[11.5px] text-[#A9A9A6]"
+                  >redirect → login.microsoftonline.com</span
+                >
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="lic size-3 shrink-0 text-[#6E9C7C]"
+                  ><svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.6"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="size-full"
+                    ><path
+                      d="m21 2-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0 3 3L22 7l-3-3m-3.5 3.5L19 4"
+                    ></path></svg
+                  ></span
+                >
+                <span class="font-mono font-medium text-[11.5px] text-[#A9A9A6]"
+                  >id_token verified · tenant pinned</span
+                >
               </div>
               <div class="flex items-center gap-2 opacity-30">
                 <span class="size-3 shrink-0"></span>
-                <span class="font-mono font-medium text-[11.5px] text-[#858582]">entra groups → policy subjects</span>
+                <span class="font-mono font-medium text-[11.5px] text-[#858582]"
+                  >entra groups → policy subjects</span
+                >
               </div>
               <div class="flex items-center gap-2 opacity-30">
                 <span class="size-3 shrink-0"></span>
-                <span class="font-mono font-medium text-[11.5px] text-[#858582]">conditional access honoured · tunnel up</span>
+                <span class="font-mono font-medium text-[11.5px] text-[#858582]"
+                  >conditional access honoured · tunnel up</span
+                >
               </div>
             </div>
 
@@ -582,8 +1023,12 @@ const icons: Record<string, string> = {
           </div>
 
           <!-- Footer note -->
-          <div class="font-normal text-[11px] leading-[1.55] text-[#454542] text-center text-pretty">
-            Native today: Google Workspace and Microsoft Entra ID. Other OIDC providers are on the roadmap — shown dimmed above. Local accounts with argon2id, TOTP, and recovery codes work on every tier.
+          <div
+            class="font-normal text-[11px] leading-[1.55] text-[#454542] text-center text-pretty"
+          >
+            Native today: Google Workspace and Microsoft Entra ID. Other OIDC providers are on the
+            roadmap — shown dimmed above. Local accounts with argon2id, TOTP, and recovery codes
+            work on every tier.
           </div>
         </div>
       </div>
@@ -591,8 +1036,12 @@ const icons: Record<string, string> = {
 
     <!-- CTA row -->
     <div class="flex gap-3 flex-wrap pt-2">
-      <a href="/trial" class="t-btn t-prim rounded-[9px] p-3.5 px-5.5 font-semibold text-[14px]">Start 14-day trial</a>
-      <a href="/pricing" class="t-btn t-sec rounded-[9px] p-3.5 px-5.5 font-semibold text-[14px]">Compare editions</a>
+      <a href="/trial" class="t-btn t-prim rounded-[9px] p-3.5 px-5.5 font-semibold text-[14px]"
+        >Start 14-day trial</a
+      >
+      <a href="/pricing" class="t-btn t-sec rounded-[9px] p-3.5 px-5.5 font-semibold text-[14px]"
+        >Compare editions</a
+      >
     </div>
   </div>
 </Base>
@@ -608,7 +1057,7 @@ const icons: Record<string, string> = {
 
   function runCollapse() {
     // Reset
-    boxes.forEach(b => {
+    boxes.forEach((b) => {
       (b as HTMLElement).style.opacity = '1';
       (b as HTMLElement).style.transform = 'translateY(0) scale(1)';
     });
@@ -619,32 +1068,37 @@ const icons: Record<string, string> = {
 
     let folded = 0;
     boxes.forEach((b, i) => {
-      setTimeout(() => {
-        (b as HTMLElement).style.opacity = '0.15';
-        (b as HTMLElement).style.transform = 'translateY(8px) scale(0.96)';
-        folded++;
-        if (counter) counter.textContent = `${folded} OF 6 FOLDED IN`;
-        if (foldedLabel) foldedLabel.textContent = `${folded} OF 6 FOLDED IN`;
-        if (folded === 6) {
-          if (status) status.textContent = 'ready';
-          if (star) (star as HTMLElement).style.opacity = '1';
-        }
-      }, 400 * (i + 1));
+      setTimeout(
+        () => {
+          (b as HTMLElement).style.opacity = '0.15';
+          (b as HTMLElement).style.transform = 'translateY(8px) scale(0.96)';
+          folded++;
+          if (counter) counter.textContent = `${folded} OF 6 FOLDED IN`;
+          if (foldedLabel) foldedLabel.textContent = `${folded} OF 6 FOLDED IN`;
+          if (folded === 6) {
+            if (status) status.textContent = 'ready';
+            if (star) (star as HTMLElement).style.opacity = '1';
+          }
+        },
+        400 * (i + 1),
+      );
     });
   }
 
   // Auto-run on viewport entry
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        runCollapse();
-        observer.unobserve(e.target);
-      }
-    });
-  }, { threshold: 0.3 });
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) {
+          runCollapse();
+          observer.unobserve(e.target);
+        }
+      });
+    },
+    { threshold: 0.3 },
+  );
 
   const area = document.getElementById('stack-collapse-area');
   if (area) observer.observe(area);
   if (replay) replay.addEventListener('click', runCollapse);
 </script>
-

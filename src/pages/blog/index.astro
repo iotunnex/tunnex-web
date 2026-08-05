@@ -13,7 +13,9 @@ const tags = allTags(await getCollection('blog'));
   canonical="/blog/"
   ogImage="/og/blog/_index.png"
 >
-  <div class="mx-auto max-w-[1180px] px-7 py-18 md:py-[72px] flex flex-col gap-9 max-[620px]:px-[18px]">
+  <div
+    class="mx-auto max-w-[1180px] px-7 py-18 md:py-[72px] flex flex-col gap-9 max-[620px]:px-[18px]"
+  >
     <!-- Header -->
     <div class="flex flex-col gap-3.5 max-w-[62ch]">
       <div class="tnx-eyebrow">WRITING</div>
@@ -80,20 +82,26 @@ const tags = allTags(await getCollection('blog'));
               </a>
             ))
           }
-          {posts.length === 0 && (
-            <div class="bg-[rgba(18,18,18,0.72)] border border-white/[0.09] rounded-lg p-5 font-normal text-[13.5px] text-[#858582]">
-              First post coming soon.
-            </div>
-          )}
+          {
+            posts.length === 0 && (
+              <div class="bg-[rgba(18,18,18,0.72)] border border-white/[0.09] rounded-lg p-5 font-normal text-[13.5px] text-[#858582]">
+                First post coming soon.
+              </div>
+            )
+          }
         </div>
       </div>
 
       <!-- Right Column: Sidebar Subscribe & Feeds -->
       <div class="flex flex-col gap-3.5">
         <!-- Subscribe Card -->
-        <div class="t-card border border-white/9 rounded-lg bg-[rgba(18,18,18,0.72)] p-5 flex flex-col gap-2.75">
+        <div
+          class="t-card border border-white/9 rounded-lg bg-[rgba(18,18,18,0.72)] p-5 flex flex-col gap-2.75"
+        >
           <div class="font-semibold text-[14px] text-[#F5F5F5]">Get new posts by email</div>
-          <div class="font-normal text-[13px] leading-[1.6] text-[#858582]">Double opt-in, one click to leave. No drip sequence.</div>
+          <div class="font-normal text-[13px] leading-[1.6] text-[#858582]">
+            Double opt-in, one click to leave. No drip sequence.
+          </div>
 
           <div id="blog-sub-form" class="flex flex-col gap-2.25 mt-0.5">
             <input
@@ -112,9 +120,23 @@ const tags = allTags(await getCollection('blog'));
             </button>
           </div>
 
-          <div id="blog-sub-sent" class="hidden flex gap-2.25 items-start bg-[rgba(18,18,18,0.72)] border border-white/[0.09] rounded-lg p-3">
+          <div
+            id="blog-sub-sent"
+            class="hidden flex gap-2.25 items-start bg-[rgba(18,18,18,0.72)] border border-white/[0.09] rounded-lg p-3"
+          >
             <span class="lic size-3.75 shrink-0 text-[#6E9C7C] mt-0.5">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-full"><path d="M21.801 10A10 10 0 1 1 17 3.335"/><path d="m9 11 3 3L22 4"/></svg>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="size-full"
+                ><path d="M21.801 10A10 10 0 1 1 17 3.335"></path><path d="m9 11 3 3L22 4"
+                ></path></svg
+              >
             </span>
             <span class="font-normal text-[12.5px] leading-[1.55] text-[#858582]">
               Confirmation link sent — good for 24 hours.
@@ -123,8 +145,12 @@ const tags = allTags(await getCollection('blog'));
         </div>
 
         <!-- Feed Card -->
-        <div class="bg-[rgba(18,18,18,0.72)] border border-white/[0.09] rounded-lg p-4.5 flex flex-col gap-2">
-          <div class="font-mono font-semibold text-[9px] tracking-[0.16em] text-[#454542]">FEEDS</div>
+        <div
+          class="bg-[rgba(18,18,18,0.72)] border border-white/[0.09] rounded-lg p-4.5 flex flex-col gap-2"
+        >
+          <div class="font-mono font-semibold text-[9px] tracking-[0.16em] text-[#454542]">
+            FEEDS
+          </div>
           <a
             href="/blog/rss.xml"
             target="_blank"
@@ -133,7 +159,9 @@ const tags = allTags(await getCollection('blog'));
           >
             /blog/rss.xml
           </a>
-          <div class="font-normal text-[12px] leading-[1.55] text-[#5E5E5B]">Full content, from day one.</div>
+          <div class="font-normal text-[12px] leading-[1.55] text-[#5E5E5B]">
+            Full content, from day one.
+          </div>
         </div>
       </div>
     </div>

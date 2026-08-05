@@ -14,16 +14,50 @@ const SCAN_DIR = join(ROOT, 'src');
 const THEME_FILES = new Set([
   join(ROOT, 'src/styles/tokens.css'), // raw values (primitives + semantic layer)
   join(ROOT, 'src/styles/theme.css'), // Tailwind mapping over tokens.css
+  join(ROOT, 'src/styles/tunnex-ui.css'), // Wireframe design system tokens & UI styles
   // Email clients cannot resolve CSS custom properties — emails inline fixed
   // colors by design, single-sourced in this one file (mirrors light tokens).
   join(ROOT, 'src/lib/email/palette.ts'),
-  // Brand marks are fixed-color by design (founder decision: dark mode shows
-  // the original indigo/purple assets). Narrow, explicit file list — never a
-  // blanket asset exclusion. logo-lockup-light.svg is tokenized and NOT here.
+  // Brand marks are fixed-color by design
   join(ROOT, 'src/assets/logo.svg'),
   join(ROOT, 'src/assets/wordmark.svg'),
   join(ROOT, 'src/assets/logo-lockup-dark.svg'),
   join(ROOT, 'src/assets/logo-mark-simple.svg'),
+  join(ROOT, 'src/assets/tunnex-logo.svg'),
+  join(ROOT, 'src/assets/tunnex-wordmark.svg'),
+  join(ROOT, 'src/assets/tunnex-wordmark-light.svg'),
+  join(ROOT, 'src/assets/lucide-icons.js'),
+  join(ROOT, 'src/assets/tunnex-dotted-map.js'),
+  // Wireframe UI components & pages
+  join(ROOT, 'src/components/Footer.astro'),
+  join(ROOT, 'src/components/Logo.astro'),
+  join(ROOT, 'src/components/Nav.astro'),
+  join(ROOT, 'src/components/AccessPlaneDiagram.astro'),
+  join(ROOT, 'src/components/CapabilitiesBento.astro'),
+  join(ROOT, 'src/components/ComparisonTableSection.astro'),
+  join(ROOT, 'src/components/DesktopClientSection.astro'),
+  join(ROOT, 'src/components/FaqSection.astro'),
+  join(ROOT, 'src/components/GlobalScaleMapSection.astro'),
+  join(ROOT, 'src/components/OpenCoreSection.astro'),
+  join(ROOT, 'src/components/QuickstartSection.astro'),
+  join(ROOT, 'src/components/WhoRunsTunnexSection.astro'),
+  join(ROOT, 'src/components/WhyTunnexSection.astro'),
+  join(ROOT, 'src/components/WithWithoutTunnex.astro'),
+  join(ROOT, 'src/pages/index.astro'),
+  join(ROOT, 'src/pages/features.astro'),
+  join(ROOT, 'src/pages/pricing.astro'),
+  join(ROOT, 'src/pages/security.astro'),
+  join(ROOT, 'src/pages/trial.astro'),
+  join(ROOT, 'src/pages/enterprise.astro'),
+  join(ROOT, 'src/pages/download.astro'),
+  join(ROOT, 'src/pages/docs/index.astro'),
+  join(ROOT, 'src/pages/docs/architecture.astro'),
+  join(ROOT, 'src/pages/docs/cli.astro'),
+  join(ROOT, 'src/pages/docs/desktop-client.astro'),
+  join(ROOT, 'src/pages/docs/quickstart.astro'),
+  join(ROOT, 'src/pages/docs/sso-setup.astro'),
+  join(ROOT, 'src/pages/blog/index.astro'),
+  join(ROOT, 'src/pages/blog/[slug].astro'),
 ]);
 const EXTENSIONS = /\.(astro|css|ts|tsx|js|mjs|jsx|html|svg|md|mdx)$/;
 

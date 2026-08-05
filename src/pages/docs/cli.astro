@@ -7,16 +7,21 @@ const docNav = [
   { id: 'architecture', label: 'Architecture', icon: 'network', href: '/docs/architecture/' },
   { id: 'desktop-client', label: 'Desktop client', icon: 'monitor', href: '/docs/desktop-client/' },
   { id: 'cli', label: 'CLI', icon: 'terminal', href: '/docs/cli/' },
-  { id: 'sso-setup', label: 'SSO setup', icon: 'key', href: '/docs/sso-setup/' }
+  { id: 'sso-setup', label: 'SSO setup', icon: 'key', href: '/docs/sso-setup/' },
 ];
 
 const icons: Record<string, string> = {
-  'file-text': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-3.5"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>',
-  rocket: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-3.5"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>',
-  network: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-3.5"><rect x="16" y="16" width="6" height="6" rx="1"/><rect x="2" y="16" width="6" height="6" rx="1"/><rect x="9" y="2" width="6" height="6" rx="1"/><path d="M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3"/><path d="M12 12V8"/></svg>',
-  monitor: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-3.5"><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></svg>',
-  terminal: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-3.5"><polyline points="4 17 10 11 4 5"/><line x1="12" x2="20" y1="19" y2="19"/></svg>',
-  key: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-3.5"><path d="m21 2-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0 3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>'
+  'file-text':
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-3.5"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>',
+  rocket:
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-3.5"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>',
+  network:
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-3.5"><rect x="16" y="16" width="6" height="6" rx="1"/><rect x="2" y="16" width="6" height="6" rx="1"/><rect x="9" y="2" width="6" height="6" rx="1"/><path d="M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3"/><path d="M12 12V8"/></svg>',
+  monitor:
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-3.5"><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></svg>',
+  terminal:
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-3.5"><polyline points="4 17 10 11 4 5"/><line x1="12" x2="20" y1="19" y2="19"/></svg>',
+  key: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-3.5"><path d="m21 2-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0 3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>',
 };
 ---
 
@@ -28,23 +33,42 @@ const icons: Record<string, string> = {
     <div class="t-docs grid grid-cols-1 md:grid-cols-[236px_minmax(0,1fr)_220px] gap-9 items-start">
       <!-- Left Sidebar Nav -->
       <div class="t-docsnav sticky top-16 py-7 flex flex-col gap-4">
-        <div class="flex items-center gap-2.25 bg-[rgba(18,18,18,0.72)] border border-white/9 rounded-lg p-2.25 px-3 text-[#5E5E5B] font-normal text-[12.5px]">
+        <div
+          class="flex items-center gap-2.25 bg-[rgba(18,18,18,0.72)] border border-white/9 rounded-lg p-2.25 px-3 text-[#5E5E5B] font-normal text-[12.5px]"
+        >
           <span class="lic size-3.25 shrink-0">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-full"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="size-full"
+              ><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg
+            >
           </span>
           <span>Search docs</span>
-          <span class="ml-auto font-mono font-medium text-[9.5px] border border-[#2E2E2E] rounded px-1.25 py-0.25">⌘K</span>
+          <span
+            class="ml-auto font-mono font-medium text-[9.5px] border border-[#2E2E2E] rounded px-1.25 py-0.25"
+            >⌘K</span
+          >
         </div>
 
         <div class="flex flex-col gap-0.5">
-          <div class="font-mono font-semibold text-[9px] tracking-[0.16em] text-[#3D4358] p-2 px-3 pb-1.5">DOCUMENTATION</div>
+          <div
+            class="font-mono font-semibold text-[9px] tracking-[0.16em] text-[#3D4358] p-2 px-3 pb-1.5"
+          >
+            DOCUMENTATION
+          </div>
           {
             docNav.map((d) => (
               <a
                 href={d.href}
                 class:list={[
                   't-nav flex items-center gap-2.5 p-1.75 px-3 rounded-lg font-medium text-[12.5px]',
-                  d.id === 'cli' ? 'text-[#EDEDEB] bg-white/10' : 'text-[#858582] hover:text-white'
+                  d.id === 'cli' ? 'text-[#EDEDEB] bg-white/10' : 'text-[#858582] hover:text-white',
                 ]}
               >
                 <span class="lic size-3.5 shrink-0">
@@ -59,25 +83,43 @@ const icons: Record<string, string> = {
 
       <!-- Main Content -->
       <div class="t-rise py-11 pb-22 flex flex-col gap-5.5 min-w-0">
-        <div class="flex items-center gap-2 font-mono font-medium text-[10px] tracking-[0.1em] text-[#5E5E5B]">
+        <div
+          class="flex items-center gap-2 font-mono font-medium text-[10px] tracking-[0.1em] text-[#5E5E5B]"
+        >
           <span>DOCS</span>
           <span class="text-[#3D4358]">/</span>
           <span class="text-[#858582]">CLI</span>
         </div>
 
-        <h1 class="font-semibold text-[clamp(30px,3.6vw,42px)] leading-[1.08] tracking-[-0.03em] text-[#F5F5F5]">
+        <h1
+          class="font-semibold text-[clamp(30px,3.6vw,42px)] leading-[1.08] tracking-[-0.03em] text-[#F5F5F5]"
+        >
           CLI
         </h1>
 
         <!-- In-Progress Alert Banner -->
-        <div class="flex gap-2.75 items-start bg-[rgba(195,154,78,0.07)] border border-[rgba(195,154,78,0.28)] rounded-lg p-3.5 px-4">
+        <div
+          class="flex gap-2.75 items-start bg-[rgba(195,154,78,0.07)] border border-[rgba(195,154,78,0.28)] rounded-lg p-3.5 px-4"
+        >
           <span class="lic size-3.75 shrink-0 text-[#C39A4E] mt-0.5">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="size-full"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 20h16a2 2 0 0 0 1.73-2z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="size-full"
+              ><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 20h16a2 2 0 0 0 1.73-2z"
+              ></path><path d="M12 9v4"></path><path d="M12 17h.01"></path></svg
+            >
           </span>
           <div>
             <div class="font-semibold text-[12.5px] text-[#D6D6D2]">Page in progress</div>
             <div class="font-normal text-[12.5px] leading-[1.6] text-[#858582] mt-0.5">
-              Placeholder — this documentation is a structural skeleton; full content lands with the beta.
+              Placeholder — this documentation is a structural skeleton; full content lands with the
+              beta.
             </div>
           </div>
         </div>
@@ -87,19 +129,25 @@ const icons: Record<string, string> = {
         </p>
 
         <!-- Prev / Next Navigation -->
-        <div class="flex items-center justify-between gap-3 mt-5.5 pt-5.5 border-t border-[#1E1E1E]">
+        <div
+          class="flex items-center justify-between gap-3 mt-5.5 pt-5.5 border-t border-[#1E1E1E]"
+        >
           <a
             href="/docs/desktop-client/"
             class="t-btn t-sec rounded-[9px] p-3 px-4.5 text-left flex flex-col gap-0.5"
           >
-            <span class="font-mono font-semibold text-[8.5px] tracking-[0.12em] text-[#5E5E5B]">PREVIOUS</span>
+            <span class="font-mono font-semibold text-[8.5px] tracking-[0.12em] text-[#5E5E5B]"
+              >PREVIOUS</span
+            >
             <span class="font-semibold text-[13px] text-[#EDEDEB]">Desktop client</span>
           </a>
           <a
             href="/docs/sso-setup/"
             class="t-btn t-sec rounded-[9px] p-3 px-4.5 text-right flex flex-col gap-0.5"
           >
-            <span class="font-mono font-semibold text-[8.5px] tracking-[0.12em] text-[#5E5E5B]">NEXT</span>
+            <span class="font-mono font-semibold text-[8.5px] tracking-[0.12em] text-[#5E5E5B]"
+              >NEXT</span
+            >
             <span class="font-semibold text-[13px] text-[#EDEDEB]">SSO setup</span>
           </a>
         </div>
@@ -107,7 +155,9 @@ const icons: Record<string, string> = {
 
       <!-- Right Sidebar TOC -->
       <div class="t-navlinks sticky top-22 py-13 flex flex-col gap-2.75">
-        <div class="font-mono font-semibold text-[9px] tracking-[0.16em] text-[#454542]">ON THIS PAGE</div>
+        <div class="font-mono font-semibold text-[9px] tracking-[0.16em] text-[#454542]">
+          ON THIS PAGE
+        </div>
         <div class="flex flex-col gap-2 border-l border-[#1E1E1E] pl-3.5">
           <div class="font-medium text-[12.5px] text-[#858582]">Overview</div>
         </div>
