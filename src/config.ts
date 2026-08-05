@@ -44,4 +44,7 @@ export const downloadBaseUrl = DOWNLOAD_BASE_URL;
  * host that actually serves them today. Flipped to https://tunnex.io by the
  * S4.4 launch runbook.
  */
-export const emailLinkBaseUrl = EMAIL_LINK_BASE_URL;
+export const emailLinkBaseUrl =
+  !EMAIL_LINK_BASE_URL || EMAIL_LINK_BASE_URL.includes('workers.dev')
+    ? 'https://tunnex.io'
+    : EMAIL_LINK_BASE_URL;

@@ -241,36 +241,40 @@ const renderers: Renderers = {
     ].join('\n'),
   }),
 
-  'enterprise-lead-ack': ({ name, company }, ctx) => ({
-    subject: 'We received your Tunnex Enterprise inquiry',
-    html: shell(
-      'We received your Tunnex Enterprise inquiry',
-      ctx,
-      paragraph(`Hi ${escapeHtml(name)},`) +
-        paragraph(
-          `Thank you for reaching out about Tunnex Enterprise for <strong>${escapeHtml(company)}</strong>. We received your request and our enterprise team is reviewing your details.`,
-        ) +
-        paragraph(
-          'We’ll get back to you shortly with tailored deployment guidance, pricing, and next steps for your architecture.',
-        ) +
-        paragraph(
-          'In the meantime, feel free to explore our <a href="' +
-            ctx.baseUrl +
-            '/docs/" style="color:' +
-            EMAIL.text +
-            ';text-decoration:underline;">documentation</a> or reply directly to this email if you have any questions.',
-        ),
-    ),
-    text: [
-      `Hi ${name},`,
-      '',
-      `Thank you for reaching out about Tunnex Enterprise for ${company}. We received your request and our enterprise team is reviewing your details.`,
-      '',
-      'We’ll get back to you shortly with tailored deployment guidance, pricing, and next steps for your architecture.',
-      '',
-      `Documentation: ${ctx.baseUrl}/docs/`,
-    ].join('\n'),
-  }),
+  'enterprise-lead-ack': ({ name, company }, ctx) => {
+    const baseUrl =
+      !ctx.baseUrl || ctx.baseUrl.includes('workers.dev') ? 'https://tunnex.io' : ctx.baseUrl;
+    return {
+      subject: 'We received your Tunnex Enterprise inquiry',
+      html: shell(
+        'We received your Tunnex Enterprise inquiry',
+        { baseUrl },
+        paragraph(`Hi ${escapeHtml(name)},`) +
+          paragraph(
+            `Thank you for reaching out about Tunnex Enterprise for <strong>${escapeHtml(company)}</strong>. We received your request and our enterprise team is reviewing your details.`,
+          ) +
+          paragraph(
+            'We’ll get back to you shortly with tailored deployment guidance, pricing, and next steps for your architecture.',
+          ) +
+          paragraph(
+            'In the meantime, feel free to explore our <a href="' +
+              baseUrl +
+              '/docs/" style="color:' +
+              EMAIL.text +
+              ';text-decoration:underline;">documentation</a> or reply directly to this email if you have any questions.',
+          ),
+      ),
+      text: [
+        `Hi ${name},`,
+        '',
+        `Thank you for reaching out about Tunnex Enterprise for ${company}. We received your request and our enterprise team is reviewing your details.`,
+        '',
+        'We’ll get back to you shortly with tailored deployment guidance, pricing, and next steps for your architecture.',
+        '',
+        `Documentation: ${baseUrl}/docs/`,
+      ].join('\n'),
+    };
+  },
 };
 
 function shell(

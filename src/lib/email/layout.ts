@@ -15,6 +15,11 @@ export function renderShell(opts: {
   /** false = internal notification footer instead of the customer footer. */
   customerFooter?: boolean;
 }): string {
+  const rawAssetBaseUrl = opts.assetBaseUrl || '';
+  const assetBaseUrl =
+    !rawAssetBaseUrl || rawAssetBaseUrl.includes('workers.dev')
+      ? 'https://tunnex.io'
+      : rawAssetBaseUrl;
   const preheader = opts.preheader
     ? `<span style="display:none;font-size:1px;color:${EMAIL.bg};max-height:0;max-width:0;opacity:0;overflow:hidden;">${escapeHtml(opts.preheader)}</span>`
     : '';
@@ -35,8 +40,8 @@ ${preheader}
 <div style="max-width:560px;margin:0 auto;padding:40px 20px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
   <div style="background-color:${EMAIL.surface};border:1px solid ${EMAIL.border};border-radius:12px;padding:32px 28px;color:${EMAIL.text};font-size:15px;line-height:1.6;">
     <div style="padding-bottom:24px;margin-bottom:24px;border-bottom:1px solid ${EMAIL.border};text-align:center;">
-      <a href="${escapeAttr(opts.assetBaseUrl)}" style="text-decoration:none;display:inline-block;">
-        <img src="${opts.assetBaseUrl}/email/tunnex-logo-2x.png" alt="Tunnex" width="176" height="22" style="display:block;border:0;margin:0 auto;outline:none;">
+      <a href="${escapeAttr(assetBaseUrl)}" style="text-decoration:none;display:inline-block;">
+        <img src="${assetBaseUrl}/email/tunnex-logo-2x.png" alt="Tunnex" width="176" height="22" style="display:block;border:0;margin:0 auto;outline:none;">
       </a>
     </div>
 ${opts.bodyHtml}
