@@ -83,6 +83,16 @@ export async function processLead(deps: LeadDeps, request: Request): Promise<Res
     console.log(JSON.stringify({ event: 'lead.notify_failed', company }));
   }
 
+  try {
+    await deps.mailer.send('enterprise-lead-ack', email, {
+      name,
+      company,
+    });
+    console.log(JSON.stringify({ event: 'lead.ack_sent', email }));
+  } catch {
+    console.log(JSON.stringify({ event: 'lead.ack_failed', email }));
+  }
+
   return redirect303('/enterprise/thanks');
 }
 

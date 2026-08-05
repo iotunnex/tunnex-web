@@ -86,10 +86,15 @@ describe('enterprise lead', () => {
       seats: 50,
       message: 'Two subsidiaries, need multi-org.',
     });
-    const sent = d.mailer.sent[0]!;
-    expect(sent.kind).toBe('enterprise-lead');
-    expect(sent.to).toBe('sales@tunnex.io');
-    expect(sent.data).toMatchObject({ company: 'Acme Corp', seats: '50' });
+    const sentSales = d.mailer.sent[0]!;
+    expect(sentSales.kind).toBe('enterprise-lead');
+    expect(sentSales.to).toBe('sales@tunnex.io');
+    expect(sentSales.data).toMatchObject({ company: 'Acme Corp', seats: '50' });
+
+    const sentAck = d.mailer.sent[1]!;
+    expect(sentAck.kind).toBe('enterprise-lead-ack');
+    expect(sentAck.to).toBe('ada@acme.com');
+    expect(sentAck.data).toMatchObject({ name: 'Ada Lovelace', company: 'Acme Corp' });
   });
 
   it('optional fields: seats/message omitted still store and notify', async () => {

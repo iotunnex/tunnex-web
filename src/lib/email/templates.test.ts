@@ -28,6 +28,10 @@ const cases: { [K in EmailKind]: TemplateDataMap[K] } = {
     seats: '50',
     message: 'We need multi-org for two subsidiaries.',
   },
+  'enterprise-lead-ack': {
+    name: 'Ada Lovelace',
+    company: 'Acme Corp',
+  },
 };
 
 const kinds = Object.keys(cases) as EmailKind[];
