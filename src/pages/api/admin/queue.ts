@@ -14,6 +14,17 @@ const esc = (s: unknown) =>
 const day = (t: number) => new Date(t * 1000).toISOString().slice(0, 10);
 
 /**
+ * ⚠ `trials.status` IS AN INTERNAL STRING AND MEANS NOTHING IN A REVIEWER'S COLUMN. The walk showed
+ * "pending_launch" to a human deciding whether to mint an unrevocable key — a value that reads like a
+ * system state and answers none of their question. These say what the reviewer actually needs to know.
+ */
+const TRIAL_STATE: Record<string, string> = {
+  pending_launch: 'awaiting a key',
+  active: '⛔ already has a live key',
+  expired: 'trial expired',
+};
+
+/**
  * The reviewer's screen.
  *
  * ⚠ IT SHOWS ENOUGH TO DECIDE, NOT JUST ENOUGH TO CLICK: the domain, the band, the term, what `trials`
@@ -21,13 +32,37 @@ const day = (t: number) => new Date(t * 1000).toISOString().slice(0, 10);
  * second unrevocable artefact and the ledger is the only thing that can say so.
  */
 export const GET: APIRoute = async ({ request }) => {
-  const token = new URL(request.url).searchParams.get('t') ?? '';
+  // ⛔ THE TOKEN MUST NOT LIVE IN THE URL. The walk put it in browser history, in the Referer header of
+  // every subsequent request, and in Cloudflare's own request logs — where the tail output showed it in
+  // plain text. It guards the only surface that mints unrevocable keys.
+  //
+  // So `?t=` is accepted ONCE, exchanged for an HttpOnly cookie, and redirected away. The URL that ends up
+  // in history has no secret in it. ⚠ Access still sits in front of this route; the cookie is the floor
+  // beneath it, not the control.
+  const url = new URL(request.url);
+  const fromQuery = url.searchParams.get('t');
+  const cookie = /(?:^|;\s*)tnx_admin=([^;]+)/.exec(request.headers.get('cookie') ?? '')?.[1];
+  const token = fromQuery ?? (cookie ? decodeURIComponent(cookie) : '');
   const expected = (env as unknown as { ADMIN_TOKEN?: string }).ADMIN_TOKEN;
   if (!expected || token.length !== expected.length)
     return new Response('unauthorized', { status: 401 });
   let diff = 0;
   for (let i = 0; i < token.length; i++) diff |= token.charCodeAt(i) ^ expected.charCodeAt(i);
   if (diff !== 0) return new Response('unauthorized', { status: 401 });
+
+  if (fromQuery) {
+    // Exchange and strip. Secure + HttpOnly + SameSite=Strict: the browser sends it back, script cannot
+    // read it, and it never rides a cross-site request. Session-scoped — no Max-Age.
+    url.searchParams.delete('t');
+    return new Response(null, {
+      status: 302,
+      headers: {
+        location: url.pathname + (url.search || ''),
+        'set-cookie': `tnx_admin=${encodeURIComponent(fromQuery)}; Path=/api/admin; HttpOnly; Secure; SameSite=Strict`,
+        'referrer-policy': 'no-referrer',
+      },
+    });
+  }
 
   const rows = await d1AdminIssueStore(env.DB).pendingQueue();
 
@@ -36,7 +71,7 @@ export const GET: APIRoute = async ({ request }) => {
       (r) => `<tr>
 <td><b>${esc(r.trialDomain)}</b><br><small>${esc(r.trialEmail ?? '⛔ no trial row — cannot deliver')}</small></td>
 <td>${esc(r.tier)}<br><small>${Math.round((r.expiresAt - r.issuedAt) / 86400)} days</small></td>
-<td>${esc(r.trialStatus ?? '—')}</td>
+<td>${esc(r.trialStatus ? (TRIAL_STATE[r.trialStatus] ?? r.trialStatus) : '⛔ no trial row')}</td>
 <td>${
         r.alreadyIssued
           ? `<b class="warn">⛔ ALREADY ISSUED</b><br><small>${esc(r.alreadyIssued.kid)} · ${day(
@@ -75,14 +110,15 @@ reaches it. Check the domain and the band before signing, and read the <b>alread
 ${body || '<tr><td colspan=6>Nothing pending.</td></tr>'}</table>
 <div id="out"></div>
 <script>
-const t = new URLSearchParams(location.search).get('t') || '';
+// ⚠ No token in the page any more — the cookie carries it, so nothing secret is in the DOM or the URL.
 document.querySelectorAll('button').forEach(b => b.onclick = async () => {
   const refuse = b.classList.contains('refuse');
   if (!confirm(refuse ? 'Refuse this request?' : 'Sign and email a licence? This CANNOT be revoked.')) return;
   b.disabled = true;   // the server refuses a second decision anyway; this just avoids the pointless request
   const res = await fetch('/api/admin/issue', {
     method: 'POST',
-    headers: { authorization: 'Bearer ' + t, 'content-type': 'application/json' },
+    headers: { 'content-type': 'application/json' },
+    credentials: 'same-origin',
     body: JSON.stringify({ domain: b.dataset.d, refuse })
   });
   document.getElementById('out').textContent = await res.text();

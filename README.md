@@ -359,6 +359,30 @@ is empty by construction rather than because there is no demand.
 
 ⚠ It also needs `LAUNCH_MODE=beta`: in `prelaunch` the seam defers to _launch_, not to _review_.
 
+### ⛔ PRE-LAUNCH: THIS KEYPAIR AND ADMIN_TOKEN MUST BE ROTATED
+
+**The signing keypair currently on the Worker is TEST-GRADE. It is not the launch key. Rotate it, and
+`ADMIN_TOKEN` with it, before the product ships.** Founder-ruled.
+
+**Why, and it is not ceremony:**
+
+- **This key material was handled during a walk.** It was generated, printed to a terminal, pasted, and
+  debugged across a live incident. None of that is a compromise, and none of it is the handling a key gets
+  when it is the only thing standing between anyone and a valid licence.
+- ⛔ **The key set baked into the product (S12.2) must be the ROTATED key, not this one.** Once a public
+  key ships inside a released binary, retiring it costs a release _and_ an upgrade by the entire installed
+  base — so the first key that ships must be one nobody has been careless with.
+- **`ADMIN_TOKEN` travelled in a URL** during the walk — browser history, `Referer`, and Cloudflare's
+  request logs. That is fixed (it is exchanged for an HttpOnly cookie now), but the value that was exposed
+  is still the value in use.
+
+**The rotation is the ceremony above, run again**, plus `wrangler secret put ADMIN_TOKEN`. ⚠ Keys already
+issued under the old `kid` keep working until they expire — that is the point of a key SET, and it is why
+the old kid stays in the product's set until the last key minted under it has aged out.
+
+⚠ **Trial keys issued during the walk are TEST keys.** They are real, valid, and unrevocable — say so to
+anyone holding one.
+
 ### ⭐ The key set, and what it does not buy
 
 Every licence carries a `kid`; the product verifies against a **set** and selects by it. Rotation is: new

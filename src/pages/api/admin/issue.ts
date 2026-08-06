@@ -34,7 +34,10 @@ const secrets = env as unknown as SigningEnv;
  * issuers and cannot reach this code.
  */
 export const POST: APIRoute = async ({ request }) => {
-  const token = (request.headers.get('authorization') ?? '').replace(/^Bearer /, '');
+  // ⚠ Bearer OR the HttpOnly cookie the queue page sets — the token no longer travels in a URL (F4).
+  const bearer = (request.headers.get('authorization') ?? '').replace(/^Bearer /, '');
+  const cookie = /(?:^|;\s*)tnx_admin=([^;]+)/.exec(request.headers.get('cookie') ?? '')?.[1];
+  const token = bearer || (cookie ? decodeURIComponent(cookie) : '');
   if (!adminAuthed(token)) return new Response('unauthorized', { status: 401 });
 
   const body = (await request.json()) as { domain?: string; refuse?: boolean };

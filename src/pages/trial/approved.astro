@@ -16,7 +16,7 @@ import { launchMode } from '../../config';
         {
           launchMode === 'prelaunch'
             ? 'Trial approved · you’re in early'
-            : 'Trial approved · your key is on its way'
+            : 'Trial approved · your key is being reviewed'
         }
       </h1>
       {
@@ -28,8 +28,9 @@ import { launchMode } from '../../config';
           </p>
         ) : (
           <p class="font-sans font-normal text-[14px] leading-[1.6] text-text-muted">
-            Your 14-day Enterprise trial is reserved for your domain. Your license key is on its way
-            to your inbox — your 14 days start when it’s issued.
+            Your 14-day Enterprise trial is reserved for your domain. Every key is reviewed and
+            issued by a person, usually within one business day — it arrives by email, and your 14
+            days start when it’s issued, not now.
           </p>
         )
       }
