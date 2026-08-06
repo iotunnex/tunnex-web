@@ -1,19 +1,50 @@
 import type { APIRoute } from 'astro';
+import { getCollection } from 'astro:content';
 
-/**
- * Convenience endpoint for crawlers or users requesting /sitemap.xml directly
- * (Google Search Console accepts either /sitemap.xml or /sitemap-index.xml).
- * Fully prerendered as a static asset.
- */
 export const prerender = true;
 
-export const GET: APIRoute = () => {
-  const xml = `<?xml version="1.0" encoding="UTF-8"?>
-<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <sitemap>
-    <loc>https://tunnex.io/sitemap-0.xml</loc>
-  </sitemap>
-</sitemapindex>`;
+const STATIC_PATHS = [
+  '/',
+  '/features/',
+  '/pricing/',
+  '/download/',
+  '/security/',
+  '/enterprise/',
+  '/trial/',
+  '/privacy/',
+  '/terms/',
+  '/blog/',
+  '/docs/',
+];
+
+export async function generateSitemapXml(baseUrl: string): Promise<string> {
+  const publishedBlogPosts = await getCollection('blog', ({ data }) => !data.draft);
+  const blogUrls = publishedBlogPosts.map((post) => `${baseUrl}/blog/${post.id}/`);
+
+  const docsEntries = await getCollection('docs');
+  const docsUrls = docsEntries
+    .map((doc) => doc.id.replace(/\.mdx?$/, ''))
+    .filter((id) => id !== 'index' && id !== 'docs/index' && !id.endsWith('/index'))
+    .map((id) => {
+      const cleanId = id.replace(/^docs\//, '');
+      return `${baseUrl}/docs/${cleanId}/`;
+    });
+
+  const allUrls = Array.from(
+    new Set([...STATIC_PATHS.map((path) => `${baseUrl}${path}`), ...blogUrls, ...docsUrls]),
+  ).sort();
+
+  return [
+    '<?xml version="1.0" encoding="UTF-8"?>',
+    '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+    ...allUrls.map((url) => `  <url><loc>${url}</loc></url>`),
+    '</urlset>',
+  ].join('\n');
+}
+
+export const GET: APIRoute = async ({ site }) => {
+  const baseUrl = (site ?? new URL('https://tunnex.io')).href.replace(/\/$/, '');
+  const xml = await generateSitemapXml(baseUrl);
 
   return new Response(xml, {
     headers: {

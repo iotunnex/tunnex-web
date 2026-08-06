@@ -2,7 +2,6 @@
 import { defineConfig, envField, sessionDrivers } from 'astro/config';
 import cloudflare from '@astrojs/cloudflare';
 import starlight from '@astrojs/starlight';
-import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 
 /**
@@ -57,20 +56,6 @@ export default defineConfig({
     },
   }),
   integrations: [
-    // Minimal sitemap pulled forward from S4.2 (posts must be indexable now);
-    // S4.2 inherits and extends (robots.txt, site-wide canonicals, JSON-LD).
-    sitemap({
-      filter: (page) =>
-        ![
-          '/styleguide/',
-          '/trial/verify/',
-          '/trial/approved/',
-          '/subscribe/confirm/',
-          '/subscribe/confirmed/',
-          '/enterprise/thanks/',
-          '/404/',
-        ].some((path) => page.endsWith(path)) && !page.includes('/blog/tag/'),
-    }),
     starlight({
       title: 'Tunnex Docs',
       favicon: '/favicon.svg',
