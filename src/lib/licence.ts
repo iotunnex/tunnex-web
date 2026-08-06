@@ -176,3 +176,18 @@ export async function activeSigningKey(env: {
   );
   return { key, kid: env.SIGNING_KID };
 }
+
+/**
+ * Import a PUBLIC verifying key from a JWK.
+ *
+ * ⛔ IT LIVES HERE SO Ed25519 STAYS IN ONE MODULE. The admin surface needs to self-verify a key before it
+ * leaves, which briefly put the algorithm name in a second file — and the confinement guard
+ * (trial-issuance.test.ts) went red. The right answer was to move the import here, not to widen the guard:
+ * one signing module is one place to get signing wrong, and only one place that gets reviewed as if it
+ * mattered.
+ */
+export async function importPublicKey(jwk: string): Promise<CryptoKey> {
+  return crypto.subtle.importKey('jwk', JSON.parse(jwk) as JsonWebKey, { name: 'Ed25519' }, true, [
+    'verify',
+  ]);
+}

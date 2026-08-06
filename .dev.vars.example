@@ -14,3 +14,15 @@
 
 # Launch mode override (defaults to "prelaunch"):
 # LAUNCH_MODE=prelaunch
+
+# --- Licence issuance (S12.4). Production: `wrangler secret put <NAME>` ---
+#
+# ⛔ SIGNING_KEY_JWK IS THE PRIVATE SIGNING KEY AND THE WHOLE COMMERCIAL MODEL. A leak is unlimited
+# (it authorises MINTING, not one licence), unrevocable (verification is offline) and UNDETECTABLE
+# (deployments never call home). Generate it with the CEREMONY in README.md — never on a shared machine,
+# never into a file, never into a password manager.
+#
+# SIGNING_KEY_JWK={"kty":"OKP",...}     # PRIVATE JWK — production only, never a real value in a repo
+# SIGNING_PUBLIC_JWK={"kty":"OKP",...}  # public half; used to self-verify a key before it is sent
+# SIGNING_KID=k2026                     # which key in the SET minted it (D4). Never reused.
+# ADMIN_TOKEN=...                       # guards /api/admin/*. A FLOOR — Cloudflare Access is the real control.

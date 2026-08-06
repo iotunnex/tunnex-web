@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { pendingLaunchIssuer, placeholderKeyIssuer } from './issuance.ts';
 
@@ -102,5 +102,116 @@ describe('the unattended paths cannot mint', () => {
     // ⛔ And it must NOT look like the real wire format (tnxl_<payload>.<sig>), or a placeholder could be
     // pasted into a console and produce a confusing failure rather than an obvious one.
     expect(r.issued && r.licenseKey.startsWith('tnxl_')).toBe(false);
+  });
+
+  // ── ⛔ THE MINTING-SITE CENSUS ───────────────────────────────────────────────────────────────────────
+  //
+  // THE TESTS ABOVE CENSUS `Issuer` FACTORIES. THE ADMIN SIGNING SURFACE IS NOT ONE — it calls
+  // `signLicence` directly — so when it was built, every test above stayed green and the ONE place in the
+  // codebase that actually mints was covered by nothing.
+  //
+  // ⚠ That is the guard's own blind spot, found by building the thing it exists to watch: a census is only
+  // as good as its SUBJECT, and "issuer factories" was a proxy for "things that mint" that stopped being
+  // true the moment minting moved out of a factory.
+  //
+  // So this censuses the real subject: every file that can produce a signature. `signLicence` is the only
+  // function that mints, so importing it IS the minting capability.
+
+  /**
+   * ⛔ EVERY MINTING SITE, NAMED. Not a pattern, not a directory, not a wildcard — an exemption that is a
+   * wildcard is not an exemption, it is a hole. Each entry is a specific file and the reason it may mint.
+   */
+  const MINTING_SITES: Record<string, string> = {
+    'src/lib/licence.ts': 'defines signLicence — the signer itself',
+    'src/lib/admin-issue.ts':
+      'the admin orchestration: claim → mint → self-verify → record → send. Not reachable from any ' +
+      'unattended path; its only caller is the token-gated admin route below.',
+  };
+
+  /**
+   * ⚠ AND THE LAYER ABOVE, NAMED SEPARATELY. `admin-issue.ts` can mint; `issueFromQueue` is the REACHABLE
+   * TRIGGER. Listing only the first would leave "who can pull it" unowned — and the first version of this
+   * census made exactly that mistake, naming a route that delegates as though it minted. The staleness
+   * check caught it.
+   */
+  const MINT_TRIGGER_SITES: Record<string, string> = {
+    'src/lib/admin-issue.ts': 'defines issueFromQueue',
+    'src/pages/api/admin/issue.ts':
+      'THE ADMIN SIGNING SURFACE — token-gated, constant-time compare, reached only by a person. The only ' +
+      'path from a queue row to a minted key.',
+  };
+
+  const walkSrc = (dir: string, hit: (rel: string, text: string) => void) => {
+    for (const name of readdirSync(dir)) {
+      const p = join(dir, name);
+      if (statSync(p).isDirectory()) walkSrc(p, hit);
+      else if (/\.(ts|astro|mjs|js)$/.test(name) && !name.endsWith('.test.ts')) {
+        hit(p.slice(p.indexOf('src/')), readFileSync(p, 'utf8'));
+      }
+    }
+  };
+
+  it('⛔ every file that can mint a licence is explicitly named', () => {
+    const minting: string[] = [];
+    walkSrc('src', (rel, text) => {
+      if (/\bsignLicence\b/.test(text)) minting.push(rel);
+    });
+    expect(
+      minting.length,
+      'the census found no minting site at all — it is checking nothing',
+    ).toBeGreaterThan(0);
+
+    const unnamed = minting.filter((f) => !(f in MINTING_SITES));
+    expect(
+      unnamed,
+      `⛔ A FILE CAN MINT A LICENCE AND IS NOT NAMED. Every minting site must be listed in MINTING_SITES ` +
+        `with the reason it is allowed to mint. A licence cannot be revoked once issued, so an unreviewed ` +
+        `mint path is permanent. Do NOT widen this into a pattern — an exemption that is a wildcard is a hole.`,
+    ).toEqual([]);
+  });
+
+  it('⛔ the mint TRIGGER is reachable only from named sites', () => {
+    const triggers: string[] = [];
+    walkSrc('src', (rel, text) => {
+      if (/\bissueFromQueue\b/.test(text)) triggers.push(rel);
+    });
+    expect(
+      triggers.length,
+      'no trigger site found — the census is checking nothing',
+    ).toBeGreaterThan(0);
+    const unnamed = triggers.filter((f) => !(f in MINT_TRIGGER_SITES));
+    expect(
+      unnamed,
+      '⛔ A FILE CAN TRIGGER A MINT AND IS NOT NAMED. Add it to MINT_TRIGGER_SITES with the reason it may ' +
+        'reach the signer — or, far more likely, it should not be able to.',
+    ).toEqual([]);
+  });
+
+  it('⚠ no named site is stale', () => {
+    // A named file that no longer mints is an exemption sitting open for whatever is written there next.
+    const has = (f: string, token: RegExp) => {
+      try {
+        return token.test(readFileSync(f, 'utf8'));
+      } catch {
+        return false; // gone entirely
+      }
+    };
+    const stale = [
+      ...Object.keys(MINTING_SITES).filter((f) => !has(f, /\bsignLicence\b/)),
+      ...Object.keys(MINT_TRIGGER_SITES).filter((f) => !has(f, /\bissueFromQueue\b/)),
+    ];
+    expect(
+      stale,
+      'remove exemptions whose file no longer mints — a stale one is a pre-approved hole',
+    ).toEqual([]);
+  });
+
+  it('⛔ the unattended glue files are NOT minting sites', () => {
+    // The negative half, stated separately so it cannot be satisfied by the allowlist growing.
+    for (const glue of ['src/pages/api/trial/verify.ts', 'src/worker.ts', 'src/lib/lifecycle.ts']) {
+      expect(/\bsignLicence\b/.test(readFileSync(glue, 'utf8')), `${glue} must never mint`).toBe(
+        false,
+      );
+    }
   });
 });
