@@ -35,8 +35,29 @@ export interface LicenseClaims {
   license_id: string;
 }
 
+/**
+ * ⛔ TWO STRINGS SPELLED `pending_launch` EXIST, AND THEY ARE NOT THE SAME THING:
+ *
+ *   - `trials.status = 'pending_launch'`  — a DATABASE value, inside a CHECK constraint
+ *   - `IssuanceResult.reason`             — this union, a TypeScript literal
+ *
+ * ⭐ MOST OF THE "overloaded status" CONFUSION IS THAT COLLISION, NOT THE STATUS ITSELF. Separating the
+ * REASON costs nothing and is compiler-checked; renaming the STATUS would mean a CHECK-constraint change,
+ * which on SQLite is a create-copy-drop-rename of the table holding every live trial — applied
+ * automatically by deploy.yml on push to main. That is the exact cost Shape A was rejected for, and taking
+ * it for tidiness would be worse than taking it for a feature.
+ *
+ * So: `trials.status = 'pending_launch'` keeps meaning exactly what it always meant — PARKED: approved, no
+ * key, clock not started — and the reasons below say WHY it is parked.
+ */
 export type IssuanceResult =
-  { issued: true; licenseKey: string } | { issued: false; reason: 'pending_launch' };
+  | { issued: true; licenseKey: string }
+  // Waiting for beta launch. The cron's promote leg re-issues with a FRESH clock.
+  | { issued: false; reason: 'pending_launch' }
+  // ⭐ Waiting for a HUMAN to sign (S12.4 §1: offline verification means no revocation, so an automated
+  // mint is a mistake that cannot be taken back). The claims are recorded for review; a person mints.
+  // ⚠ Not wired yet — the review queue needs a migration, and that is held.
+  | { issued: false; reason: 'pending_review' };
 
 export interface Issuer {
   issue(claims: LicenseClaims): Promise<IssuanceResult>;
