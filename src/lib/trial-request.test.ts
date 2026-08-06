@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   GENERIC_TRIAL_MESSAGE,
+  INELIGIBLE_ADDRESS_MESSAGE,
   processTrialRequest,
   type TrialRequestDeps,
   type TrialRequestStore,
@@ -74,27 +75,50 @@ function trialRequest(email: string, ip = '1.2.3.4'): Request {
 }
 
 describe('trial request', () => {
-  it('byte-identical generic response: new / existing-trial / free / disposable / unregistrable', async () => {
-    const bodies: string[] = [];
-    // new domain
-    const d1 = deps();
-    bodies.push(await (await processTrialRequest(d1, trialRequest('a@acme.com'))).text());
-    // existing trial
-    const d2 = deps(fakeStore(['acme.com']));
-    bodies.push(await (await processTrialRequest(d2, trialRequest('b@acme.com'))).text());
-    // free provider
-    bodies.push(await (await processTrialRequest(deps(), trialRequest('a@gmail.com'))).text());
-    // disposable
-    bodies.push(await (await processTrialRequest(deps(), trialRequest('a@mailinator.com'))).text());
-    // no registrable domain (format-valid, unlisted TLD)
-    bodies.push(
-      await (await processTrialRequest(deps(), trialRequest('a@unregistrable.zzzz'))).text(),
-    );
+  // ⛔ THE ORACLE THAT MATTERS, AND IT IS NARROWER THAN IT WAS.
+  //
+  // This test used to assert ALL FIVE refusals were byte-identical. That was the old ruling and it is
+  // rewritten, not deleted — the reversal narrows the invariant rather than abolishing it
+  // (docs/laws.md: a reversed ruling should leave a narrower guard behind it, not an absence).
+  //
+  // ⭐ THE LINE: a refusal derivable from PUBLIC information leaks nothing by being stated; a refusal
+  // derived from OUR data must stay generic. "Does acme.com already hold a trial" is our data. "Is
+  // gmail.com a consumer provider" is not.
+  it('⛔ new domain and existing-trial are BYTE-IDENTICAL — the only oracle worth protecting', async () => {
+    const fresh = await (await processTrialRequest(deps(), trialRequest('a@acme.com'))).text();
+    const taken = await (
+      await processTrialRequest(deps(fakeStore(['acme.com'])), trialRequest('b@acme.com'))
+    ).text();
 
-    for (const body of bodies) {
-      expect(body).toBe(bodies[0]);
-      expect(body).toContain(GENERIC_TRIAL_MESSAGE);
+    expect(
+      taken,
+      '⛔ THE RESPONSES DIVERGED. Whether another company holds a trial is OUR data, and a difference here ' +
+        'lets anyone enumerate which companies are evaluating Tunnex, one address at a time.',
+    ).toBe(fresh);
+    expect(fresh).toContain(GENERIC_TRIAL_MESSAGE);
+  });
+
+  it('⚠ public-knowledge refusals say so — the generic message was FALSE for them', async () => {
+    // It told a Gmail user "a verification link is on its way" when nothing had been sent. Third instance
+    // of that shape in one walk.
+    for (const email of ['a@gmail.com', 'a@mailinator.com', 'a@unregistrable.zzzz']) {
+      const body = await (await processTrialRequest(deps(), trialRequest(email))).text();
+      expect(body, `${email} should be told plainly`).toContain(INELIGIBLE_ADDRESS_MESSAGE);
+      expect(body, `${email} must NOT claim an email was sent — nothing was`).not.toContain(
+        GENERIC_TRIAL_MESSAGE,
+      );
     }
+  });
+
+  it('⚠ …and saying so does not create the oracle it protects against', async () => {
+    // Someone who receives the generic message learns only that their domain is not consumer/disposable —
+    // which they already knew. They still cannot tell a fresh domain from one that holds a trial.
+    const fresh = await (await processTrialRequest(deps(), trialRequest('a@acme.com'))).text();
+    const taken = await (
+      await processTrialRequest(deps(fakeStore(['acme.com'])), trialRequest('b@acme.com'))
+    ).text();
+    expect(fresh).toBe(taken);
+    expect(fresh).not.toContain(INELIGIBLE_ADDRESS_MESSAGE);
   });
 
   it('new domain: stores the hash only (30-min tier) and sends the magic link', async () => {

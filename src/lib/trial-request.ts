@@ -27,6 +27,34 @@ export const trialRequestInput = z.object({
 export const GENERIC_TRIAL_MESSAGE =
   'If your domain is eligible, a verification link is on its way to your inbox. It is valid for 30 minutes.';
 
+/**
+ * ⛔ THE ORACLE IS PRESERVED WHERE IT MATTERS, AND ONLY THERE.
+ *
+ * `GENERIC_TRIAL_MESSAGE` exists so the form cannot leak WHICH refusal applied. That is right for one
+ * refusal and wrong for the others, and the difference is not a compromise — it is a line:
+ *
+ *   ⭐ A REFUSAL DERIVABLE FROM PUBLIC INFORMATION LEAKS NOTHING BY BEING STATED.
+ *      A REFUSAL DERIVED FROM OUR DATA MUST STAY GENERIC.
+ *
+ * `free_provider`, `disposable`, `no_registrable_domain` and `invalid_email` are all decidable by the
+ * requester without asking us — the public suffix list and a consumer-provider list are public. Telling
+ * them tells them nothing they could not already work out.
+ *
+ * `trialExists` is OUR data: whether some other company holds a trial. That stays generic, and it is why
+ * the duplicate-domain refusal happens only AFTER the email round-trip proves the requester controls the
+ * address (see the walk record).
+ *
+ * ⛔ AND THE GENERIC MESSAGE WAS NOT MERELY UNHELPFUL HERE — IT WAS FALSE. It told a Gmail user a
+ * verification link was on its way when nothing had been sent. That is the third instance of this shape in
+ * one walk (the delivery email promising unlock-in-place; /trial/approved promising a key that was queued).
+ *
+ * ⚠ Stating this does not create an oracle: someone who gets the generic message learns only that their
+ * domain is not a consumer or disposable one — which they already knew — and still learns nothing about
+ * whether a trial exists.
+ */
+export const INELIGIBLE_ADDRESS_MESSAGE =
+  'Trials are for work email addresses — consumer and disposable providers are not eligible. Try your company address.';
+
 export interface TrialRequestStore {
   /** True when a trial row already exists for the derived domain. */
   trialExists(domain: string): Promise<boolean>;
@@ -68,7 +96,8 @@ export async function processTrialRequest(
   const derived = deriveTrialDomain(parsed.data.email);
   if (!derived.ok) {
     console.log(JSON.stringify({ event: 'trial_request.refused', reason: derived.reason }));
-    return generic();
+    // Public-knowledge refusal: say so. See INELIGIBLE_ADDRESS_MESSAGE for why this is not an oracle.
+    return jsonOk({ message: INELIGIBLE_ADDRESS_MESSAGE });
   }
 
   try {

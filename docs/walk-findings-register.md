@@ -4,6 +4,27 @@
 A real key was issued and arrived intact.** ⭐ **Eight findings. NONE came from the test suite** — see
 `docs/laws.md`, _a cross-runtime boundary tested on one side only is untested_.
 
+## ⭐ Edge cases walked — both PASSED
+
+| case                                 | result                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| ------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Duplicate domain, second address** | A different address at `bolster.ai` refused with `domain_used`, and an **email** arrived saying so: _"Someone at bolster.ai already started a Tunnex Enterprise trial, and trials are one per company domain. If you can't find who has it, or the trial ended and you want more time, we'll sort it out."_ ⭐ It states the truth, **does not name who holds the trial** — the information leak correctly avoided — and offers a route for both cases. ⚠ And it is an **email, not only a page**, so it can be forwarded to the colleague who has it |
+| **Consumer domain**                  | `gmail.com` refused at request with `consumer_domain`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+
+### ⛔ WHY THE TWO REFUSE AT DIFFERENT STAGES — deliberate, and it will read as an inconsistency
+
+**A consumer domain is public knowledge, so refusing immediately leaks nothing.** Anyone can see that
+`gmail.com` is a consumer provider without asking us.
+
+**Which company domain holds a trial is NOT public.** So that refusal waits until the email round-trip has
+proved the requester controls the address — otherwise the form becomes an oracle for enumerating which
+companies are evaluating Tunnex, one address at a time.
+
+> ⭐ **THE LINE, STATED ONCE: a refusal derivable from PUBLIC information can be immediate and explicit. A
+> refusal derived from OUR data must wait for proof of control, and stay generic until it has it.**
+
+---
+
 ## Fixed
 
 | #     | finding                                                                                                                                                                 | fix                                                                                                                                                                           |
