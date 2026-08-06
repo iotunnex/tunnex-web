@@ -1,6 +1,7 @@
 import type { APIRoute } from 'astro';
 import { env } from 'cloudflare:workers';
 import { d1AdminIssueStore } from '../../../lib/admin-issue.ts';
+import { EMAIL } from '../../../lib/email/palette.ts';
 
 export const prerender = false;
 
@@ -52,9 +53,21 @@ export const GET: APIRoute = async ({ request }) => {
   return new Response(
     `<!doctype html><meta charset="utf-8"><title>Licence review queue</title>
 <meta name="robots" content="noindex,nofollow">
-<style>body{font:15px/1.45 system-ui,sans-serif;margin:2rem}table{border-collapse:collapse;width:100%}
-td,th{border-bottom:1px solid #ddd;padding:.6rem;vertical-align:top;text-align:left}.warn{color:#b45309}
-#out{white-space:pre-wrap;background:#f4f4f5;padding:1rem;margin-top:1rem;border-radius:.5rem}</style>
+<style>
+/* ⚠ COLOURS COME FROM THE EMAIL PALETTE, and that is deliberate rather than lazy. This page is raw HTML
+   returned by the Worker — no Astro layout, no stylesheet — so CSS custom properties resolve to NOTHING
+   here, exactly as in an email client. src/lib/email/palette.ts is the token guard's narrow exclusion
+   for precisely that constraint, and it mirrors the semantic tokens.
+   ⛔ Raw hex here fails scripts/lint-tokens.mjs, which is a standing CI check — it caught this page on
+   its first deploy, because I ran a narrower lint locally than CI runs.
+   ⚠ The constant is named EMAIL and this is not an email; it is the same CONSTRAINT, and inventing a
+   second colour source for one admin page would be worse than the slightly narrow name. */
+body{font:15px/1.45 system-ui,sans-serif;margin:2rem;background:${EMAIL.bg};color:${EMAIL.text}}
+table{border-collapse:collapse;width:100%}
+td,th{border-bottom:1px solid ${EMAIL.border};padding:.6rem;vertical-align:top;text-align:left}
+.warn{color:${EMAIL.primary}}
+#out{white-space:pre-wrap;background:${EMAIL.surface};padding:1rem;margin-top:1rem;border-radius:.5rem}
+</style>
 <h1>Licence review queue</h1>
 <p>⛔ Every key signed here is <b>unrevocable</b> — Tunnex verifies offline, so nothing you do afterwards
 reaches it. Check the domain and the band before signing, and read the <b>already issued</b> column.</p>
