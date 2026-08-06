@@ -11,6 +11,12 @@
 >
 > ⛔ **AND THIS REPO NOW HOLDS THE LICENCE SIGNING KEY** — see [Licence issuance](#licence-issuance).
 > Account access is key access.
+>
+> ## ⛔ **A KEY MINTED TODAY VERIFIES HERE AND NOWHERE ELSE. ISSUANCE IS COMPLETE AND THE KEY IS DECORATIVE UNTIL S12.2 SHIPS.**
+>
+> No product build carries a key set, so a customer has nothing to paste it into. ⚠ The signing path is
+> built, tested and guarded — which is exactly why this reads as ready and is not. See
+> [the two preconditions](#-two-preconditions-that-are-not-tasks).
 
 Marketing site for [Tunnex](https://tunnex.io) — self-hosted Zero Trust VPN.
 **Your keys. Your servers. Your network.**
@@ -292,6 +298,39 @@ deployment, if the kid is not in the key set baked into their binary.
 
 ⛔ **And that set does not exist yet** (S12.2, the product's offline verifier, is unstarted). **A key minted
 today verifies here and nowhere else.**
+
+### ⛔ Two preconditions that are not tasks
+
+**Written as preconditions because a precondition is checkable and a TODO is a memory.** Each has a command
+that answers it.
+
+**P1 — No product build verifies a `tnxl_` key.**
+
+```sh
+# In the platform repo. Empty output = no verifier exists = a minted key is decorative.
+grep -rl "tnxl_" ../tunnex/apps/api ../tunnex/apps/node 2>/dev/null
+```
+
+Until S12.2 ships an offline verifier with a baked-in **key set**, a licence issued here can be signed,
+recorded, emailed and read by a customer — and pasted nowhere. ⚠ **Every other part of the path works,
+which is what makes this easy to miss.**
+
+**P2 — ⛔ THE QUEUE HAS NO PRODUCER.**
+
+```sh
+# Empty output = nothing routes work into the review queue.
+grep -l reviewQueueIssuer src/pages/api/trial/verify.ts src/worker.ts 2>/dev/null
+```
+
+`reviewQueueIssuer` is built, tested and dispositioned in the minting census — and the glue still constructs
+`pendingLaunchIssuer` / `placeholderKeyIssuer`. Nothing reaches `licence_review_queue`, so the admin screen
+is empty by construction rather than because there is no demand.
+
+> ## ⭐ **THIS IS THE DORMANT-MACHINERY SHAPE FROM THE OTHER SIDE: not code with no caller, but a CONSUMER
+>
+> ## WITH NO PRODUCER** — the same producer/consumer pair `docs/laws.md` already names, inverted.
+
+⚠ It also needs `LAUNCH_MODE=beta`: in `prelaunch` the seam defers to _launch_, not to _review_.
 
 ### ⭐ The key set, and what it does not buy
 
