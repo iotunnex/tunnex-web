@@ -7,8 +7,11 @@ import ComparisonTableSection from '../components/ComparisonTableSection.astro';
 const openFeatures = [
   'Self-hosted control plane, gateways, and clients',
   'WireGuard and OpenVPN, both data planes',
-  'Unlimited devices, single organization',
-  'Sites, site-to-site routing, hub-and-spoke',
+  'Unlimited users, devices and AI agents',
+  'One gateway, one organization',
+  'The complete Zero Trust engine: default-deny policies, groups, port-scoped resources',
+  'Device approval and posture checks',
+  'Kubernetes: in-cluster gateway and the GitOps operator',
   'Local accounts (argon2id), email verification, MFA',
   'Desktop clients for macOS and Windows, fail-closed kill-switch',
   'tunnex CLI, .ovpn export, mobile via the official WireGuard apps',
@@ -16,16 +19,14 @@ const openFeatures = [
   'Community support',
 ];
 
+// ⛔ WHAT ENTERPRISE ADDS IS SHORT ON PURPOSE — four things. Everything else is in the free tier, which is
+// the strategy rather than an oversight: the moat is the free tier's generosity, not this list's length.
 const entFeatures = [
+  'More gateways — Starter 5, Growth 20, Scale unlimited',
   'SSO with Google Workspace and Microsoft Entra ID',
   'IdP group sync: directory groups become policy subjects',
-  'Zero Trust access policies: default-deny, port-scoped, per-user',
-  'Time-boxed grants that expire on their own',
-  'Device approval gate and posture checks',
-  'Org-wide MFA enforcement',
-  'Multi-org (multi-tenant) management',
-  'Kubernetes operator, CRDs, and machine principals',
-  'Priority support',
+  'Unlimited organizations',
+  'Priority support with an SLA',
 ];
 
 const vendorQuestions = [
@@ -50,7 +51,7 @@ const vendorQuestions = [
 
 <Base
   title="Pricing & Editions: Tunnex"
-  description="Self-hosted either way. The free Open tier is unlimited; Enterprise adds SSO, Zero Trust policies, and multi-org management."
+  description="Self-hosted either way. The free tier is the whole product on one gateway; Enterprise adds more gateways, SSO, and directory sync — priced per gateway, never per seat."
 >
   <div
     class="mx-auto max-w-[1180px] px-7 py-18 md:py-[72px] flex flex-col gap-11 max-[620px]:px-[18px]"
@@ -61,7 +62,7 @@ const vendorQuestions = [
       <h1 class="tnx-h1">Pricing</h1>
       <div class="font-normal text-[17px] leading-[1.65] text-[#A9A9A6] text-pretty">
         Self-hosted either way. Your network runs on your infrastructure whether you pay us or not:
-        Enterprise is for teams that need identity, policy, and scale.
+        Enterprise is for running more than one gateway, and for identity at company scale.
       </div>
     </div>
 
@@ -133,7 +134,8 @@ const vendorQuestions = [
           </div>
           <div class="font-bold text-[40px] text-[#EDEDEB] tracking-[-0.02em] mt-2">Custom</div>
           <div class="font-normal text-[13px] leading-[1.6] text-[#858582] mt-1">
-            Per-seat, billed annually. Quoted by team size.
+            Per gateway, banded, billed annually. Never per seat — users, devices and agents are
+            unlimited on every tier.
           </div>
         </div>
 
@@ -191,9 +193,10 @@ const vendorQuestions = [
     >
       <div class="font-semibold text-[14.5px] text-[#EDEDEB]">Not sure which tier?</div>
       <div class="font-normal text-[14px] leading-[1.65] text-[#858582] max-w-[80ch] text-pretty">
-        If your team signs in with Google or Microsoft, needs per-resource access policies, or runs
-        more than one organization, you want Enterprise. Otherwise start with Open — upgrading later
-        is a license key, not a migration.
+        If you need a second gateway — a second site, a standby for failover — or your team signs in
+        with Google or Microsoft, you want Enterprise. Otherwise start with Open: it is the whole
+        product, including the Zero Trust engine, on one gateway. Upgrading later is a license key,
+        not a migration, and nothing you have already built stops working.
       </div>
     </div>
   </div>
