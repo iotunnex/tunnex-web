@@ -1,4 +1,4 @@
-import { TRIAL_LENGTH_ADJ } from '../issuance.ts';
+import { TRIAL_LENGTH_ADJ, TRIAL_LENGTH_NOUN } from '../issuance.ts';
 import { renderShell, button, paragraph, muted, escapeHtml } from './layout.ts';
 import { EMAIL } from './palette.ts';
 
@@ -101,13 +101,13 @@ const renderers: Renderers = {
         `Your ${TRIAL_LENGTH_ADJ} Tunnex Enterprise trial for <strong>${escapeHtml(domain)}</strong> is approved.`,
       ) +
         paragraph(
-          'Tunnex is launching soon: your license key will arrive in this inbox the moment the beta opens, and your ${TRIAL_LENGTH_NOUN} start only when the key is issued — you lose nothing by being early.',
+          `Tunnex is launching soon: your license key will arrive in this inbox the moment the beta opens, and your ${TRIAL_LENGTH_NOUN} start only when the key is issued — you lose nothing by being early.`,
         ),
     ),
     text: [
       `Your ${TRIAL_LENGTH_ADJ} Tunnex Enterprise trial for ${domain} is approved.`,
       '',
-      'Tunnex is launching soon: your license key will arrive in this inbox the moment the beta opens. Your ${TRIAL_LENGTH_NOUN} start only when the key is issued — you lose nothing by being early.',
+      `Tunnex is launching soon: your license key will arrive in this inbox the moment the beta opens. Your ${TRIAL_LENGTH_NOUN} start only when the key is issued — you lose nothing by being early.`,
     ].join('\n'),
   }),
 
@@ -140,8 +140,7 @@ const renderers: Renderers = {
         paragraph('In the meantime, Tunnex runs fully without a key:') +
         button(`${ctx.baseUrl}/docs/quickstart/`, 'Follow the quickstart'),
       {
-        preheader:
-          'Your ${TRIAL_LENGTH_ADJ} Enterprise trial key is inside — keep it; licence enforcement is not live in Tunnex yet.',
+        preheader: `Your ${TRIAL_LENGTH_ADJ} Enterprise trial key is inside — keep it; licence enforcement is not live in Tunnex yet.`,
       },
     ),
     text: [

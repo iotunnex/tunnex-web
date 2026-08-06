@@ -1,5 +1,5 @@
 ---
-import { TRIAL_LENGTH_ADJ } from '../lib/issuance.ts';
+import { TRIAL_LENGTH_ADJ, TRIAL_LENGTH_NOUN } from '../lib/issuance.ts';
 import Base from '../layouts/Base.astro';
 import TurnstileWidget from '../components/TurnstileWidget.astro';
 import { launchMode } from '../config';
@@ -23,8 +23,8 @@ const steps = [
     n: '3',
     title: 'Get your key',
     body: isBeta
-      ? 'Your license key is issued on confirmation — your ${TRIAL_LENGTH_NOUN} start then.'
-      : 'Your license key arrives when the beta opens — your ${TRIAL_LENGTH_NOUN} start then.',
+      ? `Your license key is issued on confirmation — your ${TRIAL_LENGTH_NOUN} start then.`
+      : `Your license key arrives when the beta opens — your ${TRIAL_LENGTH_NOUN} start then.`,
   },
 ];
 ---
@@ -43,8 +43,8 @@ const steps = [
       <div class="font-normal text-[16px] leading-[1.68] text-[#A9A9A6] text-pretty">
         {
           isBeta
-            ? 'One trial per company domain, bound to a verified work email. Request it, confirm from your inbox within 30 minutes, and your ${TRIAL_LENGTH_NOUN} start the moment your license key is issued.'
-            : 'One trial per company domain, bound to a verified work email. Request it, confirm from your inbox within 30 minutes, and your ${TRIAL_LENGTH_NOUN} start only when your license key is issued — at beta launch, not a moment before.'
+            ? `One trial per company domain, bound to a verified work email. Request it, confirm from your inbox within 30 minutes, and your ${TRIAL_LENGTH_NOUN} start the moment your license key is issued.`
+            : `One trial per company domain, bound to a verified work email. Request it, confirm from your inbox within 30 minutes, and your ${TRIAL_LENGTH_NOUN} start only when your license key is issued — at beta launch, not a moment before.`
         }
       </div>
     </div>
