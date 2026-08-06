@@ -25,16 +25,22 @@ export const LICENCE_VERSION = 1;
 
 /** Gateway ceiling per band. `null` = unlimited. */
 export const BANDS = {
-  // ⛔ TWO, AND THE NUMBER IS THE RULING (founder, 2026-08-06).
+  // ⛔ THE TRIAL IS ITS OWN BAND. IT IS NOT A VARIANT OF A PAID ONE.
   //
-  // A gateway limit is enforced at ENROLMENT ONLY — a running gateway is never stopped. So a trial on
-  // Scale would let someone enrol 1,000 gateways, let the trial lapse, and KEEP ALL 1,000, reconfiguring
-  // and using them indefinitely. That is not a trial; it is a permanent Scale licence that activates when
-  // the trial ends. Growth does not fix it — it makes the number 20 instead of 1,000.
+  // ⚠ "Should a trial be Starter or Growth?" was a MALFORMED QUESTION and there is no decide-item behind
+  // it. The trial's ceiling is derived from what a trial is FOR, not from a price point:
   //
-  // ⭐ TWO is what a customer needs to SEE site-to-site, HA and cross-site DNS actually work, and it is a
-  // ceiling we are content to leave running forever. Both halves have to be true, and only 2 satisfies
-  // both. See docs/laws.md — a temporary grant of a create-time limit is a permanent grant.
+  //   Community gives 1. The trial gives 2. ⭐ TWO IS THE ONLY NUMBER THAT SHOWS THE TWO THINGS COMMUNITY
+  //   CANNOT DO — site-to-site and failover. One is Community. Three shows nothing four does not.
+  //
+  // And the ceiling has to survive its own expiry, because a gateway limit is enforced at ENROLMENT ONLY
+  // and a running gateway is never stopped. A trial on Scale would let someone enrol 1,000 gateways, let
+  // it lapse, and KEEP ALL 1,000 — a permanent Scale licence that activates when the trial ends. Growth
+  // makes that 20 instead of 1,000; it does not fix the shape.
+  //
+  // ⭐ So 2 satisfies both halves at once: enough to demonstrate what Community cannot do, and a ceiling we
+  // are content to leave running forever. See docs/laws.md — a temporary grant of a create-time limit is a
+  // permanent grant of everything created under it.
   trial: { gateways: 2 },
   starter: { gateways: 5 },
   growth: { gateways: 20 },
