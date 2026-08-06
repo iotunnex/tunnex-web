@@ -261,6 +261,33 @@ it back and neither can anyone who reaches the dashboard. That property is doing
 signing secret or deploy code that exports it. Hardware MFA, minimal membership, no shared logins — not IT
 hygiene here, but the control protecting the commercial model.
 
+### ⛔ BEFORE THIS ISSUES A REAL KEY — three preconditions, not a checklist
+
+**The signing surface is built and tested. It cannot issue anything yet, and two of these are deliberate.**
+
+**1. The ceremony has NOT been run.** `SIGNING_KEY_JWK`, `SIGNING_PUBLIC_JWK` and `SIGNING_KID` are unset,
+so `/api/admin/issue` returns `sign_failed`. Run the ceremony above — once, on a machine you trust. ⚠ It is
+a human procedure, not a code property: nothing here can check that you did it safely.
+
+**2. Migration `0003_licence_issuance.sql` is UNAPPLIED.** `licence_review_queue` and `issued_keys` do not
+exist yet. It applies on push to `main` — see the warning at the top of this file — so nothing queues and
+nothing is recorded until that happens deliberately.
+
+**3. ⛔ `ADMIN_TOKEN` IS A FLOOR, NOT THE CONTROL — AND CLOUDFLARE ACCESS IN FRONT OF `/api/admin/*` IS A
+DEPLOYMENT PRECONDITION, NOT A HARDENING TASK.**
+
+> ## **WHOEVER REACHES `/api/admin/*` MINTS UNREVOCABLE ARTEFACTS.**
+
+A licence cannot be recalled — verification is offline, so nothing we do afterwards reaches an issued key.
+`ADMIN_TOKEN` is **one shared bearer string** with no identity, no per-person revocation, and no audit of
+who used it: if it leaks, you cannot tell who minted, and you cannot stop them without rotating a secret
+that everyone shares. That is an acceptable floor for a surface that does nothing. **It is not an
+acceptable control for a surface that issues permanent grants.**
+
+⚠ **Do not treat this as "we will add Access later."** Later is after the first real key, and the first
+real key is the moment the surface stops being harmless. Put Access in front of `/api/admin/*` **before**
+the ceremony, so the window where the route is live and unprotected never exists.
+
 ### ⭐ The key set, and what it does not buy
 
 Every licence carries a `kid`; the product verifies against a **set** and selects by it. Rotation is: new
