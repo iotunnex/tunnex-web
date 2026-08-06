@@ -134,19 +134,22 @@ The Go verifier exists and the format is proven across both repos by the golden 
 
 ## 7b. ⛔ What will break first — one of these is not a prediction
 
-### ⛔ THE EMAIL SAYS SOMETHING THAT IS NOT TRUE. Read this before you send one.
+### ✅ FIXED BEFORE THE FIRST SEND — the email used to say something untrue
 
-`templates.ts:113` renders, verbatim:
+It read _"Paste it into your control plane — no reinstall, features unlock in place"_, with a preheader
+promising _"unlock features"_. **Nothing unlocks**: no released binary verifies a `tnxl_` key and there is
+no paste surface. A recipient following those instructions would hunt for something that does not exist and
+conclude the key was broken — when it is correct and merely not yet useful.
 
-> _"Paste it into your control plane — **no reinstall, features unlock in place**."_
-> Preheader: _"…paste it into your control plane to **unlock features**."_
+It now says, plainly: _"Licence enforcement is not live in Tunnex yet, so there is nothing to paste this
+into today and nothing changes when you receive it. The key is yours — keep it."_
 
-**Nothing unlocks.** No released binary verifies a `tnxl_` key, and there is no paste surface in the product
-(S12.1/S12.3). ⚠ **A recipient who follows those instructions will look for something that does not exist,
-and conclude the key is broken.** It is not — it is correct and not yet useful (§9).
+⭐ **The reversion condition is in the template as a comment**: when S12.1 ships enforcement AND a paste
+surface exists, the unlock-in-place copy goes back. Written as a condition rather than a TODO because the
+honest version would otherwise outlive its reason and the product would ship understating itself.
 
-⭐ **This was found by reading the template, not by guessing** — which is why it is first. Before the first
-send, either soften that copy or tell the recipient in person what the key is for.
+⚠ **You should still read the whole email as a stranger would** (§7) — the layout has never been seen with
+a real key in it.
 
 ### Predictable, in order of suspicion
 

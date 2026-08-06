@@ -110,28 +110,48 @@ const renderers: Renderers = {
     ].join('\n'),
   }),
 
+  // ⛔ THIS COPY IS DELIBERATELY NARROWER THAN THE PRODUCT'S EVENTUAL PROMISE, AND IT MUST BE REVERTED.
+  //
+  // It used to say "Paste it into your control plane — no reinstall, features unlock in place", with a
+  // preheader promising "unlock features". That was untrue at the time of writing: S12.1 is unstarted, no
+  // released binary verifies a `tnxl_` key, and there is no paste surface. A recipient following those
+  // instructions would hunt for something that does not exist and conclude the key was broken — when the
+  // key is correct and merely not yet useful.
+  //
+  // ⭐ REVERSION CONDITION — when S12.1 ships licence enforcement AND a paste surface exists in the
+  // product, PUT THE UNLOCK-IN-PLACE COPY BACK. Both halves: enforcement without somewhere to paste is
+  // still nothing the recipient can act on.
+  //
+  // ⚠ Written as a condition rather than a TODO because the honest version will otherwise outlive its
+  // reason, and the product ships understating itself — which is the same defect in the other direction.
   'trial-key-delivery': ({ domain, licenseKey, expiresAt }, ctx) => ({
     subject: 'Your Tunnex Enterprise trial key',
     html: shell(
       'Your Tunnex Enterprise trial key',
       ctx,
       paragraph(
-        `Welcome! Here is the 14-day Tunnex Enterprise trial key for <strong>${escapeHtml(domain)}</strong> (valid until ${escapeHtml(expiresAt)}):`,
+        `Here is the 14-day Tunnex Enterprise trial key for <strong>${escapeHtml(domain)}</strong>, valid until ${escapeHtml(expiresAt)}:`,
       ) +
         `<pre style="background-color:${EMAIL.bg};border:1px solid ${EMAIL.border};border-radius:6px;padding:12px;font-size:13px;overflow-x:auto;">${escapeHtml(licenseKey)}</pre>` +
-        paragraph('Paste it into your control plane — no reinstall, features unlock in place.') +
+        paragraph(
+          'Licence enforcement is not live in Tunnex yet, so there is nothing to paste this into today and nothing changes when you receive it. The key is yours — keep it.',
+        ) +
+        paragraph('In the meantime, Tunnex runs fully without a key:') +
         button(`${ctx.baseUrl}/docs/quickstart/`, 'Follow the quickstart'),
       {
         preheader:
-          'Your 14-day Enterprise trial key is inside — paste it into your control plane to unlock features.',
+          'Your 14-day Enterprise trial key is inside — keep it; licence enforcement is not live in Tunnex yet.',
       },
     ),
     text: [
-      `Welcome! Here is the 14-day Tunnex Enterprise trial key for ${domain} (valid until ${expiresAt}):`,
+      `Here is the 14-day Tunnex Enterprise trial key for ${domain}, valid until ${expiresAt}:`,
       '',
       licenseKey,
       '',
-      'Paste it into your control plane — no reinstall, features unlock in place.',
+      'Licence enforcement is not live in Tunnex yet, so there is nothing to paste this into today and',
+      'nothing changes when you receive it. The key is yours — keep it.',
+      '',
+      'In the meantime, Tunnex runs fully without a key.',
       `Quickstart: ${ctx.baseUrl}/docs/quickstart/`,
     ].join('\n'),
   }),
