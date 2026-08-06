@@ -37,12 +37,28 @@ const ogImageUrl = resolvedOgImage ? new URL(resolvedOgImage, site).href : undef
 
 const orgJsonLd = JSON.stringify({
   '@context': 'https://schema.org',
-  '@type': 'Organization',
-  name: 'Tunnex',
-  url: site.href,
-  description: 'Self-hosted Zero Trust VPN.',
-  logo: new URL('/icon-512.png', site).href,
-  email: 'sales@tunnex.io',
+  '@graph': [
+    {
+      '@type': 'WebSite',
+      '@id': `${site.href}#website`,
+      url: site.href,
+      name: 'Tunnex',
+      description: 'Self-hosted Zero Trust VPN for People, Workloads & AI Agents',
+      publisher: {
+        '@id': `${site.href}#organization`,
+      },
+    },
+    {
+      '@type': 'Organization',
+      '@id': `${site.href}#organization`,
+      name: 'Tunnex',
+      url: site.href,
+      description: 'Self-hosted Zero Trust VPN.',
+      logo: new URL('/icon-512.png', site).href,
+      email: 'sales@tunnex.io',
+      sameAs: ['https://github.com/iotunnex/tunnex'],
+    },
+  ],
 });
 ---
 
