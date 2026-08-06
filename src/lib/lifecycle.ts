@@ -77,6 +77,19 @@ export async function runLifecycle(deps: LifecycleDeps): Promise<LifecycleSummar
     // Beta-launch pass: promote what verification parked. onTrialApproved
     // builds FRESH claims (clock starts now, at issuance — the promise).
     for (const trial of await deps.store.pendingLaunchTrials()) {
+      // ⛔ THIS CLAIM IS SPENT ON PURPOSE, AND THE QUEUE IS NOW THE ONLY ROUTE FORWARD.
+      //
+      // Under manual issuance the injected issuer is `reviewQueueIssuer`: it records the claims for a
+      // human and returns issued:false. So this attempt does NOT promote the trial — it enqueues it — and
+      // the claim is burned all the same. The trial then waits for a person, and THIS CRON WILL NEVER
+      // TOUCH IT AGAIN (the claim is UNIQUE(trial_id, kind), so the next run skips it).
+      //
+      // ⚠ THAT IS CORRECT, NOT A LEAK. A future reader seeing "a wasted claim" must not fix it by
+      // retrying or by releasing the claim: a retry loop here puts the CRON BACK ON THE MINT PATH — an
+      // unattended job at 03:17 issuing licences that, because verification is offline, can never be
+      // revoked. The burn is what stops that.
+      //
+      // If a queued trial needs to move, it moves through the review queue. Not through here.
       if (!(await deps.store.claimEmailEvent(trial.id, 'trial-key-delivery'))) continue;
       try {
         await onTrialApproved(

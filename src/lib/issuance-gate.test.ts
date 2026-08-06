@@ -35,6 +35,9 @@ describe('the unattended paths cannot mint', () => {
   const NON_MINTING: Record<string, string> = {
     pendingLaunchIssuer: 'defers — returns issued:false, parks the trial with no clock',
     placeholderKeyIssuer: 'emits an obviously-non-functional placeholder, never a signed key',
+    reviewQueueIssuer:
+      'records the claims for a human and returns issued:false — it has no signing key and no mint path. ' +
+      'THIS IS THE MANUAL-ISSUANCE GATE ITSELF: it is what makes the 03:17 cron safe by construction.',
   };
 
   it('every issuer factory in issuance.ts is dispositioned', () => {

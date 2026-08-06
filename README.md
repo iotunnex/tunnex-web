@@ -269,3 +269,13 @@ key, new `kid`, add its public half to the set, ship, issue under it, later drop
 ⛔ **It does not make rotation cheap.** Keys minted under the old `kid` run to their own expiry; the
 installed base still has to upgrade; compromise is still undetectable. **It makes rotation possible to
 express** — removing the _format_ migration that would otherwise sit on top of the upgrade migration.
+
+---
+
+## Register
+
+Things that bit once and will bite again.
+
+| # | what happened | what it means |
+| --- | --- | --- |
+| **1** | ⛔ **Concurrent editor, 2026-08-06.** A file written at 10:07 was **gone by 10:08:13**, in the same second unrelated assets appeared; a commit landed on the working branch **between two of the same author's commits**; and tracked files were reformatted underneath an in-progress change. | ⛔ **"It worked when I ran it" stops being evidence under a concurrent editor.** The write succeeding does not mean the file is there now. ⭐ The only reason it was noticed is that the tree was **re-checked** instead of the write being trusted — so re-read state you did not just observe, and commit narrowly (stage your own paths, never `git add -A`) so "is this mine?" stays answerable. |

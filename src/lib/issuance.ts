@@ -105,3 +105,61 @@ export function placeholderKeyIssuer(): Issuer {
     },
   };
 }
+
+// ── the review queue: where manual issuance actually lives ──────────────────────────────────────────
+
+/** Persistence for claims awaiting a human signature. */
+export interface ReviewQueueStore {
+  /**
+   * Record claims for review. MUST be idempotent per domain — both callers can reach the seam more than
+   * once for the same trial, and a reviewer should never have to tell two identical rows apart.
+   */
+  enqueue(claims: LicenseClaims): Promise<void>;
+}
+
+/**
+ * ⭐ THE ISSUER **IS** THE QUEUE — Shape C, founder-ruled.
+ *
+ * It records the claims and returns `issued: false`. ⛔ IT NEVER MINTS, AND THAT IS THE WHOLE POINT: the
+ * human gate lives HERE, at the seam, not at a call site.
+ *
+ * ⚠ WHY THE SEAM AND NOT THE CALL SITE. `onTrialApproved` has TWO callers — the verify route, and
+ * lifecycle.ts's promote leg driven by the DAILY CRON at 03:17 UTC, unattended, in a loop. A gate placed
+ * at one call site proves nothing about the other, and the dangerous one is the cron, where nobody is
+ * present. Placing it in the issuer makes the cron safe BY CONSTRUCTION rather than by anyone remembering
+ * it exists.
+ *
+ * The trial stays `status='pending_launch'` — which already means exactly "approved, no key, clock not
+ * started" — so no schema state was added and `trials` was not touched.
+ */
+export function reviewQueueIssuer(store: ReviewQueueStore): Issuer {
+  return {
+    async issue(claims) {
+      await store.enqueue(claims);
+      return { issued: false, reason: 'pending_review' };
+    },
+  };
+}
+
+/** D1-backed review queue. Idempotent per domain via UNIQUE(trial_domain) — see migration 0003. */
+export function d1ReviewQueueStore(db: D1Database): ReviewQueueStore {
+  return {
+    async enqueue(claims) {
+      await db
+        .prepare(
+          `INSERT INTO licence_review_queue
+             (trial_domain, tier, issued_at, expires_at, license_id)
+           VALUES (?, ?, ?, ?, ?)
+           ON CONFLICT (trial_domain) DO NOTHING`,
+        )
+        .bind(
+          claims.domain,
+          claims.tier,
+          claims.issued_at,
+          claims.expires_at,
+          claims.license_id,
+        )
+        .run();
+    },
+  };
+}
