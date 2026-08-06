@@ -70,13 +70,30 @@ export interface AdminIssueDeps {
   now?: () => number;
 }
 
+/** Error name + message, never a value. */
+function errName(e: unknown): string {
+  return e instanceof Error ? `${e.name}: ${e.message}` : String(e);
+}
+
 export type IssueOutcome =
   | { ok: true; licenceKey: string; emailed: true }
   /** ⚠ Minted and recorded, but delivery failed. The key is handed BACK — it exists and cannot be recalled. */
   | { ok: true; licenceKey: string; emailed: false; deliveryError: string }
   | {
       ok: false;
-      code: 'not_pending' | 'no_trial_email' | 'bad_band' | 'sign_failed' | 'self_verify_failed';
+      // ⛔ 'sign_failed' USED TO COVER EVERYTHING between reading the secret and producing a signature,
+      // and the exception was discarded by a bare `catch {}` — written that way to satisfy no-unused-vars,
+      // which deleted the only diagnostic evidence in the system. It cost a live walk to find a cause the
+      // exception names in one line. These are separate because the operator's next action differs.
+      code:
+        | 'not_pending'
+        | 'no_trial_email'
+        | 'bad_band'
+        | 'signing_key_unreadable' // absent, or not JSON — a paste problem
+        | 'signing_key_rejected' // parsed, runtime refused it (wrong alg, public half, bad shape)
+        | 'signing_threw' // imported fine, signing itself failed
+        | 'self_verify_failed';
+      detail?: string;
     }
   /** ⛔ The unrecoverable case: a key EXISTS and we failed to record it. Surfaced loudly, never swallowed. */
   | { ok: false; code: 'minted_but_unrecorded'; licenceKey: string; detail: string };
@@ -117,6 +134,31 @@ export async function issueFromQueue(deps: AdminIssueDeps, row: QueueRow): Promi
 
   let licenceKey: string;
   let kid: string;
+  // ⛔ THE SECRET IS READ AND PARSED SEPARATELY FROM THE IMPORT, so "unreadable" and "rejected" cannot be
+  // confused. They have different remedies: one is a paste, the other is the KEY ITSELF being wrong for
+  // this runtime — which is exactly what the first live attempt hit (Node exports alg:"Ed25519"; workerd
+  // requires "EdDSA").
+  if (!deps.env.SIGNING_KEY_JWK || !deps.env.SIGNING_KID) {
+    await deps.store.releaseClaim(row.trialDomain);
+    return {
+      ok: false,
+      code: 'signing_key_unreadable',
+      detail: 'SIGNING_KEY_JWK or SIGNING_KID is not set',
+    };
+  }
+  try {
+    JSON.parse(deps.env.SIGNING_KEY_JWK);
+  } catch (e) {
+    await deps.store.releaseClaim(row.trialDomain);
+    // ⚠ THE MESSAGE ONLY — never the value. A JSON parse error quotes the input it choked on, so the raw
+    // text must never reach a log line.
+    console.error(JSON.stringify({ event: 'issuance.signing_key_unparseable', error: errName(e) }));
+    return {
+      ok: false,
+      code: 'signing_key_unreadable',
+      detail: 'SIGNING_KEY_JWK is not valid JSON',
+    };
+  }
   try {
     const active = await activeSigningKey(deps.env);
     kid = active.kid;
@@ -134,9 +176,22 @@ export async function issueFromQueue(deps: AdminIssueDeps, row: QueueRow): Promi
       band: row.tier,
     };
     licenceKey = await signLicence(active.key, buildPayload(claims));
-  } catch {
+  } catch (e) {
     await deps.store.releaseClaim(row.trialDomain); // nothing was minted
-    return { ok: false, code: 'sign_failed' };
+    // ⛔ LOG THE EXCEPTION. This is the line whose absence cost a live walk: the cause was named exactly by
+    // the error text ('JSON Web Key Algorithm parameter "alg" ("Ed25519") does not match requested Ed25519
+    // curve') and nothing recorded it.
+    // ⚠ Name and message only, and NEITHER can contain key material: WebCrypto import errors describe the
+    // ALGORITHM MISMATCH, never the bytes.
+    console.error(
+      JSON.stringify({ event: 'issuance.sign_failed', domain: row.trialDomain, error: errName(e) }),
+    );
+    const imported = /import|JSON Web Key|alg|usage|DataError/i.test(errName(e));
+    return {
+      ok: false,
+      code: imported ? 'signing_key_rejected' : 'signing_threw',
+      detail: errName(e),
+    };
   }
 
   // 3. Self-verify before it leaves.

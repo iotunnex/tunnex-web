@@ -245,17 +245,44 @@ const { subtle } = crypto;
 subtle.generateKey({ name: "Ed25519" }, true, ["sign","verify"]).then(async k => {
   const priv = await subtle.exportKey("jwk", k.privateKey);
   const pub  = await subtle.exportKey("jwk", k.publicKey);
-  console.log("KID:    ", "k" + new Date().getFullYear());
-  console.log("PRIVATE:", JSON.stringify(priv));
-  console.log("PUBLIC: ", JSON.stringify(pub));
+  // ⛔ alg MUST BE "EdDSA". Node exports alg:"Ed25519", which workerd REFUSES:
+  //    DataError: JSON Web Key Algorithm parameter "alg" ("Ed25519") does not match requested Ed25519 curve.
+  // "EdDSA" is the JWA registered name (RFC 8037), so the JWK stays valid to every consumer — stripping
+  // alg also imports, but leaves a JWK that says less about itself than it could.
+  for (const j of [priv, pub]) j.alg = "EdDSA";
+  console.log("KID:");
+  console.log("k" + new Date().getFullYear());
+  console.log("PRIVATE:");
+  console.log(JSON.stringify(priv));
+  console.log("PUBLIC:");
+  console.log(JSON.stringify(pub));
 })'
 
-wrangler secret put SIGNING_KEY_JWK      # paste PRIVATE
-wrangler secret put SIGNING_PUBLIC_JWK   # paste PUBLIC
-wrangler secret put SIGNING_KID          # paste KID
+wrangler secret put SIGNING_KEY_JWK      # paste the PRIVATE line
+wrangler secret put SIGNING_PUBLIC_JWK   # paste the PUBLIC line
+wrangler secret put SIGNING_KID          # paste the KID line
 
 clear && set -o history
 ```
+
+⚠ **Each value is printed on its OWN line, with the label above it.** The first version of this ceremony
+printed `PRIVATE: {"kty":…}` on one line — selecting that line captures the label too, and pasting it makes
+the secret unparseable. **A value you cannot select cleanly is a defect in the instructions, not in the
+operator.**
+
+### ⛔ PROVE THE KEY IMPORTS BEFORE ANYONE QUEUES A REAL CUSTOMER
+
+Setting a secret proves nothing about whether it works. Run this immediately after:
+
+```sh
+curl -s -o /dev/null -w "%{http_code}\n" \
+  -H "authorization: Bearer $ADMIN_TOKEN" \
+  https://tunnex.io/api/admin/signing-selftest
+```
+
+**`200` means the key imported and produced a signature that verifies against `SIGNING_PUBLIC_JWK`.**
+Anything else prints a reason naming which half is wrong. ⚠ It signs a fixed dummy payload and issues
+nothing — it is safe to run any time.
 
 **Keep the PUBLIC half** — it is baked into the product binary (S12.2) as one member of a **key set**. It is
 not a secret and you will need it again.

@@ -160,10 +160,18 @@ describe('key material is CONFINED, not absent (ruling replaced 2026-08-06)', ()
     }
   };
 
-  it(`Ed25519 is used in ${SIGNING_MODULE} and nowhere else in src/`, () => {
+  // ⚠ SUBJECT NARROWED 2026-08-06, and the reason is the same lesson twice: the old subject was "the
+  // string ed25519 appears anywhere", a PROXY for "this file performs Ed25519 crypto". It fired on an
+  // operator ERROR MESSAGE that names the algorithm — and that message has to name it, because the whole
+  // fix an operator needs is 'Node exports alg:"Ed25519", Workers requires "EdDSA"'.
+  //
+  // ⛔ THE HAZARD IS A SECOND IMPLEMENTATION, NOT A SECOND MENTION. So the subject is now a crypto.subtle
+  // call that names the algorithm — the capability itself. Prose stays free; signing stays confined.
+  it(`Ed25519 crypto is PERFORMED only in ${SIGNING_MODULE}`, () => {
     const offenders: string[] = [];
     walk('src', (path, text) => {
-      if (/ed25519/i.test(text) && path !== SIGNING_MODULE) offenders.push(path);
+      const performs = /crypto\.subtle\.\w+\([^)]*/s.test(text) && /ed25519/i.test(text);
+      if (performs && path !== SIGNING_MODULE) offenders.push(path);
     });
     expect(
       offenders,

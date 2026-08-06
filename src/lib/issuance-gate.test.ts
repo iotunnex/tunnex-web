@@ -126,6 +126,10 @@ describe('the unattended paths cannot mint', () => {
     'src/lib/admin-issue.ts':
       'the admin orchestration: claim → mint → self-verify → record → send. Not reachable from any ' +
       'unattended path; its only caller is the token-gated admin route below.',
+    'src/pages/api/admin/signing-selftest.ts':
+      'signs a FIXED DUMMY payload for selftest.invalid (RFC 2606) and issues nothing — no queue row, no ' +
+      'ledger write, no email. It exists because SETTING a secret proves nothing about whether it WORKS, ' +
+      'which is what the first live attempt discovered the expensive way. Token-gated like the queue.',
   };
 
   /**

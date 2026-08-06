@@ -82,7 +82,23 @@ export const POST: APIRoute = async ({ request }) => {
       { status: 500 },
     );
   }
-  return new Response(result.code, { status: result.code === 'not_pending' ? 409 : 400 });
+  // ⚠ THE REASON AND THE DETAIL BOTH REACH THE OPERATOR. "sign_failed" alone gave them no way to tell a
+  // malformed secret from a key this runtime refuses — and the second is not a paste error, it is the
+  // ceremony emitting the wrong thing. `detail` carries the exception's name and message, never a value.
+  const hint: Partial<Record<string, string>> = {
+    signing_key_unreadable:
+      'SIGNING_KEY_JWK is absent or not valid JSON — re-run the ceremony in README.md.',
+    signing_key_rejected:
+      'The signing key parsed but this runtime refused it. Most likely alg: Node exports "Ed25519", ' +
+      'Workers requires "EdDSA". Re-run the ceremony — it now emits EdDSA — then hit /api/admin/signing-selftest.',
+    signing_threw: 'The key imported but signing failed.',
+    self_verify_failed:
+      'SIGNING_PUBLIC_JWK is not the public half of SIGNING_KEY_JWK. Nothing was issued.',
+  };
+  const extra = [hint[result.code], result.detail].filter(Boolean).join('\n');
+  return new Response(extra ? `${result.code}\n\n${extra}` : result.code, {
+    status: result.code === 'not_pending' ? 409 : 400,
+  });
 };
 
 /** Constant-time compare: a `===` on the only secret guarding the signer leaks its prefix by timing. */
