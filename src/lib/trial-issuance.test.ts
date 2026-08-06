@@ -131,22 +131,59 @@ describe('Issuer seam', () => {
   });
 });
 
-describe('no key material in this repo (S3.4 DoD)', () => {
-  it('src/ contains no Ed25519 usage or embedded private keys', () => {
-    const offenders: string[] = [];
-    const walk = (dir: string) => {
-      for (const entry of readdirSync(dir, { withFileTypes: true })) {
-        const path = join(dir, entry.name);
-        if (entry.isDirectory()) walk(path);
-        else if (/\.(ts|astro|mjs|js)$/.test(entry.name) && !entry.name.endsWith('.test.ts')) {
-          const text = readFileSync(path, 'utf8');
-          if (/ed25519|BEGIN [A-Z ]*PRIVATE KEY|signingKey|secret_key/i.test(text)) {
-            offenders.push(path);
-          }
-        }
+describe('key material is CONFINED, not absent (ruling replaced 2026-08-06)', () => {
+  /**
+   * ⛔ THIS GUARD USED TO ASSERT "src/ contains no Ed25519 usage or embedded private keys" — the S3.4 DoD,
+   * written when the PLATFORM repo was assumed to hold the signer.
+   *
+   * THE FOUNDER HAS RULED THE OPPOSITE: the thing that mints keys belongs where the keys are, not where the
+   * product ships. The platform repo goes to customers; this one does not.
+   *
+   * ⭐ SO THE GUARD IS REWRITTEN RATHER THAN DELETED. Deleting it would retire a mechanically-enforced
+   * invariant as a side effect of a ruling change, leaving nothing in its place — and this test failing is
+   * how the reversal was found to be more than a comment edit. The new invariant is narrower and still
+   * checkable:
+   *
+   *   1. Ed25519 lives in ONE module. A second one is a second place to get signing wrong.
+   *   2. A private key is NEVER a literal in source — it is a Worker secret, and `wrangler secret put` is
+   *      write-only. A key in source is a key in git, forever, for everyone with clone access.
+   */
+  const SIGNING_MODULE = 'src/lib/licence.ts';
+
+  const walk = (dir: string, hit: (path: string, text: string) => void) => {
+    for (const entry of readdirSync(dir, { withFileTypes: true })) {
+      const path = join(dir, entry.name);
+      if (entry.isDirectory()) walk(path, hit);
+      else if (/\.(ts|astro|mjs|js)$/.test(entry.name) && !entry.name.endsWith('.test.ts')) {
+        hit(path, readFileSync(path, 'utf8'));
       }
-    };
-    walk('src');
-    expect(offenders).toEqual([]);
+    }
+  };
+
+  it(`Ed25519 is used in ${SIGNING_MODULE} and nowhere else in src/`, () => {
+    const offenders: string[] = [];
+    walk('src', (path, text) => {
+      if (/ed25519/i.test(text) && path !== SIGNING_MODULE) offenders.push(path);
+    });
+    expect(
+      offenders,
+      'signing belongs in one module — a second one is a second place to get it wrong, and only one of ' +
+        'them will have been reviewed as if it mattered',
+    ).toEqual([]);
+  });
+
+  it('no private key material is embedded anywhere in src/', () => {
+    const offenders: string[] = [];
+    walk('src', (path, text) => {
+      // A PEM block, or a JWK carrying the Ed25519 private scalar `d`. The secret is set with
+      // `wrangler secret put` and read from env — it must never be a value in a file.
+      if (/BEGIN [A-Z ]*PRIVATE KEY/.test(text)) offenders.push(`${path} (PEM private key)`);
+      if (/"kty"\s*:\s*"OKP"[^}]*"d"\s*:/.test(text)) offenders.push(`${path} (private JWK)`);
+    });
+    expect(
+      offenders,
+      '⛔ A private key in source is a private key in git — unlimited, unrevocable and undetectable minting ' +
+        'for anyone with clone access, forever.',
+    ).toEqual([]);
   });
 });
