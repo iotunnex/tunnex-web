@@ -54,11 +54,27 @@ export interface LicencePayload {
   kid: string;
   id: string;
   dom: string;
+  /**
+   * ⭐ THE TIER. Added in S12.1, in the slice that makes it ENFORCEABLE — not before.
+   *
+   * ⛔ A key must not assert something nothing can honour: that is the render-floor violation with a
+   * signature on it, in an artefact that cannot be recalled. S12.2 recorded the ordering precondition and
+   * this is it being met.
+   *
+   * ⚠ Keys minted before this field exist and are valid. An absent tier reads as Community — the same
+   * ruling as an absent licence — which is the safe direction and matches what those keys could actually
+   * do at the time they were signed.
+   */
+  tier: Tier;
+  /** The gateway band. `band` IS gateway_band — the name predates the spec's wording. */
   band: Band;
   gw: number | null;
   iat: number;
   exp: number;
 }
+
+/** Commercial tier. ⚠ Community holds no key at all, so it never appears in a signed payload. */
+export type Tier = 'trial' | 'starter' | 'growth' | 'scale';
 
 export type VerifyResult =
   | { ok: true; payload: LicencePayload }
@@ -103,6 +119,11 @@ export function buildPayload(
     kid: claims.kid,
     id: claims.license_id,
     dom: claims.domain,
+    // The band IS the tier for every key that exists: a trial key is the trial tier, a Starter key the
+    // Starter tier. Carried separately because they are different questions — one is "what may this
+    // deployment do", the other "how many gateways" — and conflating them is how a future band that
+    // shares a tier becomes impossible to express.
+    tier: claims.band,
     band: claims.band,
     // ⚠ RESOLVED AT MINT, never looked up at verify: a later change to BANDS must not silently re-price a
     // key already in a customer's hands — that would be editing a grant nobody re-issued.

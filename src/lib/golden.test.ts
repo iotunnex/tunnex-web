@@ -4,6 +4,10 @@ import { buildPayload, signLicence } from './licence.ts';
 /**
  * ⭐ THE CROSS-REPO GOLDEN VECTOR — this repo's half.
  *
+ * ⚠ REGENERATED IN S12.1 when `tier` entered the wire format. The Go twin was updated BY HAND from this
+ * value — not derived, not shared through a package. That is the mechanism: if only one side had been
+ * updated, the other would have gone red, which is the whole reason both literals exist.
+ *
  * The verifier is Go, in the platform repo (`apps/api/internal/licence/golden_test.go`). It asserts that
  * VERIFYING this exact string yields these exact claims. This file asserts that SIGNING these claims with
  * this key produces that exact string. Two repos, two languages, no shared code.
@@ -40,7 +44,7 @@ const GOLDEN_CLAIMS = {
 
 /** ⛔ Transcribed by hand from the Go twin. If you changed the format, change BOTH. */
 const GOLDEN_WIRE =
-  'tnxl_eyJ2IjoxLCJraWQiOiJrLWdvbGRlbi0xIiwiaWQiOiIxMTExMTExMS0yMjIyLTMzMzMtNDQ0NC01NTU1NTU1NTU1NTUiLCJkb20iOiJtw7xuY2hlbi1nbWJoLmV4YW1wbGUiLCJiYW5kIjoic2NhbGUiLCJndyI6bnVsbCwiaWF0IjoxNzAwMDAwMDAwLCJleHAiOjQxMDI0NDQ4MDB9.7yAFvrNdbcCz4zHhw8kSzp-wx5jijbtxbbWbnk1FI3fV0IzvRJEkf0ThwAcVqyNMaXvn2xH7qY_RML17xkL_Aw';
+  'tnxl_eyJ2IjoxLCJraWQiOiJrLWdvbGRlbi0xIiwiaWQiOiIxMTExMTExMS0yMjIyLTMzMzMtNDQ0NC01NTU1NTU1NTU1NTUiLCJkb20iOiJtw7xuY2hlbi1nbWJoLmV4YW1wbGUiLCJ0aWVyIjoic2NhbGUiLCJiYW5kIjoic2NhbGUiLCJndyI6bnVsbCwiaWF0IjoxNzAwMDAwMDAwLCJleHAiOjQxMDI0NDQ4MDB9.lvAsH4hNbeLb-GU9RvYZbvI0IoH_HMWc6Mx2Felw39rmFtZN-Su_dM8P3ShS0K-tYWJ8TFILAuH2dVz5ki1lAw';
 
 test('signing the golden claims produces the exact wire string the Go verifier expects', async () => {
   const priv = await crypto.subtle.importKey(
