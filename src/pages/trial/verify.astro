@@ -1,4 +1,5 @@
 ---
+import { TRIAL_LENGTH_ADJ, TRIAL_LENGTH_NOUN } from '../../lib/issuance.ts';
 import { env } from 'cloudflare:workers';
 import Base from '../../layouts/Base.astro';
 import Button from '../../components/ui/Button.astro';
@@ -47,13 +48,13 @@ const titles = {
             </h1>
             {launchMode === 'prelaunch' ? (
               <p class="font-sans font-normal text-[14px] leading-[1.6] text-text-muted">
-                One click reserves the 14-day Enterprise trial for {domain}. Your license key
-                arrives when the beta opens · the clock starts then, not today.
+                One click reserves the {TRIAL_LENGTH_ADJ} Enterprise trial for {domain}. Your
+                license key arrives when the beta opens · the clock starts then, not today.
               </p>
             ) : (
               <p class="font-sans font-normal text-[14px] leading-[1.6] text-text-muted">
-                One click starts the 14-day Enterprise trial for {domain}. Your license key goes
-                straight to your inbox · the 14 days start when it’s issued.
+                One click starts the {TRIAL_LENGTH_ADJ} Enterprise trial for {domain}. Your license
+                key goes straight to your inbox · the {TRIAL_LENGTH_NOUN} start when it’s issued.
               </p>
             )}
             <form method="post" action="/api/trial/verify" class="w-full mt-2">

@@ -1,4 +1,5 @@
 ---
+import { TRIAL_LENGTH_ADJ, TRIAL_LENGTH_NOUN } from '../../lib/issuance.ts';
 import Base from '../../layouts/Base.astro';
 import Button from '../../components/ui/Button.astro';
 import Card from '../../components/ui/Card.astro';
@@ -22,15 +23,16 @@ import { launchMode } from '../../config';
       {
         launchMode === 'prelaunch' ? (
           <p class="font-sans font-normal text-[14px] leading-[1.6] text-text-muted">
-            Your 14-day Enterprise trial is reserved for your domain. Your license key lands in your
-            inbox the moment the beta opens, and your 14 days start only when the key is issued —
-            being early costs you nothing.
+            Your {TRIAL_LENGTH_ADJ} Enterprise trial is reserved for your domain. Your license key
+            lands in your inbox the moment the beta opens, and your {TRIAL_LENGTH_NOUN} start only
+            when the key is issued — being early costs you nothing.
           </p>
         ) : (
           <p class="font-sans font-normal text-[14px] leading-[1.6] text-text-muted">
-            Your 14-day Enterprise trial is reserved for your domain. Every key is reviewed and
-            issued by a person, usually within one business day — it arrives by email, and your 14
-            days start when it’s issued, not now.
+            Your {TRIAL_LENGTH_ADJ} Enterprise trial is reserved for your domain. Every key is
+            reviewed and issued by a person, usually within one business day — it arrives by email,
+            and your {TRIAL_LENGTH_NOUN}
+            start when it’s issued, not now.
           </p>
         )
       }

@@ -61,7 +61,7 @@ hostage.
 ## Where we are today
 
 Honest status: Tunnex is in the run-up to beta. The site is live, and the
-[14-day Enterprise trial](/trial/) is open for requests. One trial per
+[30-day Enterprise trial](/trial/) is open for requests. One trial per
 company domain, bound to a verified work email; license keys go out the
 moment the beta opens. Your trial clock starts when your key is issued, not
 when you sign up, so there is no cost to being early.

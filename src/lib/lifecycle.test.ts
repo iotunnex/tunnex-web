@@ -4,8 +4,15 @@ import {
   REMINDER_AFTER_SECONDS,
   runLifecycle,
   type LifecycleStore,
+  REMINDER_LEAD_DAYS,
+  FOLLOWUP_AFTER_EXPIRY_DAYS,
 } from './lifecycle.ts';
-import { TRIAL_SECONDS, pendingLaunchIssuer, placeholderKeyIssuer } from './issuance.ts';
+import {
+  TRIAL_DAYS,
+  TRIAL_SECONDS,
+  pendingLaunchIssuer,
+  placeholderKeyIssuer,
+} from './issuance.ts';
 import type { TrialActivationStore } from './trial-issuance.ts';
 
 beforeEach(() => {
@@ -197,32 +204,39 @@ describe('beta-launch pass (promotion)', () => {
 });
 
 describe('time-travel transitions (beta)', () => {
-  it('day 9.9: nothing due', async () => {
+  // ⛔ THE TIMELINE IS DERIVED, NOT RESTATED. These days were literals (10, 14, 21, 25) that encoded a
+  // 14-day trial; when TRIAL_DAYS moved to 30 they did not, and the follow-up would have fired NINE DAYS
+  // BEFORE the trial expired. Deriving them means the next change to TRIAL_DAYS moves the tests with it.
+  const REMIND_DAY = TRIAL_DAYS - REMINDER_LEAD_DAYS; // four days before expiry
+  const EXPIRY_DAY = TRIAL_DAYS;
+  const FOLLOWUP_DAY = TRIAL_DAYS + FOLLOWUP_AFTER_EXPIRY_DAYS; // a week after expiry
+
+  it('just before the reminder: nothing due', async () => {
     const world = fakeWorld([{ ...ACTIVE }]);
-    const { mailer, deps } = betaDeps(world, atDay(9.9));
+    const { mailer, deps } = betaDeps(world, atDay(REMIND_DAY - 0.1));
     await runLifecycle(deps);
     expect(mailer.sent.length).toBe(0);
   });
 
-  it('day 10: d10 reminder once, daysLeft 4; rerun sends nothing', async () => {
+  it('reminder day: one reminder, daysLeft 4; rerun sends nothing', async () => {
     const world = fakeWorld([{ ...ACTIVE }]);
-    const { mailer, deps } = betaDeps(world, atDay(10));
+    const { mailer, deps } = betaDeps(world, atDay(REMIND_DAY));
     await runLifecycle(deps);
     expect(mailer.sent).toEqual([
       {
         kind: 'trial-d10-reminder',
         to: 'cto@acme.com',
-        data: { domain: 'acme.com', daysLeft: 4, expiresAt: expect.any(String) },
+        data: { domain: 'acme.com', daysLeft: REMINDER_LEAD_DAYS, expiresAt: expect.any(String) },
       },
     ]);
     await runLifecycle(deps); // same day rerun
-    await runLifecycle({ ...deps, now: atDay(12) }); // later rerun, still in window
+    await runLifecycle({ ...deps, now: atDay(REMIND_DAY + 2) }); // later rerun, still inside the window
     expect(mailer.sent.length).toBe(1);
   });
 
-  it('day 14: expiry flips status and sends the upgrade email once', async () => {
+  it('expiry day: flips status and sends the upgrade email once', async () => {
     const world = fakeWorld([{ ...ACTIVE }]);
-    const { mailer, deps } = betaDeps(world, atDay(14));
+    const { mailer, deps } = betaDeps(world, atDay(EXPIRY_DAY));
     const summary = await runLifecycle(deps);
     expect(world.rows[0]!.status).toBe('expired');
     expect(summary.expired).toBe(1);
@@ -233,18 +247,18 @@ describe('time-travel transitions (beta)', () => {
     expect(mailer.sent.filter((s) => s.kind === 'trial-expired-upgrade').length).toBe(1);
   });
 
-  it('day 21: follow-up once on the expired trial; rerun idempotent', async () => {
+  it('follow-up day: once on the expired trial; rerun idempotent', async () => {
     const world = fakeWorld([{ ...ACTIVE, status: 'expired' }]);
-    const { mailer, deps } = betaDeps(world, atDay(21));
+    const { mailer, deps } = betaDeps(world, atDay(FOLLOWUP_DAY));
     await runLifecycle(deps);
     await runLifecycle({ ...deps, now: atDay(22) });
     expect(mailer.sent.filter((s) => s.kind === 'trial-d21-followup').length).toBe(1);
   });
 
-  it('full timeline: cron every day for 25 days sends exactly 3 emails in order', async () => {
+  it('full timeline: a daily cron past the follow-up sends exactly 3 emails in order', async () => {
     const world = fakeWorld([{ ...ACTIVE }]);
     const mailer = mailerSpy();
-    for (let day = 0; day <= 25; day++) {
+    for (let day = 0; day <= FOLLOWUP_DAY + 4; day++) {
       await runLifecycle({
         store: world.store,
         activation: world.activation,
@@ -265,7 +279,7 @@ describe('time-travel transitions (beta)', () => {
   it('double-send is impossible: the email_events claim is the arbiter', async () => {
     const world = fakeWorld([{ ...ACTIVE }]);
     // Simulate two overlapping runs at the same instant.
-    const a = betaDeps(world, atDay(10));
+    const a = betaDeps(world, atDay(REMIND_DAY));
     const b = { ...a.deps, mailer: a.mailer };
     await Promise.all([runLifecycle(a.deps), runLifecycle(b)]);
     expect(a.mailer.sent.filter((s) => s.kind === 'trial-d10-reminder').length).toBe(1);

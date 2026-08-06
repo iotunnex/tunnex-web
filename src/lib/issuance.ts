@@ -63,13 +63,29 @@ export interface Issuer {
   issue(claims: LicenseClaims): Promise<IssuanceResult>;
 }
 
-export const TRIAL_DAYS = 14;
+/**
+ * ⛔ THE TRIAL LENGTH. ONE SOURCE — every surface reads from here.
+ *
+ * 30 days, founder-ruled. ⚠ The reason is not generosity: offline verification means THERE IS NO
+ * REVOCATION, so a short expiry is the only thing that limits a mistake. A mis-issued key is alive until
+ * it expires and nothing we do afterwards reaches it.
+ *
+ * ⛔ IT WAS HARDCODED IN 16 FILES AND DID NOT MOVE WHEN THE CONSTANT DID — the site said 14 while the
+ * constant said 14, and both would have gone on disagreeing with any future change independently. The
+ * label constants below exist so a copy string can never drift from the number again.
+ */
+export const TRIAL_DAYS = 30;
 export const TRIAL_SECONDS = TRIAL_DAYS * 86_400;
+
+/** `"30-day"` — for attributive use: "a 30-day trial", "Start 30-day trial". */
+export const TRIAL_LENGTH_ADJ = `${TRIAL_DAYS}-day`;
+/** `"30 days"` — for predicative use: "your 30 days start when it's issued". */
+export const TRIAL_LENGTH_NOUN = `${TRIAL_DAYS} days`;
 
 /**
  * Prelaunch issuer: records the intent and no-ops. The trial stays
  * pending_launch with a NULL clock — the beta-launch pass re-issues with a
- * fresh clock, keeping the public promise (14 days start at key issuance).
+ * fresh clock, keeping the public promise (the trial clock starts at key issuance).
  */
 export function pendingLaunchIssuer(): Issuer {
   return {
@@ -95,7 +111,7 @@ export function pendingLaunchIssuer(): Issuer {
  * something to exercise.
  *
  * ⛔ DO NOT WIRE IT BACK INTO THE GLUE. It would auto-activate a trial on email verification — starting a
- * customer's 14-day clock and "delivering" a key that is not a key. Issuance is manual by founder ruling:
+ * customer's trial clock and "delivering" a key that is not a key. Issuance is manual by founder ruling:
  * offline verification means no revocation, so an automated mint is a mistake that cannot be taken back.
  */
 export function placeholderKeyIssuer(): Issuer {

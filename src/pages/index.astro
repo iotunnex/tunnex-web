@@ -1,4 +1,5 @@
 ---
+import { TRIAL_LENGTH_ADJ } from '../lib/issuance.ts';
 import Base from '../layouts/Base.astro';
 import AccessPlaneDiagram from '../components/AccessPlaneDiagram.astro';
 import WithWithoutTunnex from '../components/WithWithoutTunnex.astro';
@@ -113,7 +114,7 @@ const isBeta = launchMode === 'beta';
             href={isBeta ? '/download' : '/trial'}
             class="t-btn t-prim rounded-[99px] px-[22px] py-[14px] text-[14px] font-semibold text-[#F7F5F5] text-center max-[480px]:w-full"
           >
-            {isBeta ? 'Download' : 'Start 14-day trial'}
+            {isBeta ? 'Download' : `Start ${TRIAL_LENGTH_ADJ} trial`}
           </a>
           <a
             href="/docs"
@@ -169,7 +170,7 @@ const isBeta = launchMode === 'beta';
           href={isBeta ? '/download' : '/trial'}
           class="t-btn t-prim rounded-[99px] px-[22px] py-[14px] text-[14px] font-semibold text-[#F7F5F5]"
         >
-          {isBeta ? 'Download' : 'Start 14-day trial'}
+          {isBeta ? 'Download' : `Start ${TRIAL_LENGTH_ADJ} trial`}
         </a>
         <a
           href="/enterprise"

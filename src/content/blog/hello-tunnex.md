@@ -46,7 +46,7 @@ Getting started is three steps:
 | Tier       | Price        | Trial               |
 | ---------- | ------------ | ------------------- |
 | Open       | Free forever | —                   |
-| Enterprise | Contact us   | 14 days, per domain |
+| Enterprise | Contact us   | 30 days, per domain |
 
 That's a table, ordered and unordered lists, a link, a divider, headings two
 levels deep, a code block, and a quote — the typographic surface area a real

@@ -100,7 +100,15 @@ describe('onTrialApproved — beta path (placeholderKeyIssuer)', () => {
       `TNX-PLACEHOLDER-${activation.calls[0]!.activation.licenseId}`,
     );
     // 1_800_000_000 epoch = 2027-01-15 UTC
-    expect(sent.data.expiresAt).toBe('January 29, 2027');
+    // ⚠ DERIVED, NOT RESTATED — this literal was 'January 29, 2027', which encoded a 14-day trial and did
+    // not move when TRIAL_DAYS did.
+    const expected = new Date(NOW + TRIAL_SECONDS * 1000).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      timeZone: 'UTC',
+    });
+    expect(sent.data.expiresAt).toBe(expected);
   });
 
   it('does NOT send trial-approved on the issued path', async () => {

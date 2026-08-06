@@ -1,4 +1,5 @@
 ---
+import { TRIAL_LENGTH_ADJ } from '../lib/issuance.ts';
 import Base from '../layouts/Base.astro';
 import FaqSection from '../components/FaqSection.astro';
 import ComparisonTableSection from '../components/ComparisonTableSection.astro';
@@ -127,7 +128,7 @@ const vendorQuestions = [
             <span
               class="font-mono font-semibold text-[8.5px] tracking-[0.08em] text-[#C9989C] border border-[#B03A45]/50 bg-[#B03A45]/16 rounded-full px-2.25 py-0.75"
             >
-              14-DAY FREE TRIAL
+              {TRIAL_LENGTH_ADJ.toUpperCase()} FREE TRIAL
             </span>
           </div>
           <div class="font-bold text-[40px] text-[#EDEDEB] tracking-[-0.02em] mt-2">Custom</div>
@@ -172,7 +173,7 @@ const vendorQuestions = [
             href="/trial"
             class="t-btn t-prim w-full block text-center rounded-[9px] px-5 py-3 font-semibold text-[13.5px]"
           >
-            Start 14-day free trial
+            Start {TRIAL_LENGTH_ADJ} free trial
           </a>
           <a
             href="/enterprise"

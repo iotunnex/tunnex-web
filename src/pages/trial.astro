@@ -1,4 +1,5 @@
 ---
+import { TRIAL_LENGTH_ADJ } from '../lib/issuance.ts';
 import Base from '../layouts/Base.astro';
 import TurnstileWidget from '../components/TurnstileWidget.astro';
 import { launchMode } from '../config';
@@ -22,15 +23,15 @@ const steps = [
     n: '3',
     title: 'Get your key',
     body: isBeta
-      ? 'Your license key is issued on confirmation — your 14 days start then.'
-      : 'Your license key arrives when the beta opens — your 14 days start then.',
+      ? 'Your license key is issued on confirmation — your ${TRIAL_LENGTH_NOUN} start then.'
+      : 'Your license key arrives when the beta opens — your ${TRIAL_LENGTH_NOUN} start then.',
   },
 ];
 ---
 
 <Base
-  title="Start your 14-day Enterprise trial — Tunnex"
-  description="Request a 14-day Tunnex Enterprise trial for your company domain. One trial per domain, bound to a verified work email."
+  title={`Start your ${TRIAL_LENGTH_ADJ} Enterprise trial — Tunnex`}
+  description={`Request a ${TRIAL_LENGTH_ADJ} Tunnex Enterprise trial for your company domain. One trial per domain, bound to a verified work email.`}
 >
   <div
     class="mx-auto max-w-[1180px] px-7 py-18 md:py-[72px] flex flex-col gap-10 max-[620px]:px-[18px]"
@@ -38,12 +39,12 @@ const steps = [
     <!-- Header -->
     <div class="flex flex-col gap-3.5 max-w-[68ch]">
       <div class="tnx-eyebrow">ENTERPRISE TRIAL</div>
-      <h1 class="tnx-h1">Start your 14-day Enterprise trial</h1>
+      <h1 class="tnx-h1">Start your {TRIAL_LENGTH_ADJ} Enterprise trial</h1>
       <div class="font-normal text-[16px] leading-[1.68] text-[#A9A9A6] text-pretty">
         {
           isBeta
-            ? 'One trial per company domain, bound to a verified work email. Request it, confirm from your inbox within 30 minutes, and your 14 days start the moment your license key is issued.'
-            : 'One trial per company domain, bound to a verified work email. Request it, confirm from your inbox within 30 minutes, and your 14 days start only when your license key is issued — at beta launch, not a moment before.'
+            ? 'One trial per company domain, bound to a verified work email. Request it, confirm from your inbox within 30 minutes, and your ${TRIAL_LENGTH_NOUN} start the moment your license key is issued.'
+            : 'One trial per company domain, bound to a verified work email. Request it, confirm from your inbox within 30 minutes, and your ${TRIAL_LENGTH_NOUN} start only when your license key is issued — at beta launch, not a moment before.'
         }
       </div>
     </div>

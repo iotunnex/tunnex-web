@@ -1,4 +1,5 @@
 ---
+import { TRIAL_LENGTH_ADJ } from '../lib/issuance.ts';
 import Base from '../layouts/Base.astro';
 import CapabilitiesBento from '../components/CapabilitiesBento.astro';
 import WhyTunnexSection from '../components/WhyTunnexSection.astro';
@@ -1037,7 +1038,7 @@ const icons: Record<string, string> = {
     <!-- CTA row -->
     <div class="flex gap-3 flex-wrap pt-2">
       <a href="/trial" class="t-btn t-prim rounded-[9px] p-3.5 px-5.5 font-semibold text-[14px]"
-        >Start 14-day trial</a
+        >Start {TRIAL_LENGTH_ADJ} trial</a
       >
       <a href="/pricing" class="t-btn t-sec rounded-[9px] p-3.5 px-5.5 font-semibold text-[14px]"
         >Compare editions</a

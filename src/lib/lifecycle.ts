@@ -1,5 +1,6 @@
 import type { Mailer } from './email/mailer.ts';
 import { onTrialApproved, type TrialIssuanceDeps } from './trial-issuance.ts';
+import { TRIAL_DAYS } from './issuance.ts';
 
 /**
  * Daily lifecycle cron (S3.5 — final EPIC 3 story).
@@ -15,8 +16,23 @@ import { onTrialApproved, type TrialIssuanceDeps } from './trial-issuance.ts';
  */
 
 const DAY = 86_400;
-export const REMINDER_AFTER_SECONDS = 10 * DAY;
-export const FOLLOWUP_AFTER_SECONDS = 21 * DAY;
+
+/**
+ * ⛔ DERIVED FROM TRIAL_DAYS, NOT HARDCODED — and this is the second half of the same defect.
+ *
+ * These were `10 * DAY` and `21 * DAY`: the reminder four days before a 14-day trial ended, the follow-up
+ * a week after it expired. Both numbers ENCODED A 14-DAY TRIAL and neither moved when the constant did.
+ *
+ * ⚠ At 30 days the literals are not merely stale, they are WRONG IN OPPOSITE DIRECTIONS: the reminder
+ * would fire on day 10 saying "20 days left", and THE FOLLOW-UP WOULD FIRE ON DAY 21 — nine days BEFORE
+ * the trial expired — telling a customer with a live trial that theirs had ended.
+ *
+ * ⭐ So the INTENT is expressed, not the number: remind four days before expiry; follow up a week after.
+ */
+export const REMINDER_LEAD_DAYS = 4;
+export const FOLLOWUP_AFTER_EXPIRY_DAYS = 7;
+export const REMINDER_AFTER_SECONDS = (TRIAL_DAYS - REMINDER_LEAD_DAYS) * DAY;
+export const FOLLOWUP_AFTER_SECONDS = (TRIAL_DAYS + FOLLOWUP_AFTER_EXPIRY_DAYS) * DAY;
 
 export interface LifecycleTrial {
   id: number;

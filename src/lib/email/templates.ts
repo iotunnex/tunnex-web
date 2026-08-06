@@ -1,3 +1,4 @@
+import { TRIAL_LENGTH_ADJ } from '../issuance.ts';
 import { renderShell, button, paragraph, muted, escapeHtml } from './layout.ts';
 import { EMAIL } from './palette.ts';
 
@@ -53,7 +54,7 @@ const renderers: Renderers = {
       'Confirm your Tunnex trial request',
       ctx,
       paragraph(
-        `You requested a 14-day Tunnex Enterprise trial for <strong>${escapeHtml(domain)}</strong>.`,
+        `You requested a ${TRIAL_LENGTH_ADJ} Tunnex Enterprise trial for <strong>${escapeHtml(domain)}</strong>.`,
       ) +
         paragraph('Confirm it from the device where you want to finish setup:') +
         button(verifyUrl, 'Confirm trial request') +
@@ -62,7 +63,7 @@ const renderers: Renderers = {
         ),
     ),
     text: [
-      `You requested a 14-day Tunnex Enterprise trial for ${domain}.`,
+      `You requested a ${TRIAL_LENGTH_ADJ} Tunnex Enterprise trial for ${domain}.`,
       '',
       'Confirm it here (valid 30 minutes, single use):',
       verifyUrl,
@@ -97,16 +98,16 @@ const renderers: Renderers = {
       'Your Tunnex trial is approved',
       ctx,
       paragraph(
-        `Your 14-day Tunnex Enterprise trial for <strong>${escapeHtml(domain)}</strong> is approved.`,
+        `Your ${TRIAL_LENGTH_ADJ} Tunnex Enterprise trial for <strong>${escapeHtml(domain)}</strong> is approved.`,
       ) +
         paragraph(
-          'Tunnex is launching soon: your license key will arrive in this inbox the moment the beta opens, and your 14 days start only when the key is issued — you lose nothing by being early.',
+          'Tunnex is launching soon: your license key will arrive in this inbox the moment the beta opens, and your ${TRIAL_LENGTH_NOUN} start only when the key is issued — you lose nothing by being early.',
         ),
     ),
     text: [
-      `Your 14-day Tunnex Enterprise trial for ${domain} is approved.`,
+      `Your ${TRIAL_LENGTH_ADJ} Tunnex Enterprise trial for ${domain} is approved.`,
       '',
-      'Tunnex is launching soon: your license key will arrive in this inbox the moment the beta opens. Your 14 days start only when the key is issued — you lose nothing by being early.',
+      'Tunnex is launching soon: your license key will arrive in this inbox the moment the beta opens. Your ${TRIAL_LENGTH_NOUN} start only when the key is issued — you lose nothing by being early.',
     ].join('\n'),
   }),
 
@@ -130,7 +131,7 @@ const renderers: Renderers = {
       'Your Tunnex Enterprise trial key',
       ctx,
       paragraph(
-        `Here is the 14-day Tunnex Enterprise trial key for <strong>${escapeHtml(domain)}</strong>, valid until ${escapeHtml(expiresAt)}:`,
+        `Here is the ${TRIAL_LENGTH_ADJ} Tunnex Enterprise trial key for <strong>${escapeHtml(domain)}</strong>, valid until ${escapeHtml(expiresAt)}:`,
       ) +
         `<pre style="background-color:${EMAIL.bg};border:1px solid ${EMAIL.border};border-radius:6px;padding:12px;font-size:13px;overflow-x:auto;">${escapeHtml(licenseKey)}</pre>` +
         paragraph(
@@ -140,11 +141,11 @@ const renderers: Renderers = {
         button(`${ctx.baseUrl}/docs/quickstart/`, 'Follow the quickstart'),
       {
         preheader:
-          'Your 14-day Enterprise trial key is inside — keep it; licence enforcement is not live in Tunnex yet.',
+          'Your ${TRIAL_LENGTH_ADJ} Enterprise trial key is inside — keep it; licence enforcement is not live in Tunnex yet.',
       },
     ),
     text: [
-      `Here is the 14-day Tunnex Enterprise trial key for ${domain}, valid until ${expiresAt}:`,
+      `Here is the ${TRIAL_LENGTH_ADJ} Tunnex Enterprise trial key for ${domain}, valid until ${expiresAt}:`,
       '',
       licenseKey,
       '',

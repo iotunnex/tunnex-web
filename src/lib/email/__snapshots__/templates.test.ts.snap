@@ -170,7 +170,7 @@ exports[`email templates > renders trial-approved (html + text snapshot) 1`] = `
         <img src="https://example.test/email/tunnex-logo-2x.png" alt="Tunnex" width="176" height="22" style="display:block;border:0;margin:0 auto;outline:none;">
       </a>
     </div>
-<p style="margin:0 0 16px;color:#EDEDEB;font-size:15px;line-height:1.6;">Your 14-day Tunnex Enterprise trial for <strong>acme.com</strong> is approved.</p><p style="margin:0 0 16px;color:#EDEDEB;font-size:15px;line-height:1.6;">Tunnex is launching soon: your license key will arrive in this inbox the moment the beta opens, and your 14 days start only when the key is issued — you lose nothing by being early.</p>
+<p style="margin:0 0 16px;color:#EDEDEB;font-size:15px;line-height:1.6;">Your 30-day Tunnex Enterprise trial for <strong>acme.com</strong> is approved.</p><p style="margin:0 0 16px;color:#EDEDEB;font-size:15px;line-height:1.6;">Tunnex is launching soon: your license key will arrive in this inbox the moment the beta opens, and your \${TRIAL_LENGTH_NOUN} start only when the key is issued — you lose nothing by being early.</p>
   </div>
   <p style="color:#A9A9A6;font-size:12px;line-height:1.6;padding-top:20px;margin:0;text-align:center;">
     Tunnex · Connect everything. Trust nothing.<br>
@@ -181,9 +181,9 @@ exports[`email templates > renders trial-approved (html + text snapshot) 1`] = `
 </body>
 </html>",
   "subject": "Your Tunnex trial is approved",
-  "text": "Your 14-day Tunnex Enterprise trial for acme.com is approved.
+  "text": "Your 30-day Tunnex Enterprise trial for acme.com is approved.
 
-Tunnex is launching soon: your license key will arrive in this inbox the moment the beta opens. Your 14 days start only when the key is issued — you lose nothing by being early.",
+Tunnex is launching soon: your license key will arrive in this inbox the moment the beta opens. Your \${TRIAL_LENGTH_NOUN} start only when the key is issued — you lose nothing by being early.",
 }
 `;
 
@@ -304,7 +304,7 @@ exports[`email templates > renders trial-key-delivery (html + text snapshot) 1`]
 <title>Your Tunnex Enterprise trial key</title>
 </head>
 <body style="margin:0;padding:0;background-color:#0A0A0A;color:#EDEDEB;">
-<span style="display:none;font-size:1px;color:#0A0A0A;max-height:0;max-width:0;opacity:0;overflow:hidden;">Your 14-day Enterprise trial key is inside — keep it; licence enforcement is not live in Tunnex yet.</span>
+<span style="display:none;font-size:1px;color:#0A0A0A;max-height:0;max-width:0;opacity:0;overflow:hidden;">Your \${TRIAL_LENGTH_ADJ} Enterprise trial key is inside — keep it; licence enforcement is not live in Tunnex yet.</span>
 <div style="max-width:560px;margin:0 auto;padding:40px 20px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
   <div style="background-color:#141414;border:1px solid #2E2E2E;border-radius:12px;padding:32px 28px;color:#EDEDEB;font-size:15px;line-height:1.6;">
     <div style="padding-bottom:24px;margin-bottom:24px;border-bottom:1px solid #2E2E2E;text-align:center;">
@@ -312,7 +312,7 @@ exports[`email templates > renders trial-key-delivery (html + text snapshot) 1`]
         <img src="https://example.test/email/tunnex-logo-2x.png" alt="Tunnex" width="176" height="22" style="display:block;border:0;margin:0 auto;outline:none;">
       </a>
     </div>
-<p style="margin:0 0 16px;color:#EDEDEB;font-size:15px;line-height:1.6;">Here is the 14-day Tunnex Enterprise trial key for <strong>acme.com</strong>, valid until July 25, 2026:</p><pre style="background-color:#0A0A0A;border:1px solid #2E2E2E;border-radius:6px;padding:12px;font-size:13px;overflow-x:auto;">TNX-TRIAL-KEY-PLACEHOLDER</pre><p style="margin:0 0 16px;color:#EDEDEB;font-size:15px;line-height:1.6;">Licence enforcement is not live in Tunnex yet, so there is nothing to paste this into today and nothing changes when you receive it. The key is yours — keep it.</p><p style="margin:0 0 16px;color:#EDEDEB;font-size:15px;line-height:1.6;">In the meantime, Tunnex runs fully without a key:</p><p style="margin:28px 0 16px;text-align:center;"><a href="https://example.test/docs/quickstart/" style="display:inline-block;background-color:#B03A45;color:#FFFFFF;text-decoration:none;font-weight:600;font-size:15px;padding:12px 24px;border-radius:8px;">Follow the quickstart</a></p>
+<p style="margin:0 0 16px;color:#EDEDEB;font-size:15px;line-height:1.6;">Here is the 30-day Tunnex Enterprise trial key for <strong>acme.com</strong>, valid until July 25, 2026:</p><pre style="background-color:#0A0A0A;border:1px solid #2E2E2E;border-radius:6px;padding:12px;font-size:13px;overflow-x:auto;">TNX-TRIAL-KEY-PLACEHOLDER</pre><p style="margin:0 0 16px;color:#EDEDEB;font-size:15px;line-height:1.6;">Licence enforcement is not live in Tunnex yet, so there is nothing to paste this into today and nothing changes when you receive it. The key is yours — keep it.</p><p style="margin:0 0 16px;color:#EDEDEB;font-size:15px;line-height:1.6;">In the meantime, Tunnex runs fully without a key:</p><p style="margin:28px 0 16px;text-align:center;"><a href="https://example.test/docs/quickstart/" style="display:inline-block;background-color:#B03A45;color:#FFFFFF;text-decoration:none;font-weight:600;font-size:15px;padding:12px 24px;border-radius:8px;">Follow the quickstart</a></p>
   </div>
   <p style="color:#A9A9A6;font-size:12px;line-height:1.6;padding-top:20px;margin:0;text-align:center;">
     Tunnex · Connect everything. Trust nothing.<br>
@@ -323,7 +323,7 @@ exports[`email templates > renders trial-key-delivery (html + text snapshot) 1`]
 </body>
 </html>",
   "subject": "Your Tunnex Enterprise trial key",
-  "text": "Here is the 14-day Tunnex Enterprise trial key for acme.com, valid until July 25, 2026:
+  "text": "Here is the 30-day Tunnex Enterprise trial key for acme.com, valid until July 25, 2026:
 
 TNX-TRIAL-KEY-PLACEHOLDER
 
@@ -353,7 +353,7 @@ exports[`email templates > renders trial-verify (html + text snapshot) 1`] = `
         <img src="https://example.test/email/tunnex-logo-2x.png" alt="Tunnex" width="176" height="22" style="display:block;border:0;margin:0 auto;outline:none;">
       </a>
     </div>
-<p style="margin:0 0 16px;color:#EDEDEB;font-size:15px;line-height:1.6;">You requested a 14-day Tunnex Enterprise trial for <strong>acme.com</strong>.</p><p style="margin:0 0 16px;color:#EDEDEB;font-size:15px;line-height:1.6;">Confirm it from the device where you want to finish setup:</p><p style="margin:28px 0 16px;text-align:center;"><a href="https://example.test/trial/verify?token=RAW_TOKEN_PLACEHOLDER" style="display:inline-block;background-color:#B03A45;color:#FFFFFF;text-decoration:none;font-weight:600;font-size:15px;padding:12px 24px;border-radius:8px;">Confirm trial request</a></p><p style="margin:16px 0 0;color:#A9A9A6;font-size:13px;line-height:1.5;">This link is valid for 30 minutes and can be used once. If you didn’t request a trial, ignore this email — nothing happens without confirmation.</p>
+<p style="margin:0 0 16px;color:#EDEDEB;font-size:15px;line-height:1.6;">You requested a 30-day Tunnex Enterprise trial for <strong>acme.com</strong>.</p><p style="margin:0 0 16px;color:#EDEDEB;font-size:15px;line-height:1.6;">Confirm it from the device where you want to finish setup:</p><p style="margin:28px 0 16px;text-align:center;"><a href="https://example.test/trial/verify?token=RAW_TOKEN_PLACEHOLDER" style="display:inline-block;background-color:#B03A45;color:#FFFFFF;text-decoration:none;font-weight:600;font-size:15px;padding:12px 24px;border-radius:8px;">Confirm trial request</a></p><p style="margin:16px 0 0;color:#A9A9A6;font-size:13px;line-height:1.5;">This link is valid for 30 minutes and can be used once. If you didn’t request a trial, ignore this email — nothing happens without confirmation.</p>
   </div>
   <p style="color:#A9A9A6;font-size:12px;line-height:1.6;padding-top:20px;margin:0;text-align:center;">
     Tunnex · Connect everything. Trust nothing.<br>
@@ -364,7 +364,7 @@ exports[`email templates > renders trial-verify (html + text snapshot) 1`] = `
 </body>
 </html>",
   "subject": "Confirm your Tunnex trial request",
-  "text": "You requested a 14-day Tunnex Enterprise trial for acme.com.
+  "text": "You requested a 30-day Tunnex Enterprise trial for acme.com.
 
 Confirm it here (valid 30 minutes, single use):
 https://example.test/trial/verify?token=RAW_TOKEN_PLACEHOLDER
