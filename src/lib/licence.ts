@@ -25,7 +25,17 @@ export const LICENCE_VERSION = 1;
 
 /** Gateway ceiling per band. `null` = unlimited. */
 export const BANDS = {
-  trial: { gateways: 20 },
+  // ⛔ TWO, AND THE NUMBER IS THE RULING (founder, 2026-08-06).
+  //
+  // A gateway limit is enforced at ENROLMENT ONLY — a running gateway is never stopped. So a trial on
+  // Scale would let someone enrol 1,000 gateways, let the trial lapse, and KEEP ALL 1,000, reconfiguring
+  // and using them indefinitely. That is not a trial; it is a permanent Scale licence that activates when
+  // the trial ends. Growth does not fix it — it makes the number 20 instead of 1,000.
+  //
+  // ⭐ TWO is what a customer needs to SEE site-to-site, HA and cross-site DNS actually work, and it is a
+  // ceiling we are content to leave running forever. Both halves have to be true, and only 2 satisfies
+  // both. See docs/laws.md — a temporary grant of a create-time limit is a permanent grant.
+  trial: { gateways: 2 },
   starter: { gateways: 5 },
   growth: { gateways: 20 },
   scale: { gateways: null },
