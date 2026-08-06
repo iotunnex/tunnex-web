@@ -1,5 +1,17 @@
 # tunnex-site
 
+> ## ⛔ PUSHING TO `main` DEPLOYS tunnex.io — AND APPLIES D1 MIGRATIONS REMOTELY.
+>
+> `.github/workflows/deploy.yml` fires on push to `main`. There is no staging step and no manual approval:
+> a merge is a production deploy of the live site **and** runs `wrangler d1 migrations apply` against the
+> production database. **A migration is not reviewable after the push.**
+>
+> Work on a branch. ⚠ This is at the top because the previous person found it by deciding where to commit;
+> the next one would have found it by pushing.
+>
+> ⛔ **AND THIS REPO NOW HOLDS THE LICENCE SIGNING KEY** — see [Licence issuance](#licence-issuance).
+> Account access is key access.
+
 Marketing site for [Tunnex](https://tunnex.io) — self-hosted Zero Trust VPN.
 **Your keys. Your servers. Your network.**
 
@@ -179,3 +191,80 @@ candidate.
 # deployed version (the binding only exists there):
 node scripts/test-send.mjs https://<preview>.workers.dev you@example.com
 ```
+
+---
+
+## Licence issuance
+
+⭐ **The signing key lives in this repo's Worker secrets.** That reverses an earlier ruling (`src/lib/issuance.ts`
+used to say "no key material in this repo"), and the reason is recorded there: **the thing that mints keys
+belongs where the keys are, not where the product ships.** The platform repo goes to customers; this one
+does not.
+
+Decisions and reasoning live in the platform repo: `docs/S12.4-issuance-decisions.md`.
+
+### ⛔ Issuance is MANUAL, and nothing unattended may mint
+
+Tunnex verifies licences **offline**, so there is **no revocation** — a key that is minted is alive until
+its expiry and nothing afterwards reaches it. An automated mint is a mistake that cannot be taken back.
+
+⚠ **`onTrialApproved` has two callers**: the verify route, and the **daily cron's promote leg (03:17 UTC,
+unattended, in a loop)**. So the human gate lives at the **`Issuer` seam**, never at a call site — that
+makes the cron safe by construction rather than by someone remembering it exists.
+`src/lib/issuance-gate.test.ts` enforces it: issuer names are harvested from source, every factory must be
+dispositioned non-minting, and both glue files are checked.
+
+### ⛔ Generating the signing key — the highest-risk five minutes in this system's life
+
+The private key authorises **minting**, not one licence. A leak is unlimited, unrevocable, and
+**undetectable** (deployments never call home — that missing telemetry is exactly what the product promises
+not to have).
+
+⚠ **The honest limit of the design:** the Worker imports the key **non-extractable**, so nothing in
+production can export it — but **to put it into a Worker secret you must first hold it as text.** The key
+exists in plaintext exactly once, on the machine that generates it.
+
+> ## ⛔ **THAT MOMENT IS THE ONLY TIME THE COMMERCIAL MODEL IS COPYABLE. IT IS A HUMAN PROCEDURE, NOT A
+> ## CODE PROPERTY — IT CANNOT BE TESTED. TREAT IT AS A CEREMONY, NOT A COMMAND.**
+
+On a machine you trust, with shell history off, letting the value touch no file, clipboard manager,
+password manager, note, or terminal that scrolls back:
+
+```sh
+set +o history   # bash; zsh: unsetopt HISTORY
+
+node -e '
+const { subtle } = crypto;
+subtle.generateKey({ name: "Ed25519" }, true, ["sign","verify"]).then(async k => {
+  const priv = await subtle.exportKey("jwk", k.privateKey);
+  const pub  = await subtle.exportKey("jwk", k.publicKey);
+  console.log("KID:    ", "k" + new Date().getFullYear());
+  console.log("PRIVATE:", JSON.stringify(priv));
+  console.log("PUBLIC: ", JSON.stringify(pub));
+})'
+
+wrangler secret put SIGNING_KEY_JWK      # paste PRIVATE
+wrangler secret put SIGNING_PUBLIC_JWK   # paste PUBLIC
+wrangler secret put SIGNING_KID          # paste KID
+
+clear && set -o history
+```
+
+**Keep the PUBLIC half** — it is baked into the product binary (S12.2) as one member of a **key set**. It is
+not a secret and you will need it again.
+
+**The PRIVATE half now exists only inside Cloudflare.** `wrangler secret put` is write-only; you cannot read
+it back and neither can anyone who reaches the dashboard. That property is doing the work.
+
+⛔ **Which means account access IS key access.** Whoever reaches this Cloudflare account can set a new
+signing secret or deploy code that exports it. Hardware MFA, minimal membership, no shared logins — not IT
+hygiene here, but the control protecting the commercial model.
+
+### ⭐ The key set, and what it does not buy
+
+Every licence carries a `kid`; the product verifies against a **set** and selects by it. Rotation is: new
+key, new `kid`, add its public half to the set, ship, issue under it, later drop the old `kid`.
+
+⛔ **It does not make rotation cheap.** Keys minted under the old `kid` run to their own expiry; the
+installed base still has to upgrade; compromise is still undetectable. **It makes rotation possible to
+express** — removing the *format* migration that would otherwise sit on top of the upgrade migration.
