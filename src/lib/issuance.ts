@@ -1,9 +1,28 @@
 /**
- * License issuance boundary (S3.4). The site NEVER holds signing keys: the
- * Issuer interface is the seam, and every implementation here either defers
- * (pending launch) or emits an obviously-non-functional placeholder. The real
- * issuer lives with the product's license signer and swaps in as ONE line in
- * the glue (src/pages/api/trial/verify.ts) — no key material in this repo.
+ * License issuance boundary (S3.4, ruling replaced 2026-08-06).
+ *
+ * ⛔ THE PREVIOUS RULING HERE SAID "the site NEVER holds signing keys... no key material in this repo",
+ * with the real issuer living beside the product's signer. THAT IS REVERSED, deliberately, and the reason
+ * is recorded so this is not read as drift:
+ *
+ *   That ruling was written when the PLATFORM repo was assumed to hold the signer. The founder has ruled
+ *   the opposite — THE THING THAT MINTS KEYS BELONGS WHERE THE KEYS ARE, NOT WHERE THE PRODUCT SHIPS.
+ *   The platform repo goes to customers; this repo does not. Different audiences, different release
+ *   cadences, different secrets.
+ *
+ * So the signing key lives HERE, in this repo's Worker secrets, and the Issuer seam stays exactly what it
+ * was: the one place that decides whether a licence is minted.
+ *
+ * ⛔ AND THE SEAM IS WHERE THE HUMAN GATE LIVES — NOT A CALL SITE. Issuance is MANUAL by founder ruling
+ * (tunnex platform repo, docs/S12.4-issuance-decisions.md §1): offline verification means there is NO
+ * REVOCATION, so an automated mint is a mistake that cannot be taken back.
+ *
+ * ⚠ `onTrialApproved` has TWO callers — the verify route AND the daily cron's promote leg, which runs
+ * unattended in a loop. An issuer that mints would mint at both. Putting the gate at the SEAM makes that
+ * true by construction rather than by anyone remembering the second caller exists.
+ *
+ * `IssuanceResult` already models "not issued" as a first-class outcome and both callers already handle
+ * it, which is why the review queue fits here without touching the trial lifecycle.
  */
 
 /** Payload a real issuer signs. Field names follow claims convention. */
