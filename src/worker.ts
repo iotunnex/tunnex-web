@@ -30,7 +30,9 @@ export default {
         //
         // (In prelaunch the seam defers to LAUNCH instead: nothing has been promised a key yet.)
         issuer:
-          mode === 'prelaunch' ? pendingLaunchIssuer() : reviewQueueIssuer(d1ReviewQueueStore(env.DB)),
+          mode === 'prelaunch'
+            ? pendingLaunchIssuer()
+            : reviewQueueIssuer(d1ReviewQueueStore(env.DB)),
         mailer: createMailer({ transport: transportFromEnv(env), baseUrl: emailLinkBaseUrl }),
         mode,
       }),

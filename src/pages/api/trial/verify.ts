@@ -2,7 +2,11 @@ import type { APIRoute } from 'astro';
 import { env } from 'cloudflare:workers';
 import { processTrialVerify, d1TrialVerifyStore } from '../../../lib/trial-verify.ts';
 import { d1TrialActivationStore } from '../../../lib/trial-issuance.ts';
-import { d1ReviewQueueStore, pendingLaunchIssuer, reviewQueueIssuer } from '../../../lib/issuance.ts';
+import {
+  d1ReviewQueueStore,
+  pendingLaunchIssuer,
+  reviewQueueIssuer,
+} from '../../../lib/issuance.ts';
 import { createMailer, transportFromEnv } from '../../../lib/email/mailer.ts';
 import { emailLinkBaseUrl, launchMode } from '../../../config';
 
@@ -25,7 +29,9 @@ export const prerender = false;
 // ⚠ BUILT PER REQUEST, not at module scope: the review-queue issuer needs env.DB, and a binding captured
 // at module load is a binding captured before the request that owns it.
 const makeIssuer = () =>
-  launchMode === 'prelaunch' ? pendingLaunchIssuer() : reviewQueueIssuer(d1ReviewQueueStore(env.DB));
+  launchMode === 'prelaunch'
+    ? pendingLaunchIssuer()
+    : reviewQueueIssuer(d1ReviewQueueStore(env.DB));
 
 export const POST: APIRoute = ({ request }) =>
   processTrialVerify(

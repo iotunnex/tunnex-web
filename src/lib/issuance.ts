@@ -159,13 +159,7 @@ export function d1ReviewQueueStore(db: D1Database): ReviewQueueStore {
            VALUES (?, ?, ?, ?, ?)
            ON CONFLICT (trial_domain) DO NOTHING`,
         )
-        .bind(
-          claims.domain,
-          claims.tier,
-          claims.issued_at,
-          claims.expires_at,
-          claims.license_id,
-        )
+        .bind(claims.domain, claims.tier, claims.issued_at, claims.expires_at, claims.license_id)
         .run();
     },
   };

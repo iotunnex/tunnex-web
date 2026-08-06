@@ -43,9 +43,13 @@ const GOLDEN_WIRE =
   'tnxl_eyJ2IjoxLCJraWQiOiJrLWdvbGRlbi0xIiwiaWQiOiIxMTExMTExMS0yMjIyLTMzMzMtNDQ0NC01NTU1NTU1NTU1NTUiLCJkb20iOiJtw7xuY2hlbi1nbWJoLmV4YW1wbGUiLCJiYW5kIjoic2NhbGUiLCJndyI6bnVsbCwiaWF0IjoxNzAwMDAwMDAwLCJleHAiOjQxMDI0NDQ4MDB9.7yAFvrNdbcCz4zHhw8kSzp-wx5jijbtxbbWbnk1FI3fV0IzvRJEkf0ThwAcVqyNMaXvn2xH7qY_RML17xkL_Aw';
 
 test('signing the golden claims produces the exact wire string the Go verifier expects', async () => {
-  const priv = await crypto.subtle.importKey('jwk', GOLDEN_PRIVATE_JWK, { name: 'Ed25519' }, false, [
-    'sign',
-  ]);
+  const priv = await crypto.subtle.importKey(
+    'jwk',
+    GOLDEN_PRIVATE_JWK,
+    { name: 'Ed25519' },
+    false,
+    ['sign'],
+  );
   const wire = await signLicence(priv, buildPayload(GOLDEN_CLAIMS));
 
   expect(
@@ -59,9 +63,13 @@ test('signing the golden claims produces the exact wire string the Go verifier e
 // ⚠ Ed25519 is deterministic (RFC 8032), which is what makes an exact-string assertion possible at all.
 // If this ever fails while the payload is unchanged, the signature scheme is not what we think it is.
 test('the signature is deterministic — the same claims always produce the same string', async () => {
-  const priv = await crypto.subtle.importKey('jwk', GOLDEN_PRIVATE_JWK, { name: 'Ed25519' }, false, [
-    'sign',
-  ]);
+  const priv = await crypto.subtle.importKey(
+    'jwk',
+    GOLDEN_PRIVATE_JWK,
+    { name: 'Ed25519' },
+    false,
+    ['sign'],
+  );
   const a = await signLicence(priv, buildPayload(GOLDEN_CLAIMS));
   const b = await signLicence(priv, buildPayload(GOLDEN_CLAIMS));
   expect(a).toBe(b);
