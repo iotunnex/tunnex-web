@@ -73,12 +73,15 @@ export function isBand(v: string): v is Band {
  * ⛔ EVERY FIELD IS SOMETHING A HUMAN REVIEWED. Nothing is invented at signing time, because a value
  * nobody approved becomes a grant nobody can take back (docs/S12.4-issuance-decisions.md §1).
  */
-export function buildPayload(claims: LicenseClaims & { kid: string; band: string }): LicencePayload {
+export function buildPayload(
+  claims: LicenseClaims & { kid: string; band: string },
+): LicencePayload {
   if (!claims.kid)
     throw new Error('kid is required — a key with no kid cannot be verified against a key SET');
   if (!claims.domain) throw new Error('domain is required');
   if (!isBand(claims.band)) throw new Error(`unknown band: ${claims.band}`);
-  if (!(claims.expires_at > claims.issued_at)) throw new Error('expires_at must be after issued_at');
+  if (!(claims.expires_at > claims.issued_at))
+    throw new Error('expires_at must be after issued_at');
   return {
     v: LICENCE_VERSION,
     kid: claims.kid,
@@ -113,7 +116,8 @@ export async function verifyLicence(
   keySet: Record<string, CryptoKey>,
   wire: unknown,
 ): Promise<VerifyResult> {
-  if (typeof wire !== 'string' || !wire.startsWith('tnxl_')) return { ok: false, reason: 'malformed' };
+  if (typeof wire !== 'string' || !wire.startsWith('tnxl_'))
+    return { ok: false, reason: 'malformed' };
   const dot = wire.indexOf('.');
   if (dot < 0) return { ok: false, reason: 'malformed' };
   const body = wire.slice('tnxl_'.length, dot);

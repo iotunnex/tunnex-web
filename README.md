@@ -225,6 +225,7 @@ production can export it — but **to put it into a Worker secret you must first
 exists in plaintext exactly once, on the machine that generates it.
 
 > ## ⛔ **THAT MOMENT IS THE ONLY TIME THE COMMERCIAL MODEL IS COPYABLE. IT IS A HUMAN PROCEDURE, NOT A
+>
 > ## CODE PROPERTY — IT CANNOT BE TESTED. TREAT IT AS A CEREMONY, NOT A COMMAND.**
 
 On a machine you trust, with shell history off, letting the value touch no file, clipboard manager,
@@ -267,4 +268,4 @@ key, new `kid`, add its public half to the set, ship, issue under it, later drop
 
 ⛔ **It does not make rotation cheap.** Keys minted under the old `kid` run to their own expiry; the
 installed base still has to upgrade; compromise is still undetectable. **It makes rotation possible to
-express** — removing the *format* migration that would otherwise sit on top of the upgrade migration.
+express** — removing the _format_ migration that would otherwise sit on top of the upgrade migration.

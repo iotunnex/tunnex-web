@@ -114,7 +114,9 @@ test('a payload with no kid is refused at build time', () => {
 });
 
 test('an unknown band is refused at build time', () => {
-  expect(() => buildPayload({ ...base, kid: 'k1', band: 'enterprise-plus' })).toThrow(/unknown band/);
+  expect(() => buildPayload({ ...base, kid: 'k1', band: 'enterprise-plus' })).toThrow(
+    /unknown band/,
+  );
 });
 
 test('an expiry at or before issue is refused at build time', () => {
