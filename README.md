@@ -261,32 +261,37 @@ it back and neither can anyone who reaches the dashboard. That property is doing
 signing secret or deploy code that exports it. Hardware MFA, minimal membership, no shared logins — not IT
 hygiene here, but the control protecting the commercial model.
 
-### ⛔ BEFORE THIS ISSUES A REAL KEY — three preconditions, not a checklist
+### BEFORE THIS ISSUES A REAL KEY
 
-**The signing surface is built and tested. It cannot issue anything yet, and two of these are deliberate.**
+|                                                       | state                                                                                                                                                                                                            |
+| ----------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Cloudflare Access** in front of `/api/admin/*`      | ⭐ **DONE — verified on the wire.** Incognito request prompted an Access login, then passed through to the site's 404 (the admin route is on a branch, so 404 is the correct result)                             |
+| **The ceremony** — signing secrets on the live Worker | ⭐ **DONE.** `SIGNING_KEY_JWK`, `SIGNING_PUBLIC_JWK`, `SIGNING_KID`, `ADMIN_TOKEN` confirmed via `wrangler secret list`, and `src/lib/secret-names.test.ts` proves the code reads those four names and no others |
+| **Migration `0003_licence_issuance.sql`**             | ⛔ **STILL UNAPPLIED — it lands with the merge.** `licence_review_queue` and `issued_keys` do not exist yet, so nothing queues and nothing is recorded                                                           |
 
-**1. The ceremony has NOT been run.** `SIGNING_KEY_JWK`, `SIGNING_PUBLIC_JWK` and `SIGNING_KID` are unset,
-so `/api/admin/issue` returns `sign_failed`. Run the ceremony above — once, on a machine you trust. ⚠ It is
-a human procedure, not a code property: nothing here can check that you did it safely.
+⚠ **Access is done and it stays a standing requirement, not a completed task.** It protects a surface that
+mints unrevocable artefacts: **whoever reaches `/api/admin/*` mints keys that cannot be recalled**, because
+verification is offline. `ADMIN_TOKEN` remains a floor beneath it — one shared bearer string, no identity,
+no per-person revocation, no audit of who used it. If the Access application is ever removed or its policy
+widened, that floor is all that is left.
 
-**2. Migration `0003_licence_issuance.sql` is UNAPPLIED.** `licence_review_queue` and `issued_keys` do not
-exist yet. It applies on push to `main` — see the warning at the top of this file — so nothing queues and
-nothing is recorded until that happens deliberately.
+### ⛔ What a mismatch looks like, so a correct refusal is not read as a broken deploy
 
-**3. ⛔ `ADMIN_TOKEN` IS A FLOOR, NOT THE CONTROL — AND CLOUDFLARE ACCESS IN FRONT OF `/api/admin/*` IS A
-DEPLOYMENT PRECONDITION, NOT A HARDENING TASK.**
+**`SIGNING_PUBLIC_JWK` is not the public half of `SIGNING_KEY_JWK`.** Every mint self-verifies before it
+leaves. A mismatch fails that check, the queue claim is released, nothing is issued, and the operator sees
+**`self_verify_failed`**.
 
-> ## **WHOEVER REACHES `/api/admin/*` MINTS UNREVOCABLE ARTEFACTS.**
+> ⭐ **THAT IS THE GUARD WORKING, NOT A BUG.** A key that does not verify cannot be recalled and is
+> invisible from the customer's side — they simply cannot activate, and nothing records that anything was
+> wrong. Re-run the ceremony and re-set BOTH halves together.
 
-A licence cannot be recalled — verification is offline, so nothing we do afterwards reaches an issued key.
-`ADMIN_TOKEN` is **one shared bearer string** with no identity, no per-person revocation, and no audit of
-who used it: if it leaks, you cannot tell who minted, and you cannot stop them without rotating a secret
-that everyone shares. That is an acceptable floor for a surface that does nothing. **It is not an
-acceptable control for a surface that issues permanent grants.**
+⚠ **`SIGNING_KID` is not read from inside the JWK, and a `kid` field in the JWK is ignored.** The kid is its
+own secret, stamped into the payload and used as the key-set index. Self-verification builds its set from
+that same value, so **an unknown-kid refusal cannot happen here** — it happens in the _customer's_
+deployment, if the kid is not in the key set baked into their binary.
 
-⚠ **Do not treat this as "we will add Access later."** Later is after the first real key, and the first
-real key is the moment the surface stops being harmless. Put Access in front of `/api/admin/*` **before**
-the ceremony, so the window where the route is live and unprotected never exists.
+⛔ **And that set does not exist yet** (S12.2, the product's offline verifier, is unstarted). **A key minted
+today verifies here and nowhere else.**
 
 ### ⭐ The key set, and what it does not buy
 
@@ -303,6 +308,6 @@ express** — removing the _format_ migration that would otherwise sit on top of
 
 Things that bit once and will bite again.
 
-| # | what happened | what it means |
-| --- | --- | --- |
+| #     | what happened                                                                                                                                                                                                                                                                                  | what it means                                                                                                                                                                                                                                                                                                                                                                                        |
+| ----- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **1** | ⛔ **Concurrent editor, 2026-08-06.** A file written at 10:07 was **gone by 10:08:13**, in the same second unrelated assets appeared; a commit landed on the working branch **between two of the same author's commits**; and tracked files were reformatted underneath an in-progress change. | ⛔ **"It worked when I ran it" stops being evidence under a concurrent editor.** The write succeeding does not mean the file is there now. ⭐ The only reason it was noticed is that the tree was **re-checked** instead of the write being trusted — so re-read state you did not just observe, and commit narrowly (stage your own paths, never `git add -A`) so "is this mine?" stays answerable. |
