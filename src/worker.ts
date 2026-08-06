@@ -1,7 +1,7 @@
 import server from '@astrojs/cloudflare/entrypoints/server';
 import { runLifecycle, d1LifecycleStore } from './lib/lifecycle.ts';
 import { d1TrialActivationStore } from './lib/trial-issuance.ts';
-import { pendingLaunchIssuer, placeholderKeyIssuer } from './lib/issuance.ts';
+import { d1ReviewQueueStore, pendingLaunchIssuer, reviewQueueIssuer } from './lib/issuance.ts';
 import { createMailer, transportFromEnv } from './lib/email/mailer.ts';
 import { emailLinkBaseUrl } from './config';
 
@@ -23,7 +23,14 @@ export default {
       runLifecycle({
         store: d1LifecycleStore(env.DB),
         activation: d1TrialActivationStore(env.DB),
-        issuer: mode === 'prelaunch' ? pendingLaunchIssuer() : placeholderKeyIssuer(),
+        // ⛔ IN BETA THE CRON DEFERS TO THE REVIEW QUEUE, IT DOES NOT MINT. This is the unattended caller
+        // — 03:17 UTC, in a loop over every parked trial — and it is exactly why the human gate lives at
+        // the Issuer seam rather than at a call site. reviewQueueIssuer has no signing key and no mint
+        // path, so this leg is safe by construction rather than by anyone remembering it exists.
+        //
+        // (In prelaunch the seam defers to LAUNCH instead: nothing has been promised a key yet.)
+        issuer:
+          mode === 'prelaunch' ? pendingLaunchIssuer() : reviewQueueIssuer(d1ReviewQueueStore(env.DB)),
         mailer: createMailer({ transport: transportFromEnv(env), baseUrl: emailLinkBaseUrl }),
         mode,
       }),

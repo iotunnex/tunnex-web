@@ -87,9 +87,16 @@ export function pendingLaunchIssuer(): Issuer {
 }
 
 /**
- * Beta-path stand-in until the product's real signer swaps in: issues an
- * obviously-non-functional placeholder key so the whole activation path
- * (clock writes, key-delivery email) is exercised end to end.
+ * ⚠ NOW A TEST DOUBLE, NOT A PRODUCTION PATH (2026-08-06).
+ *
+ * It was the beta-path stand-in. Beta now defers to `reviewQueueIssuer` — a human signs — so nothing in
+ * `verify.ts` or `worker.ts` constructs this any more; its only callers are tests, where it stands in as
+ * an issuer that DOES issue, so the activation orchestration (clock writes, key-delivery email) still has
+ * something to exercise.
+ *
+ * ⛔ DO NOT WIRE IT BACK INTO THE GLUE. It would auto-activate a trial on email verification — starting a
+ * customer's 14-day clock and "delivering" a key that is not a key. Issuance is manual by founder ruling:
+ * offline verification means no revocation, so an automated mint is a mistake that cannot be taken back.
  */
 export function placeholderKeyIssuer(): Issuer {
   return {

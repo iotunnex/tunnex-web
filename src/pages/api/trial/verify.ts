@@ -2,7 +2,7 @@ import type { APIRoute } from 'astro';
 import { env } from 'cloudflare:workers';
 import { processTrialVerify, d1TrialVerifyStore } from '../../../lib/trial-verify.ts';
 import { d1TrialActivationStore } from '../../../lib/trial-issuance.ts';
-import { pendingLaunchIssuer, placeholderKeyIssuer } from '../../../lib/issuance.ts';
+import { d1ReviewQueueStore, pendingLaunchIssuer, reviewQueueIssuer } from '../../../lib/issuance.ts';
 import { createMailer, transportFromEnv } from '../../../lib/email/mailer.ts';
 import { emailLinkBaseUrl, launchMode } from '../../../config';
 
@@ -22,14 +22,17 @@ export const prerender = false;
 //
 // So the real issuer records into a REVIEW QUEUE and a human signs. That belongs at the Issuer seam, not
 // at a call site — see issuance.ts. Reasoning: tunnex platform repo, docs/S12.4-issuance-decisions.md §1.
-const issuer = launchMode === 'prelaunch' ? pendingLaunchIssuer() : placeholderKeyIssuer();
+// ⚠ BUILT PER REQUEST, not at module scope: the review-queue issuer needs env.DB, and a binding captured
+// at module load is a binding captured before the request that owns it.
+const makeIssuer = () =>
+  launchMode === 'prelaunch' ? pendingLaunchIssuer() : reviewQueueIssuer(d1ReviewQueueStore(env.DB));
 
 export const POST: APIRoute = ({ request }) =>
   processTrialVerify(
     {
       store: d1TrialVerifyStore(env.DB),
       activation: d1TrialActivationStore(env.DB),
-      issuer,
+      issuer: makeIssuer(),
       mailer: createMailer({ transport: transportFromEnv(env), baseUrl: emailLinkBaseUrl }),
       rateLimitKv: env.RATE_LIMIT,
     },
