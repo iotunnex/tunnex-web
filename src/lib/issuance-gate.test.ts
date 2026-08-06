@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { readFileSync, readdirSync } from 'node:fs';
+import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { pendingLaunchIssuer, placeholderKeyIssuer } from './issuance.ts';
 
@@ -24,7 +24,9 @@ describe('the unattended paths cannot mint', () => {
   // ⛔ HARVESTED FROM SOURCE, NOT HARDCODED. A hardcoded list silently stops covering an issuer someone
   // adds — the failure mode where a census keeps reporting "all clear" about a shrinking subject.
   const issuanceSrc = readFileSync(join(import.meta.dirname, 'issuance.ts'), 'utf8');
-  const exported = [...issuanceSrc.matchAll(/export function (\w*[Ii]ssuer\w*)\s*\(/g)].map((m) => m[1]);
+  const exported: string[] = [...issuanceSrc.matchAll(/export function (\w*[Ii]ssuer\w*)\s*\(/g)]
+    .map((m) => m[1])
+    .filter((n): n is string => typeof n === 'string');
 
   /**
    * Every issuer factory, dispositioned. NON-MINTING means: it cannot return a usable licence key, so
@@ -55,7 +57,10 @@ describe('the unattended paths cannot mint', () => {
         .filter((l) => !l.trimStart().startsWith('//') && !l.trimStart().startsWith('*'))
         .join('\n');
       const used = exported.filter((name) => new RegExp(`\\b${name}\\s*\\(`).test(code));
-      expect(used.length, 'the glue must construct an issuer, or this test is checking nothing').toBeGreaterThan(0);
+      expect(
+        used.length,
+        'the glue must construct an issuer, or this test is checking nothing',
+      ).toBeGreaterThan(0);
       for (const name of used) {
         expect(
           NON_MINTING[name],
@@ -79,7 +84,10 @@ describe('the unattended paths cannot mint', () => {
   };
 
   it('pendingLaunchIssuer does not issue', async () => {
-    expect(await pendingLaunchIssuer().issue(claims)).toEqual({ issued: false, reason: 'pending_launch' });
+    expect(await pendingLaunchIssuer().issue(claims)).toEqual({
+      issued: false,
+      reason: 'pending_launch',
+    });
   });
 
   it('placeholderKeyIssuer emits an obviously-non-functional key, never a signed one', async () => {
