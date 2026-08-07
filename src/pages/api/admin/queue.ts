@@ -1,17 +1,11 @@
 import type { APIRoute } from 'astro';
 import { env } from 'cloudflare:workers';
-import { d1AdminIssueStore } from '../../../lib/admin-issue.ts';
+import { d1AdminIssueStore, type QueueRow } from '../../../lib/admin-issue.ts';
+import { PAID_BANDS, TERM_MONTHS } from '../../../lib/paid-request.ts';
 import { EMAIL } from '../../../lib/email/palette.ts';
+import { adminGate, adminChrome, esc, day } from '../../../lib/admin-page.ts';
 
 export const prerender = false;
-
-const esc = (s: unknown) =>
-  String(s ?? '').replace(
-    /[&<>"']/g,
-    (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c] ?? c,
-  );
-
-const day = (t: number) => new Date(t * 1000).toISOString().slice(0, 10);
 
 /**
  * ⚠ `trials.status` IS AN INTERNAL STRING AND MEANS NOTHING IN A REVIEWER'S COLUMN. The walk showed
@@ -24,107 +18,141 @@ const TRIAL_STATE: Record<string, string> = {
   expired: 'trial expired',
 };
 
+/** ⛔ What a row's payment state MEANS for the button, in the reviewer's words rather than the column's. */
+function payment(r: QueueRow): string {
+  if (r.kind !== 'paid') return '<small>nothing to settle</small>';
+  return r.paymentState === 'settled'
+    ? '<small>settled — signable</small>'
+    : `<b class="warn">⛔ PENDING PAYMENT</b><br><small>cannot be signed</small>`;
+}
+
+/**
+ * ⛔ EVERY KEY ALREADY ISSUED TO THIS DOMAIN. Each one is live until its own expiry and nothing on this
+ * page can recall any of them, so the reviewer gets the COUNT, not "the" key.
+ *
+ * ⚠ A FUNCTION RATHER THAN AN INLINE CELL, and the reason is a shipped defect: `no-literal-interpolation`
+ * refuses `${...}` it cannot prove is inside a template literal, and a template nested three deep inside a
+ * table row is exactly the shape it cannot follow. That guard exists because seven `${}` markers once
+ * shipped as literal text to visitors — flattening the nesting is cheaper than teaching it to guess.
+ */
+function priorKeys(r: QueueRow): string {
+  if (!r.priorKeys) return '<small>none</small>';
+  const k = r.priorKeys.latest;
+  const detail = `latest ${esc(k.band)} · ${esc(k.kid)} · ${day(k.issuedAt)} → ${day(k.expiresAt)}`;
+  return `<b class="warn">⛔ ${r.priorKeys.count} ALREADY ISSUED</b><br><small>${detail}</small>`;
+}
+
 /**
  * The reviewer's screen.
  *
- * ⚠ IT SHOWS ENOUGH TO DECIDE, NOT JUST ENOUGH TO CLICK: the domain, the band, the term, what `trials`
- * already knows — and ⛔ whether a key has ALREADY been issued to that domain, because a second key is a
- * second unrevocable artefact and the ledger is the only thing that can say so.
+ * ⚠ IT SHOWS ENOUGH TO DECIDE, NOT JUST ENOUGH TO CLICK: the domain, what was ASKED for, what would be
+ * MINTED, whether money has arrived, what `trials` already knows — and ⛔ every key already issued to that
+ * domain, because each one is live until its own expiry and nothing here can recall any of them.
  */
 export const GET: APIRoute = async ({ request }) => {
-  // ⛔ THE TOKEN MUST NOT LIVE IN THE URL. The walk put it in browser history, in the Referer header of
-  // every subsequent request, and in Cloudflare's own request logs — where the tail output showed it in
-  // plain text. It guards the only surface that mints unrevocable keys.
-  //
-  // So `?t=` is accepted ONCE, exchanged for an HttpOnly cookie, and redirected away. The URL that ends up
-  // in history has no secret in it. ⚠ Access still sits in front of this route; the cookie is the floor
-  // beneath it, not the control.
-  const url = new URL(request.url);
-  const fromQuery = url.searchParams.get('t');
-  const cookie = /(?:^|;\s*)tnx_admin=([^;]+)/.exec(request.headers.get('cookie') ?? '')?.[1];
-  const token = fromQuery ?? (cookie ? decodeURIComponent(cookie) : '');
-  const expected = (env as unknown as { ADMIN_TOKEN?: string }).ADMIN_TOKEN;
-  if (!expected || token.length !== expected.length)
-    return new Response('unauthorized', { status: 401 });
-  let diff = 0;
-  for (let i = 0; i < token.length; i++) diff |= token.charCodeAt(i) ^ expected.charCodeAt(i);
-  if (diff !== 0) return new Response('unauthorized', { status: 401 });
-
-  if (fromQuery) {
-    // Exchange and strip. Secure + HttpOnly + SameSite=Strict: the browser sends it back, script cannot
-    // read it, and it never rides a cross-site request. Session-scoped — no Max-Age.
-    url.searchParams.delete('t');
-    return new Response(null, {
-      status: 302,
-      headers: {
-        location: url.pathname + (url.search || ''),
-        'set-cookie': `tnx_admin=${encodeURIComponent(fromQuery)}; Path=/api/admin; HttpOnly; Secure; SameSite=Strict`,
-        'referrer-policy': 'no-referrer',
-      },
-    });
-  }
+  const gate = adminGate(request, env);
+  if (gate.kind !== 'ok') return gate.response;
 
   const rows = await d1AdminIssueStore(env.DB).pendingQueue();
+
+  const bandOptions = (selected: string) =>
+    ['trial', ...PAID_BANDS]
+      .map(
+        (b) => `<option value="${b}"${b === selected ? ' selected' : ''}>${esc(b)}</option>`,
+      )
+      .join('');
 
   const body = rows
     .map(
       (r) => `<tr>
-<td><b>${esc(r.trialDomain)}</b><br><small>${esc(r.trialEmail ?? '⛔ no trial row — cannot deliver')}</small></td>
-<td>${esc(r.tier)}<br><small>${Math.round((r.expiresAt - r.issuedAt) / 86400)} days</small></td>
-<td>${esc(r.trialStatus ? (TRIAL_STATE[r.trialStatus] ?? r.trialStatus) : '⛔ no trial row')}</td>
-<td>${
-        r.alreadyIssued
-          ? `<b class="warn">⛔ ALREADY ISSUED</b><br><small>${esc(r.alreadyIssued.kid)} · ${day(
-              r.alreadyIssued.issuedAt,
-            )} → ${day(r.alreadyIssued.expiresAt)}</small>`
-          : '<small>none</small>'
+<td><b>${esc(r.domain)}</b><br><small>${esc(
+        r.contactEmail ?? r.trialEmail ?? '⛔ no address — cannot deliver',
+      )}</small>${r.company ? `<br><small>${esc(r.company)}</small>` : ''}</td>
+<td>${esc(r.kind)}${
+        r.requestedBand
+          ? `<br><small>asked for <b>${esc(r.requestedBand)}</b>${
+              r.requestedTermMonths ? ` · ${r.requestedTermMonths}m` : ''
+            }${r.gateways ? ` · ${r.gateways} gw` : ''}</small>`
+          : ''
+      }${r.notes ? `<br><small>${esc(r.notes)}</small>` : ''}</td>
+<td><select class="band" data-d="${esc(r.domain)}">${bandOptions(r.tier)}</select>
+<br><small>${Math.round((r.expiresAt - r.issuedAt) / 86400)} days</small></td>
+<td>${payment(r)}${
+        r.kind === 'paid' && r.paymentState === 'pending'
+          ? `<br><button class="settle" data-d="${esc(r.domain)}">Payment received</button>`
+          : ''
       }</td>
+<td>${esc(r.trialStatus ? (TRIAL_STATE[r.trialStatus] ?? r.trialStatus) : '—')}</td>
+<td>${priorKeys(r)}</td>
 <td><small>${day(r.queuedAt)}</small></td>
-<td><button class="issue" data-d="${esc(r.trialDomain)}">Sign &amp; email</button>
-<button class="refuse" data-d="${esc(r.trialDomain)}">Refuse</button></td></tr>`,
+<td><button class="issue" data-d="${esc(r.domain)}"${
+        r.kind === 'paid' && r.paymentState !== 'settled' ? ' disabled title="payment not settled"' : ''
+      }>Sign &amp; email</button>
+<button class="refuse" data-d="${esc(r.domain)}">Refuse</button></td></tr>`,
     )
     .join('');
 
   return new Response(
-    `<!doctype html><meta charset="utf-8"><title>Licence review queue</title>
-<meta name="robots" content="noindex,nofollow">
-<style>
-/* ⚠ COLOURS COME FROM THE EMAIL PALETTE, and that is deliberate rather than lazy. This page is raw HTML
-   returned by the Worker — no Astro layout, no stylesheet — so CSS custom properties resolve to NOTHING
-   here, exactly as in an email client. src/lib/email/palette.ts is the token guard's narrow exclusion
-   for precisely that constraint, and it mirrors the semantic tokens.
-   ⛔ Raw hex here fails scripts/lint-tokens.mjs, which is a standing CI check — it caught this page on
-   its first deploy, because I ran a narrower lint locally than CI runs.
-   ⚠ The constant is named EMAIL and this is not an email; it is the same CONSTRAINT, and inventing a
-   second colour source for one admin page would be worse than the slightly narrow name. */
-body{font:15px/1.45 system-ui,sans-serif;margin:2rem;background:${EMAIL.bg};color:${EMAIL.text}}
-table{border-collapse:collapse;width:100%}
-td,th{border-bottom:1px solid ${EMAIL.border};padding:.6rem;vertical-align:top;text-align:left}
-.warn{color:${EMAIL.primary}}
-#out{white-space:pre-wrap;background:${EMAIL.surface};padding:1rem;margin-top:1rem;border-radius:.5rem}
-</style>
-<h1>Licence review queue</h1>
+    adminChrome(
+      'Licence review queue',
+      `<h1>Licence review queue</h1>
 <p>⛔ Every key signed here is <b>unrevocable</b> — Tunnex verifies offline, so nothing you do afterwards
-reaches it. Check the domain and the band before signing, and read the <b>already issued</b> column.</p>
-<table><tr><th>Domain</th><th>Band / term</th><th>Trial</th><th>Prior key</th><th>Queued</th><th></th></tr>
-${body || '<tr><td colspan=6>Nothing pending.</td></tr>'}</table>
+reaches it. There is no edit and no delete: a change means a NEW key, and the old one stays alive until its
+own expiry. Check the domain and the band before signing, and read the <b>already issued</b> column.</p>
+<p><a href="/api/admin/licences">Every key ever issued →</a></p>
+<table><tr><th>Domain</th><th>Kind / asked for</th><th>Band to mint</th><th>Payment</th><th>Trial</th>
+<th>Prior keys</th><th>Queued</th><th></th></tr>
+${body || '<tr><td colspan=8>Nothing pending.</td></tr>'}</table>
+
+<h2>Mint without a request</h2>
+<p>A deal closed offline. ⚠ This files a row and does <b>not</b> sign it — you still review and sign it
+above, so there is exactly one path from a decision to a signature.</p>
+<form id="direct">
+  <input name="domain" placeholder="customer.example" required>
+  <input name="contactEmail" type="email" placeholder="who receives the key" required>
+  <select name="band">${PAID_BANDS.map((b) => `<option>${b}</option>`).join('')}</select>
+  <select name="termMonths">${TERM_MONTHS.map((m) => `<option value="${m}">${m} months</option>`).join('')}</select>
+  <input name="notes" placeholder="note (optional)">
+  <button>File it</button>
+</form>
 <div id="out"></div>
 <script>
-// ⚠ No token in the page any more — the cookie carries it, so nothing secret is in the DOM or the URL.
-document.querySelectorAll('button').forEach(b => b.onclick = async () => {
+async function post(payload) {
+  const res = await fetch('/api/admin/issue', {
+    method: 'POST', headers: { 'content-type': 'application/json' },
+    credentials: 'same-origin', body: JSON.stringify(payload)
+  });
+  document.getElementById('out').textContent = await res.text();
+  return res.ok;
+}
+document.querySelectorAll('button.issue, button.refuse').forEach(b => b.onclick = async () => {
   const refuse = b.classList.contains('refuse');
   if (!confirm(refuse ? 'Refuse this request?' : 'Sign and email a licence? This CANNOT be revoked.')) return;
   b.disabled = true;   // the server refuses a second decision anyway; this just avoids the pointless request
-  const res = await fetch('/api/admin/issue', {
-    method: 'POST',
-    headers: { 'content-type': 'application/json' },
-    credentials: 'same-origin',
-    body: JSON.stringify({ domain: b.dataset.d, refuse })
-  });
-  document.getElementById('out').textContent = await res.text();
-  if (res.ok) b.closest('tr').style.opacity = .4;
+  if (await post({ domain: b.dataset.d, refuse })) b.closest('tr').style.opacity = .4;
 });
+document.querySelectorAll('button.settle').forEach(b => b.onclick = async () => {
+  // ⚠ The wording asks about the MONEY, not about the row: the reviewer is confirming a fact about the
+  // world, and the row state is only how we record it.
+  if (!confirm('Confirm the payment for this licence has actually arrived?')) return;
+  if (await post({ domain: b.dataset.d, action: 'settle' })) location.reload();
+});
+document.querySelectorAll('select.band').forEach(s => s.onchange = async () => {
+  await post({ domain: s.dataset.d, action: 'band', band: s.value });
+});
+document.getElementById('direct').onsubmit = async (e) => {
+  e.preventDefault();
+  const f = new FormData(e.target);
+  if (!confirm('File a licence request for ' + f.get('domain') + '?')) return;
+  if (await post({ action: 'direct', domain: f.get('domain'), contactEmail: f.get('contactEmail'),
+                   band: f.get('band'), termMonths: Number(f.get('termMonths')), notes: f.get('notes') }))
+    location.reload();
+};
 </script>`,
-    { headers: { 'content-type': 'text/html; charset=utf-8' } },
+    ),
+    { headers: { 'content-type': 'text/html; charset=utf-8', 'referrer-policy': 'no-referrer' } },
   );
 };
+
+/** Kept for the token-exchange redirect target; the palette import documents the constraint. */
+export const PALETTE_BG = EMAIL.bg;

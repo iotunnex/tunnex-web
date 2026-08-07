@@ -1,0 +1,192 @@
+---
+import Base from '../layouts/Base.astro';
+import TurnstileWidget from '../components/TurnstileWidget.astro';
+import { PAID_BANDS, TERM_MONTHS } from '../lib/paid-request.ts';
+import { BANDS } from '../lib/licence.ts';
+
+/**
+ * The PAID request path (S12.7).
+ *
+ * ⛔ THE STRUCTURED PATH EXISTED FOR THE FREE THING AND THE PAID THING WENT TO AN INBOX. `/trial` verified
+ * an address, proved a domain and filed a reviewable row; "Contact sales" collected a `seats` count the
+ * pricing model had already stopped using and wrote it to a table nothing reads.
+ *
+ * ⚠ WHAT THIS PAGE PROMISES IS EXACTLY WHAT HAPPENS: a person reads it, replies with a price, and the key
+ * is issued after payment is settled directly with us. It does not take money, quote a price, or imply a
+ * key is on its way — three promises this repo has shipped wrongly before.
+ */
+const bandBlurb: Record<string, string> = {
+  starter: 'small deployments — up to 5 gateways',
+  growth: 'multi-site — up to 20 gateways',
+  scale: 'no gateway ceiling',
+};
+const gwText = (b: string) => {
+  const gw = BANDS[b as keyof typeof BANDS].gateways;
+  return gw === null ? 'unlimited gateways' : `${gw} gateways`;
+};
+---
+
+<Base
+  title="Request a Tunnex licence — Tunnex"
+  description="Request a paid Tunnex licence for your company domain. A person reviews every request; payment is arranged directly with us."
+>
+  <div class="mx-auto max-w-[1180px] px-7 py-18 md:py-[72px] flex flex-col gap-10 max-[620px]:px-[18px]">
+    <div class="flex flex-col gap-3.5 max-w-[68ch]">
+      <h1 class="font-semibold text-[34px] leading-[1.15] tracking-[-0.02em] text-text">
+        Request a licence
+      </h1>
+      <p class="font-normal text-[15.5px] leading-[1.7] text-muted">
+        Tell us the shape of your deployment and we will come back with a price. A person reads every
+        request — and payment is arranged directly with us, never on this site.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-[minmax(0,1fr)_320px] gap-6">
+      <div class="t-card border border-border rounded-lg p-6">
+        <div id="licence-form-box">
+          <form id="licence-form" class="flex flex-col gap-4.5" novalidate>
+            <div class="flex flex-col gap-2.25">
+              <label for="licence-email" class="font-mono font-semibold text-[9px] tracking-[0.16em] text-muted uppercase">WORK EMAIL</label>
+              <input id="licence-email" name="email" type="email" required autocomplete="email" placeholder="you@company.com"
+                class="bg-bg border border-border rounded-md px-3.25 py-3 text-[14.5px] text-text focus:outline-none" />
+              <div class="text-[12.5px] leading-[1.6] text-muted">
+                The licence binds to your company domain, derived from this address — consumer and
+                disposable providers are not eligible.
+              </div>
+            </div>
+
+            <div class="flex flex-col gap-2.25">
+              <label for="licence-company" class="font-mono font-semibold text-[9px] tracking-[0.16em] text-muted uppercase">COMPANY</label>
+              <input id="licence-company" name="company" required placeholder="Acme Ltd"
+                class="bg-bg border border-border rounded-md px-3.25 py-3 text-[14.5px] text-text focus:outline-none" />
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <div class="flex flex-col gap-2.25">
+                <label for="licence-band" class="font-mono font-semibold text-[9px] tracking-[0.16em] text-muted uppercase">BAND</label>
+                <select id="licence-band" name="band" class="bg-bg border border-border rounded-md px-3.25 py-3 text-[14.5px] text-text">
+                  {PAID_BANDS.map((b) => <option value={b}>{b} — {gwText(b)}</option>)}
+                </select>
+              </div>
+              <div class="flex flex-col gap-2.25">
+                <label for="licence-term" class="font-mono font-semibold text-[9px] tracking-[0.16em] text-muted uppercase">TERM</label>
+                <select id="licence-term" name="termMonths" class="bg-bg border border-border rounded-md px-3.25 py-3 text-[14.5px] text-text">
+                  {TERM_MONTHS.map((m) => <option value={m}>{m} months</option>)}
+                </select>
+              </div>
+            </div>
+
+            <div class="flex flex-col gap-2.25">
+              <label for="licence-gateways" class="font-mono font-semibold text-[9px] tracking-[0.16em] text-muted uppercase">GATEWAYS YOU EXPECT TO RUN</label>
+              <input id="licence-gateways" name="gateways" type="number" min="1" value="1"
+                class="bg-bg border border-border rounded-md px-3.25 py-3 text-[14.5px] text-text focus:outline-none" />
+              <div class="text-[12.5px] leading-[1.6] text-muted">
+                Tunnex is priced per gateway, so this is the number that shapes the quote.
+              </div>
+            </div>
+
+            <div class="flex flex-col gap-2.25">
+              <label for="licence-notes" class="font-mono font-semibold text-[9px] tracking-[0.16em] text-muted uppercase">ANYTHING ELSE (OPTIONAL)</label>
+              <textarea id="licence-notes" name="notes" rows="3" placeholder="Sites, regions, timelines, procurement requirements…"
+                class="bg-bg border border-border rounded-md px-3.25 py-3 text-[14.5px] text-text focus:outline-none"></textarea>
+            </div>
+
+            <TurnstileWidget />
+
+            <div id="licence-error" class="hidden text-[13px] text-error"></div>
+
+            <button id="licence-submit" type="submit"
+              class="t-btn t-prim w-full text-center rounded-[9px] px-5 py-3.5 font-semibold text-[14px] cursor-pointer">
+              Request a licence
+            </button>
+
+            <div class="text-[12.5px] leading-[1.6] text-muted">
+              The band you pick here is what you are <em>asking</em> for — we confirm what fits before
+              anything is issued.
+            </div>
+          </form>
+        </div>
+
+        <div id="licence-sent" class="hidden flex flex-col gap-2.75">
+          <div class="font-semibold text-[16px] text-text">
+            If your domain is eligible, a verification link is on its way
+          </div>
+          <div class="text-[14px] leading-[1.66] text-muted">
+            The link is valid for 30 minutes. Confirming it puts your request in front of a person —
+            it buys nothing and starts no clock.
+          </div>
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-3.5">
+        <div class="t-card border border-border rounded-lg p-5 flex flex-col gap-2.5">
+          <div class="font-semibold text-[14.5px] text-text">What happens next</div>
+          <div class="text-[13.5px] leading-[1.65] text-muted">
+            1. Confirm your address.<br />
+            2. We reply with pricing and terms.<br />
+            3. Payment is settled directly with us.<br />
+            4. Your key is issued and emailed.
+          </div>
+        </div>
+        {PAID_BANDS.map((b) => (
+          <div class="t-card border border-border rounded-lg p-5 flex flex-col gap-1">
+            <div class="font-semibold text-[14px] text-text capitalize">{b}</div>
+            <div class="text-[13px] leading-[1.6] text-muted">{bandBlurb[b]}</div>
+          </div>
+        ))}
+        <div class="t-card border border-border rounded-lg p-5 text-[13px] leading-[1.65] text-muted">
+          Keys are verified offline by your control plane — it never contacts us, so a licence works on
+          an air-gapped deployment and runs to its own expiry date.
+        </div>
+      </div>
+    </div>
+  </div>
+</Base>
+
+<script>
+  const form = document.getElementById('licence-form');
+  const box = document.getElementById('licence-form-box');
+  const sent = document.getElementById('licence-sent');
+  const btn = document.getElementById('licence-submit');
+  const err = document.getElementById('licence-error');
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const val = (id: string) => (document.getElementById(id) as HTMLInputElement | null)?.value ?? '';
+    const turnstileToken =
+      (document.querySelector('[name="cf-turnstile-response"]') as HTMLInputElement | null)?.value ||
+      'local-dev-token';
+    if (btn) {
+      (btn as HTMLButtonElement).disabled = true;
+      btn.textContent = 'Sending link…';
+    }
+    try {
+      const res = await fetch('/api/licence/request', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: val('licence-email'),
+          company: val('licence-company'),
+          band: val('licence-band'),
+          termMonths: Number(val('licence-term')),
+          gateways: Number(val('licence-gateways')),
+          notes: (document.getElementById('licence-notes') as HTMLTextAreaElement | null)?.value ?? '',
+          turnstileToken,
+        }),
+      });
+      const data = (await res.json().catch(() => ({}))) as { message?: string };
+      if (res.ok) {
+        box?.classList.add('hidden');
+        sent?.classList.remove('hidden');
+      } else if (err) {
+        err.textContent = data.message ?? 'That did not go through. Check the form and try again.';
+        err.classList.remove('hidden');
+      }
+    } finally {
+      if (btn) {
+        (btn as HTMLButtonElement).disabled = false;
+        btn.textContent = 'Request a licence';
+      }
+    }
+  });
+</script>

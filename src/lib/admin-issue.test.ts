@@ -1,7 +1,9 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import {
+  groupByDomain,
   issueFromQueue,
   refuseFromQueue,
+  withinTerm,
   type AdminIssueStore,
   type QueueRow,
 } from './admin-issue.ts';
@@ -22,15 +24,40 @@ beforeEach(async () => {
 });
 
 const row: QueueRow = {
-  trialDomain: 'acme.com',
+  domain: 'acme.com',
   tier: 'trial',
+  kind: 'trial',
+  requestedBand: null,
+  paymentState: 'n/a',
   issuedAt: 1_700_000_000,
   expiresAt: 1_700_000_000 + 14 * 86_400,
   licenseId: 'lic-1',
   queuedAt: 1_700_000_000,
   trialEmail: 'ana@acme.com',
   trialStatus: 'pending_launch',
-  alreadyIssued: null,
+  contactEmail: null,
+  requestedTermMonths: null,
+  gateways: null,
+  company: null,
+  notes: null,
+  priorKeys: null,
+};
+
+/** A PAID row: money outstanding, a band the reviewer set, and its own contact address. */
+const paidRow: QueueRow = {
+  ...row,
+  domain: 'buyer.com',
+  kind: 'paid',
+  tier: 'starter',
+  requestedBand: 'scale',
+  paymentState: 'pending',
+  licenseId: 'lic-paid',
+  trialEmail: null,
+  trialStatus: null,
+  contactEmail: 'cfo@buyer.com',
+  requestedTermMonths: 12,
+  gateways: 40,
+  company: 'Buyer Ltd',
 };
 
 function store(over: Partial<AdminIssueStore> = {}) {
@@ -58,6 +85,18 @@ function store(over: Partial<AdminIssueStore> = {}) {
     },
     async activateTrial() {
       calls.activated += 1;
+    },
+    async settlePayment() {
+      return true;
+    },
+    async setBand() {
+      return true;
+    },
+    async createDirect() {
+      return 'queued';
+    },
+    async ledger() {
+      return [];
     },
   };
   return { store: { ...base, ...over }, calls };
@@ -203,5 +242,119 @@ describe('the admin signing surface', () => {
     const s = store();
     expect((await refuseFromQueue({ store: s.store }, 'acme.com')).ok).toBe(true);
     expect((await refuseFromQueue({ store: s.store }, 'acme.com')).ok).toBe(false);
+  });
+});
+
+// ⛔ THE PAYMENT GATE IS ON THE SERVER, AND THIS TEST CALLS THE FUNCTION — NOT THE BUTTON.
+//
+// The queue page renders a disabled control for an unsettled paid row, and a disabled control is a
+// statement about a DOM. `POST /api/admin/issue` is reachable without ever loading that page, which is
+// exactly the class fixed in the control plane the same week: a UI gate the server does not mirror is not
+// a gate at all.
+//
+// ⚠ AND THE COST IS ASYMMETRIC. A trial mistake expires in 30 days; a paid key is a year and cannot be
+// recalled, so signing before the money arrives is the most expensive mistake this screen offers.
+describe('paid rows and money', () => {
+  it('⛔ REFUSES to sign a paid row whose payment has not settled — and mints nothing', async () => {
+    const s = store();
+    const sent: string[] = [];
+    const r = await issueFromQueue(
+      { store: s.store, env: env(), sendKey: async (_t, _d, k) => void sent.push(k) },
+      paidRow,
+    );
+    expect(r).toEqual({ ok: false, code: 'payment_not_settled' });
+    expect(sent).toHaveLength(0);
+    expect(s.calls.recorded).toHaveLength(0);
+    // ⛔ NOT EVEN CLAIMED. The refusal is BEFORE claim-then-act, so the row stays open for the reviewer to
+    // settle and sign — a claimed-then-refused row would need a release nobody triggers.
+    expect(s.calls.claims).toBe(0);
+  });
+
+  it('signs the same row once the payment is recorded', async () => {
+    const s = store();
+    const sent: string[] = [];
+    const r = await issueFromQueue(
+      { store: s.store, env: env(), sendKey: async (_t, _d, k) => void sent.push(k) },
+      { ...paidRow, paymentState: 'settled' },
+    );
+    expect(r.ok).toBe(true);
+    expect(sent).toHaveLength(1);
+  });
+
+  // ⛔ NOBODY GETS SCALE BY ASKING FOR IT. `requestedBand` is recorded so the reviewer can see the gap
+  // between the ask and their own decision; the signed claims carry `tier`, which only the reviewer sets.
+  it('signs the band the REVIEWER set, never the one that was requested', async () => {
+    const s = store();
+    const sent: string[] = [];
+    await issueFromQueue(
+      { store: s.store, env: env(), sendKey: async (_t, _d, k) => void sent.push(k) },
+      { ...paidRow, paymentState: 'settled' }, // asked for scale, reviewer set starter
+    );
+    const check = await verifyLicence({ [keys.kid]: await importPublicKey(keys.pub) }, sent[0]);
+    expect(check.ok && check.payload.band).toBe('starter');
+    // ⚠ And the gateway ceiling that rides with it: scale is unlimited, starter is 5. Asserting the band
+    // string alone would pass on a payload that priced the customer at the band they asked for.
+    expect(check.ok && check.payload.gw).toBe(5);
+    expect(s.calls.recorded).toEqual([expect.objectContaining({ band: 'starter' })]);
+  });
+
+  // ⚠ A paid row has no `trials` row. Activating one would be a no-op today — and "harmless because a
+  // WHERE clause matched nothing" is not a property anyone stated, and stops being true the day a paying
+  // customer also has a trial row.
+  it('does not touch the trial lifecycle for a paid row', async () => {
+    const s = store();
+    await issueFromQueue(
+      { store: s.store, env: env(), sendKey: async () => {} },
+      { ...paidRow, paymentState: 'settled' },
+    );
+    expect(s.calls.activated).toBe(0);
+  });
+
+  it('sends to the row’s own contact, not to whoever took the trial for that domain', async () => {
+    const s = store();
+    let to = '';
+    await issueFromQueue(
+      { store: s.store, env: env(), sendKey: async (t) => void (to = t) },
+      // A domain that ALSO has a trial row under a different address — the purchased key must not go to
+      // whoever asked for the free one.
+      { ...paidRow, paymentState: 'settled', trialEmail: 'intern@buyer.com' },
+    );
+    expect(to).toBe('cfo@buyer.com');
+  });
+});
+
+// ⛔ THE LEDGER STATES WHAT IS TRUE, AND NOTHING MORE. There is no "current key": offline verification
+// means every key runs to its own expiry, so a customer with three keys has three live artefacts until
+// three separate dates. Within-term is arithmetic over the clock, not a status this service controls.
+describe('the ledger view', () => {
+  const k = (domain: string, issuedAt: number, days = 30, band = 'growth') => ({
+    licenseId: `${domain}-${issuedAt}`,
+    domain,
+    band,
+    kid: 'k2026',
+    issuedAt,
+    expiresAt: issuedAt + days * 86_400,
+    emailedAt: null,
+  });
+
+  it('groups every key by domain, newest first, and replaces none of them', () => {
+    const groups = groupByDomain([
+      k('acme.com', 1_000),
+      k('other.com', 5_000),
+      k('acme.com', 9_000, 365, 'scale'),
+    ]);
+    expect(groups.map((g) => g.domain)).toEqual(['acme.com', 'other.com']);
+    // ⛔ BOTH of acme's keys survive the grouping. A view that showed "the current one" would be asserting
+    // the older key had stopped — which nothing in this system can make true.
+    expect(groups[0]?.keys).toHaveLength(2);
+    expect(groups[0]?.keys[0]?.band).toBe('scale'); // newest first
+  });
+
+  it('within-term is a statement about the clock, both directions', () => {
+    const row = k('acme.com', 1_000, 30);
+    expect(withinTerm(row, 1_000)).toBe(true);
+    expect(withinTerm(row, 1_000 + 29 * 86_400)).toBe(true);
+    expect(withinTerm(row, row.expiresAt)).toBe(false); // the boundary is exclusive at the far end
+    expect(withinTerm(row, 999)).toBe(false); // and a key does not exist before it was minted
   });
 });

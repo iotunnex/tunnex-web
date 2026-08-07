@@ -33,6 +33,12 @@ export interface TemplateDataMap {
     name: string;
     company: string;
   };
+  // ── The paid request path (S12.7) ────────────────────────────────────────────────────────────────
+  // ⚠ SEPARATE KINDS FROM THE TRIAL ONES, not a `tier` parameter on them. Trial copy promises a free
+  // 30-day evaluation and says enforcement is not live; paid copy must promise neither.
+  'licence-request-verify': { domain: string; band: string; verifyUrl: string };
+  'licence-request-received': { domain: string; band: string };
+  'licence-key-delivery': { domain: string; band: string; licenseKey: string; expiresAt: string };
 }
 
 export type EmailKind = keyof TemplateDataMap;
@@ -295,6 +301,90 @@ const renderers: Renderers = {
       ].join('\n'),
     };
   },
+
+  // ── The paid request path (S12.7) ────────────────────────────────────────────────────────────────
+
+  'licence-request-verify': ({ domain, band, verifyUrl }, ctx) => ({
+    subject: `Confirm your Tunnex ${band} licence request`,
+    html: shell(
+      `Confirm your Tunnex ${escapeHtml(band)} licence request`,
+      ctx,
+      paragraph(
+        `You asked about a Tunnex <strong>${escapeHtml(band)}</strong> licence for <strong>${escapeHtml(domain)}</strong>. Confirm the address first — we only take requests from someone who can read mail at the domain.`,
+      ) +
+        button(verifyUrl, 'Confirm this request') +
+        muted('Valid for 30 minutes, single use.') +
+        // ⛔ NO PROMISE OF A PRICE, A BAND OR A DATE. Confirming files a request for a human to read;
+        // saying anything more here would be the product speaking for the founder before they have looked.
+        paragraph(
+          'Confirming does not buy anything and starts no clock. It puts your request in front of a person, who will come back to you on price and terms.',
+        ),
+      { preheader: `Confirm the address on your ${band} licence request for ${domain}.` },
+    ),
+    text: [
+      `You asked about a Tunnex ${band} licence for ${domain}.`,
+      '',
+      'Confirm the address here (valid 30 minutes, single use):',
+      verifyUrl,
+      '',
+      'Confirming does not buy anything and starts no clock — it puts your request in front of a person.',
+      '',
+      'If this was not you, ignore this email. Nothing happens without confirmation.',
+    ].join('\n'),
+  }),
+
+  'licence-request-received': ({ domain, band }, ctx) => ({
+    subject: 'We have your Tunnex licence request',
+    html: shell(
+      'We have your Tunnex licence request',
+      ctx,
+      paragraph(
+        `Your request for a Tunnex <strong>${escapeHtml(band)}</strong> licence for <strong>${escapeHtml(domain)}</strong> is confirmed and with us.`,
+      ) +
+        // ⚠ SAYS WHAT ACTUALLY HAPPENS NEXT, INCLUDING THAT MONEY IS SETTLED OFF THIS SITE. A message
+        // implying a key is on its way would be the third instance of a promise this repo has already
+        // shipped twice (unlock-in-place, and /trial/approved promising a queued key).
+        paragraph(
+          'A person reads every request. We will reply with pricing and terms; payment is arranged directly with us, not on this site, and your key is issued once that is settled.',
+        ),
+      { preheader: `Your ${band} licence request for ${domain} is with us.` },
+    ),
+    text: [
+      `Your request for a Tunnex ${band} licence for ${domain} is confirmed and with us.`,
+      '',
+      'A person reads every request. We will reply with pricing and terms; payment is arranged directly',
+      'with us, not on this site, and your key is issued once that is settled.',
+    ].join('\n'),
+  }),
+
+  'licence-key-delivery': ({ domain, band, licenseKey, expiresAt }, ctx) => ({
+    subject: `Your Tunnex ${band} licence key`,
+    html: shell(
+      `Your Tunnex ${escapeHtml(band)} licence key`,
+      ctx,
+      paragraph(
+        `Here is the Tunnex <strong>${escapeHtml(band)}</strong> licence key for <strong>${escapeHtml(domain)}</strong>, valid until ${escapeHtml(expiresAt)}:`,
+      ) +
+        `<pre style="background-color:${EMAIL.bg};border:1px solid ${EMAIL.border};border-radius:6px;padding:12px;font-size:13px;overflow-x:auto;">${escapeHtml(licenseKey)}</pre>` +
+        // ⛔ THE KEY IS VERIFIED OFFLINE, AND THE CUSTOMER SHOULD KNOW WHAT THAT MEANS FOR THEM: it works
+        // with no connection to us, and it stops at its own expiry with no warning from us either.
+        paragraph(
+          'Your deployment verifies this offline — it never contacts us, so the key works on an air-gapped control plane. It also means the term ends on the date above with no reminder from your control plane; keep the date.',
+        ) +
+        button(`${ctx.baseUrl}/docs/quickstart/`, 'Install it'),
+      { preheader: `Your ${band} licence key for ${domain}, valid until ${expiresAt}.` },
+    ),
+    text: [
+      `Here is the Tunnex ${band} licence key for ${domain}, valid until ${expiresAt}:`,
+      '',
+      licenseKey,
+      '',
+      'Your deployment verifies this offline — it never contacts us, so it works on an air-gapped',
+      'control plane, and the term ends on the date above with no reminder from us. Keep the date.',
+      '',
+      `Install: ${ctx.baseUrl}/docs/quickstart/`,
+    ].join('\n'),
+  }),
 };
 
 function shell(

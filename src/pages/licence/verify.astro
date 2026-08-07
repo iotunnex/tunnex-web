@@ -1,0 +1,110 @@
+---
+import { env } from 'cloudflare:workers';
+import Base from '../../layouts/Base.astro';
+import Button from '../../components/ui/Button.astro';
+import Card from '../../components/ui/Card.astro';
+import Logo from '../../components/Logo.astro';
+import { d1PaidVerifyStore } from '../../lib/paid-request.ts';
+
+/**
+ * ⚠ SCANNER-PROOF, LIKE THE TRIAL PAGE. Mail scanners (SafeLinks, Proofpoint) prefetch GET and HEAD, so
+ * this page performs ZERO writes — the explicit POST below does the atomic consume. A page that filed the
+ * request on GET would file it the moment a corporate mail filter looked at the link.
+ */
+export const prerender = false;
+
+const token = Astro.url.searchParams.get('token') ?? '';
+const forced = Astro.url.searchParams.get('state');
+
+let state: 'valid' | 'invalid' | 'queued' | 'open' | 'rate' = 'invalid';
+let domain = '';
+let band = '';
+if (forced === 'queued' || forced === 'open' || forced === 'rate' || forced === 'invalid') {
+  state = forced;
+} else if (token) {
+  const row = await d1PaidVerifyStore(env.DB).peekRequest(
+    await import('../../lib/tokens.ts').then((m) => m.hashToken(token)),
+  );
+  if (row && row.expiresAt > Math.floor(Date.now() / 1000)) {
+    state = 'valid';
+    domain = row.domain;
+    band = row.band;
+  }
+}
+
+const titles = {
+  valid: 'Tunnex · Confirm your licence request',
+  invalid: 'Tunnex · Link not valid',
+  queued: 'Tunnex · Request received',
+  open: 'Tunnex · A request is already open',
+  rate: 'Tunnex · Too many attempts',
+} as const;
+---
+
+<Base title={titles[state]} noindex>
+  <section class="mx-auto flex min-h-[65vh] w-full max-w-6xl flex-col items-center justify-center px-4 py-20 sm:px-6">
+    <Card class="mx-auto flex w-full max-w-md flex-col items-center gap-5 p-8 text-center">
+      <Logo variant="vertical" class="h-5" />
+
+      {state === 'valid' && (
+        <>
+          <h1 class="font-sans font-semibold text-[20px] text-text tracking-tight break-words">
+            Confirm your {band} licence request for {domain}
+          </h1>
+          <p class="text-[14px] leading-[1.65] text-muted">
+            Confirming puts this in front of a person. It buys nothing, starts no clock, and fixes no
+            price — we come back to you with terms.
+          </p>
+          <form method="POST" action="/api/licence/verify" class="w-full">
+            <input type="hidden" name="token" value={token} />
+            <Button type="submit" class="w-full">Confirm the request</Button>
+          </form>
+        </>
+      )}
+
+      {state === 'queued' && (
+        <>
+          <h1 class="font-sans font-semibold text-[20px] text-text tracking-tight">
+            Your request is with us
+          </h1>
+          <p class="text-[14px] leading-[1.65] text-muted">
+            A person reads every one. We will reply with pricing and terms; payment is arranged
+            directly with us, and your key is issued once that is settled.
+          </p>
+        </>
+      )}
+
+      {/* ⛔ THE CASE THAT USED TO VANISH. A domain with a request already open was silently discarded with
+          a success response — this says so instead, and says which rule applied. */}
+      {state === 'open' && (
+        <>
+          <h1 class="font-sans font-semibold text-[20px] text-text tracking-tight">
+            A licence request for your domain is already open
+          </h1>
+          <p class="text-[14px] leading-[1.65] text-muted">
+            We are already working on one for this company, so we have not started a second. If that is
+            news to you, reply to the confirmation email and we will find it.
+          </p>
+        </>
+      )}
+
+      {state === 'rate' && (
+        <p class="text-[14px] leading-[1.65] text-muted">
+          Too many attempts from this address. Try again in a minute.
+        </p>
+      )}
+
+      {state === 'invalid' && (
+        <>
+          <h1 class="font-sans font-semibold text-[20px] text-text tracking-tight">
+            This link is not valid
+          </h1>
+          <p class="text-[14px] leading-[1.65] text-muted">
+            Links are single-use and last 30 minutes. Start again and we will send a fresh one.
+          </p>
+          <Button href="/licence" class="w-full">Request a licence</Button>
+        </>
+      )}
+    </Card>
+  </section>
+</Base>

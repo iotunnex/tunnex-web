@@ -19,18 +19,49 @@ import type { LicenseClaims } from './issuance.ts';
  * work and no operator could act on it — the verb-census class this repo has measured at eleven before.
  */
 
+/** What kind of request a row is (S12.7). Governs what the reviewer may do with it. */
+export type QueueKind = 'trial' | 'paid' | 'direct';
+export type PaymentState = 'n/a' | 'pending' | 'settled';
+
 export interface QueueRow {
-  trialDomain: string;
+  domain: string;
+  /** ⛔ The band that would be MINTED — for a paid row this is what the REVIEWER set, never what was asked. */
   tier: string;
+  kind: QueueKind;
+  /** What the customer ASKED for. Recorded, shown, and never signed. Null for trial and direct rows. */
+  requestedBand: string | null;
+  /** ⛔ 'pending' BLOCKS SIGNING. Money is settled offline and the row says whether it has been. */
+  paymentState: PaymentState;
   issuedAt: number;
   expiresAt: number;
   licenseId: string;
   queuedAt: number;
-  /** From `trials` — what the product already knows about this domain. Null if the trial row is gone. */
+  /** From `trials` — what the product already knows about this domain. Null if there is no trial row. */
   trialEmail: string | null;
   trialStatus: string | null;
-  /** ⛔ Whether a key has ALREADY been issued to this domain. A second key is a second unrevocable artefact. */
-  alreadyIssued: { licenseId: string; kid: string; issuedAt: number; expiresAt: number } | null;
+  /**
+   * ⛔ THE DELIVERY ADDRESS, AND IT CANNOT COME FROM `trials` ANY MORE. A paid or direct row has no trial
+   * row to join, so a key would be minted with nowhere to send it — `no_trial_email` was already a
+   * first-class failure and this is what stops it being the normal case for every paid row.
+   */
+  contactEmail: string | null;
+  /** What the founder needs to price it. Read, never parsed. */
+  requestedTermMonths: number | null;
+  gateways: number | null;
+  company: string | null;
+  notes: string | null;
+  /**
+   * ⛔ EVERY KEY ALREADY ISSUED TO THIS DOMAIN — A COUNT AND THE MOST RECENT, NOT "the" key.
+   *
+   * ⚠ A domain can have several, and after re-issue exists it usually will. The previous shape read ONE
+   * row out of a LEFT JOIN, which quietly duplicated the queue row per issued key and told the reviewer
+   * "the prior key" as if a second could not exist. Under offline verification every one of them is still
+   * live until its own expiry.
+   */
+  priorKeys: {
+    count: number;
+    latest: { licenseId: string; kid: string; band: string; issuedAt: number; expiresAt: number };
+  } | null;
 }
 
 export interface AdminIssueStore {
@@ -47,6 +78,33 @@ export interface AdminIssueStore {
   ): Promise<boolean>;
   /** Undo a claim. Safe ONLY while no key has been minted — see the ordering note in `issueFromQueue`. */
   releaseClaim(trialDomain: string): Promise<void>;
+  /**
+   * ⛔ THE PAYMENT GATE, AS A DELIBERATE ACT ON THE ROW. Moves 'pending' → 'settled' and returns false if
+   * the row was not pending — so it cannot be replayed, and cannot settle a trial row that has nothing to
+   * settle.
+   */
+  settlePayment(domain: string, at: number): Promise<boolean>;
+  /**
+   * ⛔ THE REVIEWER SETS THE BAND THAT GETS MINTED. Refuses on a decided row: a band changed after
+   * signing would describe a key that does not carry it.
+   */
+  setBand(domain: string, band: string): Promise<boolean>;
+  /**
+   * Create a row for a deal closed offline, or a re-issue. ⚠ It is the SAME row shape the request path
+   * produces, so there is exactly one path from a decision to a signature.
+   */
+  createDirect(row: {
+    domain: string;
+    band: string;
+    contactEmail: string;
+    termMonths: number;
+    issuedAt: number;
+    expiresAt: number;
+    licenseId: string;
+    notes: string;
+  }): Promise<'queued' | 'already_open'>;
+  /** ⛔ The ledger read: every key ever issued, newest first. */
+  ledger(): Promise<LedgerRow[]>;
   recordIssued(row: {
     licenseId: string;
     domain: string;
@@ -61,6 +119,40 @@ export interface AdminIssueStore {
     domain: string,
     a: { licenseId: string; startedAt: number; expiresAt: number },
   ): Promise<void>;
+}
+
+/**
+ * A row of the ledger — every key that has ever left this service.
+ *
+ * ⛔ THERE IS NO `current` FLAG AND THERE NEVER CAN BE. Offline verification means a key runs to its own
+ * expiry whatever we do afterwards, so "within term" is a statement about the CLOCK, computed at read
+ * time — not a status this service controls or could change.
+ */
+export interface LedgerRow {
+  licenseId: string;
+  domain: string;
+  band: string;
+  kid: string;
+  issuedAt: number;
+  expiresAt: number;
+  emailedAt: number | null;
+}
+
+/** ⭐ Within term is arithmetic, not state. */
+export function withinTerm(row: Pick<LedgerRow, 'issuedAt' | 'expiresAt'>, now: number): boolean {
+  return row.issuedAt <= now && now < row.expiresAt;
+}
+
+/** Ledger grouped by domain — a customer's whole history in one block, newest key first. */
+export function groupByDomain(rows: LedgerRow[]): { domain: string; keys: LedgerRow[] }[] {
+  const by = new Map<string, LedgerRow[]>();
+  for (const r of rows) by.set(r.domain, [...(by.get(r.domain) ?? []), r]);
+  return [...by.entries()]
+    .map(([domain, keys]) => ({
+      domain,
+      keys: [...keys].sort((a, b) => b.issuedAt - a.issuedAt),
+    }))
+    .sort((a, b) => (b.keys[0]?.issuedAt ?? 0) - (a.keys[0]?.issuedAt ?? 0));
 }
 
 export interface AdminIssueDeps {
@@ -89,6 +181,9 @@ export type IssueOutcome =
         | 'not_pending'
         | 'no_trial_email'
         | 'bad_band'
+        // ⛔ A PAID ROW WHOSE MONEY HAS NOT ARRIVED. The gate is HERE, not on the button — the queue page
+        // is HTML the server sends, and `POST /api/admin/issue` is reachable without it.
+        | 'payment_not_settled'
         | 'signing_key_unreadable' // absent, or not JSON — a paste problem
         | 'signing_key_rejected' // parsed, runtime refused it (wrong alg, public half, bad shape)
         | 'signing_threw' // imported fine, signing itself failed
@@ -125,10 +220,26 @@ export type IssueOutcome =
 export async function issueFromQueue(deps: AdminIssueDeps, row: QueueRow): Promise<IssueOutcome> {
   const now = Math.floor((deps.now ?? Date.now)() / 1000);
 
-  if (!row.trialEmail) return { ok: false, code: 'no_trial_email' };
+  // ⚠ THE ROW'S OWN CONTACT FIRST, `trials` ONLY AS A FALLBACK. A paid or direct row has no trial row to
+  // join, and joining one for a domain that happens to have taken a trial would send a purchased key to
+  // whoever asked for the free one.
+  const to = row.contactEmail ?? row.trialEmail;
+  if (!to) return { ok: false, code: 'no_trial_email' };
   if (!isBand(row.tier)) return { ok: false, code: 'bad_band' };
 
-  if (!(await deps.store.claimForDecision(row.trialDomain, 'issued', now))) {
+  // ⛔ THE PAYMENT GATE, ON THE SERVER, BEFORE THE CLAIM.
+  //
+  // The queue page disables the button for an unsettled row — and a disabled button is a statement about a
+  // DOM, not about what the endpoint accepts. This is the class fixed in the control plane the same week:
+  // a UI gate the server does not mirror is not a gate.
+  //
+  // ⚠ A trial mistake expires in 30 days. A paid key is a year and CANNOT BE RECALLED, so the first
+  // mistake available on this screen is signing before the money arrives.
+  if (row.kind === 'paid' && row.paymentState !== 'settled') {
+    return { ok: false, code: 'payment_not_settled' };
+  }
+
+  if (!(await deps.store.claimForDecision(row.domain, 'issued', now))) {
     return { ok: false, code: 'not_pending' };
   }
 
@@ -139,7 +250,7 @@ export async function issueFromQueue(deps: AdminIssueDeps, row: QueueRow): Promi
   // this runtime — which is exactly what the first live attempt hit (Node exports alg:"Ed25519"; workerd
   // requires "EdDSA").
   if (!deps.env.SIGNING_KEY_JWK || !deps.env.SIGNING_KID) {
-    await deps.store.releaseClaim(row.trialDomain);
+    await deps.store.releaseClaim(row.domain);
     return {
       ok: false,
       code: 'signing_key_unreadable',
@@ -149,7 +260,7 @@ export async function issueFromQueue(deps: AdminIssueDeps, row: QueueRow): Promi
   try {
     JSON.parse(deps.env.SIGNING_KEY_JWK);
   } catch (e) {
-    await deps.store.releaseClaim(row.trialDomain);
+    await deps.store.releaseClaim(row.domain);
     // ⚠ THE MESSAGE ONLY — never the value. A JSON parse error quotes the input it choked on, so the raw
     // text must never reach a log line.
     console.error(JSON.stringify({ event: 'issuance.signing_key_unparseable', error: errName(e) }));
@@ -166,7 +277,7 @@ export async function issueFromQueue(deps: AdminIssueDeps, row: QueueRow): Promi
     // approves WHAT WAS COMPUTED; a value invented at the signing step is a value nobody reviewed, and
     // under offline verification nobody can take it back.
     const claims: LicenseClaims & { kid: string; band: string } = {
-      domain: row.trialDomain,
+      domain: row.domain,
       tier: row.tier === 'trial' ? 'trial' : 'enterprise',
       seats: null,
       issued_at: now,
@@ -177,14 +288,14 @@ export async function issueFromQueue(deps: AdminIssueDeps, row: QueueRow): Promi
     };
     licenceKey = await signLicence(active.key, buildPayload(claims));
   } catch (e) {
-    await deps.store.releaseClaim(row.trialDomain); // nothing was minted
+    await deps.store.releaseClaim(row.domain); // nothing was minted
     // ⛔ LOG THE EXCEPTION. This is the line whose absence cost a live walk: the cause was named exactly by
     // the error text ('JSON Web Key Algorithm parameter "alg" ("Ed25519") does not match requested Ed25519
     // curve') and nothing recorded it.
     // ⚠ Name and message only, and NEITHER can contain key material: WebCrypto import errors describe the
     // ALGORITHM MISMATCH, never the bytes.
     console.error(
-      JSON.stringify({ event: 'issuance.sign_failed', domain: row.trialDomain, error: errName(e) }),
+      JSON.stringify({ event: 'issuance.sign_failed', domain: row.domain, error: errName(e) }),
     );
     const imported = /import|JSON Web Key|alg|usage|DataError/i.test(errName(e));
     return {
@@ -201,7 +312,7 @@ export async function issueFromQueue(deps: AdminIssueDeps, row: QueueRow): Promi
     const pub = await importPublicKey(deps.env.SIGNING_PUBLIC_JWK);
     const check = await verifyLicence({ [kid]: pub }, licenceKey);
     if (!check.ok) {
-      await deps.store.releaseClaim(row.trialDomain); // the artefact is broken; nothing usable was issued
+      await deps.store.releaseClaim(row.domain); // the artefact is broken; nothing usable was issued
       return { ok: false, code: 'self_verify_failed' };
     }
   }
@@ -212,7 +323,7 @@ export async function issueFromQueue(deps: AdminIssueDeps, row: QueueRow): Promi
   try {
     await deps.store.recordIssued({
       licenseId: row.licenseId,
-      domain: row.trialDomain,
+      domain: row.domain,
       band: row.tier,
       kid,
       issuedAt: now,
@@ -220,11 +331,17 @@ export async function issueFromQueue(deps: AdminIssueDeps, row: QueueRow): Promi
       licenceKey,
     });
     // The trial's clock starts at issuance — the public promise. Same activation path the seam already used.
-    await deps.store.activateTrial(row.trialDomain, {
-      licenseId: row.licenseId,
-      startedAt: now,
-      expiresAt,
-    });
+    //
+    // ⛔ GATED ON THE KIND, NOT LEFT TO MISS. A paid or direct row has no `trials` row, so this UPDATE
+    // would match zero rows and do nothing — harmless, but harmless BECAUSE A WHERE CLAUSE MISSED is not
+    // a property anyone stated, and it stops being true the day a paying customer also has a trial row.
+    if (row.kind === 'trial') {
+      await deps.store.activateTrial(row.domain, {
+        licenseId: row.licenseId,
+        startedAt: now,
+        expiresAt,
+      });
+    }
   } catch (e) {
     // ⛔ A KEY EXISTS AND WE COULD NOT RECORD IT. The claim is deliberately NOT released: retrying would
     // mint a second unrevocable key. Hand the key over and say plainly what happened — this is the one
@@ -239,7 +356,7 @@ export async function issueFromQueue(deps: AdminIssueDeps, row: QueueRow): Promi
 
   // 5. Send.
   try {
-    await deps.sendKey(row.trialEmail, row.trialDomain, licenceKey, expiresAt);
+    await deps.sendKey(to, row.domain, licenceKey, expiresAt);
   } catch (e) {
     return {
       ok: true,
@@ -265,40 +382,128 @@ export async function refuseFromQueue(
 export function d1AdminIssueStore(db: D1Database): AdminIssueStore {
   return {
     async pendingQueue() {
-      // ⛔ ONE QUERY, THREE FACTS. The reviewer needs what was asked for, what `trials` already knows, and
-      // — decisively — whether a key has ALREADY been issued to this domain. A second key is a second
-      // unrevocable artefact, and the ledger is the only thing that can say.
+      // ⛔ ONE QUERY, AND PRIOR KEYS ARE AGGREGATED RATHER THAN JOINED ROW-FOR-ROW.
+      //
+      // ⚠ The previous version was `LEFT JOIN issued_keys k ON k.domain = q.trial_domain` reading ONE key
+      // — correct only while a domain could have at most one. Re-issue makes several the normal case, and
+      // that join would have DUPLICATED the pending row once per issued key while calling one of them "the
+      // prior key". Under offline verification every one of them is live until its own expiry, so the
+      // reviewer gets the COUNT and the most recent.
       const { results } = await db
         .prepare(
-          `SELECT q.trial_domain, q.tier, q.issued_at, q.expires_at, q.license_id, q.queued_at,
+          `SELECT q.domain, q.tier, q.kind, q.requested_band, q.payment_state,
+                  q.issued_at, q.expires_at, q.license_id, q.queued_at, q.contact_email,
+                  q.requested_term_months, q.gateways, q.company, q.notes,
                   t.email AS trial_email, t.status AS trial_status,
-                  k.license_id AS issued_license_id, k.kid AS issued_kid,
-                  k.issued_at AS issued_issued_at, k.expires_at AS issued_expires_at
+                  (SELECT count(*) FROM issued_keys k WHERE k.domain = q.domain) AS prior_count,
+                  k2.license_id AS issued_license_id, k2.kid AS issued_kid, k2.band AS issued_band,
+                  k2.issued_at AS issued_issued_at, k2.expires_at AS issued_expires_at
              FROM licence_review_queue q
-             LEFT JOIN trials t ON t.domain = q.trial_domain
-             LEFT JOIN issued_keys k ON k.domain = q.trial_domain
+             LEFT JOIN trials t ON t.domain = q.domain
+             LEFT JOIN issued_keys k2
+                    ON k2.id = (SELECT id FROM issued_keys k3 WHERE k3.domain = q.domain
+                                 ORDER BY k3.issued_at DESC, k3.id DESC LIMIT 1)
             WHERE q.decided_at IS NULL
             ORDER BY q.queued_at`,
         )
         .all<Record<string, string | number | null>>();
       return (results ?? []).map((r) => ({
-        trialDomain: String(r.trial_domain),
+        domain: String(r.domain),
         tier: String(r.tier),
+        kind: String(r.kind) as QueueKind,
+        requestedBand: r.requested_band === null ? null : String(r.requested_band),
+        paymentState: String(r.payment_state) as PaymentState,
         issuedAt: Number(r.issued_at),
         expiresAt: Number(r.expires_at),
         licenseId: String(r.license_id),
         queuedAt: Number(r.queued_at),
+        contactEmail: r.contact_email === null ? null : String(r.contact_email),
+        requestedTermMonths:
+          r.requested_term_months === null ? null : Number(r.requested_term_months),
+        gateways: r.gateways === null ? null : Number(r.gateways),
+        company: r.company === null ? null : String(r.company),
+        notes: r.notes === null ? null : String(r.notes),
         trialEmail: r.trial_email === null ? null : String(r.trial_email),
         trialStatus: r.trial_status === null ? null : String(r.trial_status),
-        alreadyIssued:
+        priorKeys:
           r.issued_license_id === null
             ? null
             : {
-                licenseId: String(r.issued_license_id),
-                kid: String(r.issued_kid),
-                issuedAt: Number(r.issued_issued_at),
-                expiresAt: Number(r.issued_expires_at),
+                count: Number(r.prior_count ?? 1),
+                latest: {
+                  licenseId: String(r.issued_license_id),
+                  kid: String(r.issued_kid),
+                  band: String(r.issued_band),
+                  issuedAt: Number(r.issued_issued_at),
+                  expiresAt: Number(r.issued_expires_at),
+                },
               },
+      }));
+    },
+
+    async settlePayment(domain, at) {
+      // The WHERE clause is the arbiter again: only a PENDING paid row moves, so this cannot be replayed
+      // and cannot "settle" a trial row that has nothing to settle.
+      const res = await db
+        .prepare(
+          `UPDATE licence_review_queue SET payment_state = 'settled', payment_settled_at = ?
+            WHERE domain = ? AND decided_at IS NULL AND payment_state = 'pending'`,
+        )
+        .bind(at, domain)
+        .run();
+      return (res.meta.changes ?? 0) > 0;
+    },
+
+    async setBand(domain, band) {
+      // ⛔ NOT ON A DECIDED ROW. A band changed after signing would describe a key that does not carry it —
+      // and the key cannot be recalled to match.
+      const res = await db
+        .prepare(
+          `UPDATE licence_review_queue SET tier = ? WHERE domain = ? AND decided_at IS NULL`,
+        )
+        .bind(band, domain)
+        .run();
+      return (res.meta.changes ?? 0) > 0;
+    },
+
+    async createDirect(row) {
+      const res = await db
+        .prepare(
+          `INSERT INTO licence_review_queue
+             (domain, kind, tier, payment_state, issued_at, expires_at, license_id, contact_email,
+              requested_term_months, notes)
+           VALUES (?, 'direct', ?, 'n/a', ?, ?, ?, ?, ?, ?)
+           ON CONFLICT (domain) WHERE decided_at IS NULL DO NOTHING`,
+        )
+        .bind(
+          row.domain,
+          row.band,
+          row.issuedAt,
+          row.expiresAt,
+          row.licenseId,
+          row.contactEmail,
+          row.termMonths,
+          row.notes,
+        )
+        .run();
+      return (res.meta.changes ?? 0) > 0 ? 'queued' : 'already_open';
+    },
+
+    async ledger() {
+      const { results } = await db
+        .prepare(
+          `SELECT license_id, domain, band, kid, issued_at, expires_at, emailed_at
+             FROM issued_keys ORDER BY issued_at DESC, id DESC`,
+        )
+        .all<Record<string, string | number | null>>();
+      return (results ?? []).map((r) => ({
+        licenseId: String(r.license_id),
+        domain: String(r.domain),
+        band: String(r.band),
+        kid: String(r.kid),
+        issuedAt: Number(r.issued_at),
+        expiresAt: Number(r.expires_at),
+        emailedAt: r.emailed_at === null ? null : Number(r.emailed_at),
       }));
     },
 
@@ -307,7 +512,7 @@ export function d1AdminIssueStore(db: D1Database): AdminIssueStore {
       const res = await db
         .prepare(
           `UPDATE licence_review_queue SET decided_at = ?, decision = ?
-            WHERE trial_domain = ? AND decided_at IS NULL`,
+            WHERE domain = ? AND decided_at IS NULL`,
         )
         .bind(at, decision, trialDomain)
         .run();
@@ -317,7 +522,7 @@ export function d1AdminIssueStore(db: D1Database): AdminIssueStore {
     async releaseClaim(trialDomain) {
       await db
         .prepare(
-          `UPDATE licence_review_queue SET decided_at = NULL, decision = NULL WHERE trial_domain = ?`,
+          `UPDATE licence_review_queue SET decided_at = NULL, decision = NULL WHERE domain = ?`,
         )
         .bind(trialDomain)
         .run();

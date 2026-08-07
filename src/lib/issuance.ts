@@ -164,16 +164,28 @@ export function reviewQueueIssuer(store: ReviewQueueStore): Issuer {
   };
 }
 
-/** D1-backed review queue. Idempotent per domain via UNIQUE(trial_domain) — see migration 0003. */
+/**
+ * D1-backed review queue.
+ *
+ * ⛔ THE CONFLICT TARGET IS THE PARTIAL INDEX OVER **OPEN** ROWS (migration 0004), not the old column
+ * UNIQUE. That constraint plus retained decided rows meant a domain got ONE row EVER — so a company that
+ * took a trial and later wanted to buy had its request discarded with a success response. Now: one OPEN
+ * request per domain, any number across a customer's life.
+ *
+ * ⚠ `DO NOTHING` IS STILL CORRECT ON THIS PATH AND NOT ON THE PAID ONE. Here it means "a review is already
+ * pending for this trial" — the retry-idempotence the seam needs, and both callers already treat a
+ * non-issued result as normal. The paid path reads `changes` and TELLS the requester, because there the
+ * silence was the defect.
+ */
 export function d1ReviewQueueStore(db: D1Database): ReviewQueueStore {
   return {
     async enqueue(claims) {
       await db
         .prepare(
           `INSERT INTO licence_review_queue
-             (trial_domain, tier, issued_at, expires_at, license_id)
-           VALUES (?, ?, ?, ?, ?)
-           ON CONFLICT (trial_domain) DO NOTHING`,
+             (domain, kind, tier, payment_state, issued_at, expires_at, license_id)
+           VALUES (?, 'trial', ?, 'n/a', ?, ?, ?)
+           ON CONFLICT (domain) WHERE decided_at IS NULL DO NOTHING`,
         )
         .bind(claims.domain, claims.tier, claims.issued_at, claims.expires_at, claims.license_id)
         .run();

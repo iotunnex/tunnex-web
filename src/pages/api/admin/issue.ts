@@ -1,6 +1,7 @@
 import type { APIRoute } from 'astro';
 import { env } from 'cloudflare:workers';
 import { d1AdminIssueStore, issueFromQueue, refuseFromQueue } from '../../../lib/admin-issue.ts';
+import { isBand } from '../../../lib/licence.ts';
 import { createMailer, transportFromEnv } from '../../../lib/email/mailer.ts';
 import { emailLinkBaseUrl } from '../../../config';
 
@@ -40,18 +41,80 @@ export const POST: APIRoute = async ({ request }) => {
   const token = bearer || (cookie ? decodeURIComponent(cookie) : '');
   if (!adminAuthed(token)) return new Response('unauthorized', { status: 401 });
 
-  const body = (await request.json()) as { domain?: string; refuse?: boolean };
-  const domain = String(body.domain ?? '');
+  const body = (await request.json()) as {
+    domain?: string;
+    refuse?: boolean;
+    action?: 'settle' | 'band' | 'direct';
+    band?: string;
+    contactEmail?: string;
+    termMonths?: number;
+    notes?: string;
+  };
+  const domain = String(body.domain ?? '')
+    .trim()
+    .toLowerCase();
   if (!domain) return new Response('domain required', { status: 400 });
 
   const store = d1AdminIssueStore(env.DB);
+  const now = Math.floor(Date.now() / 1000);
+
+  if (body.action === 'settle') {
+    // ⛔ RECORDING A FACT ABOUT THE WORLD, NOT A PERMISSION. The money arrived or it did not; this row is
+    // only how we remember which. Refuses on anything that is not a pending paid row, so it cannot be
+    // replayed and cannot "settle" a trial that has nothing to settle.
+    const ok = await store.settlePayment(domain, now);
+    return new Response(ok ? 'payment recorded — the row is now signable' : 'not a pending paid row', {
+      status: ok ? 200 : 409,
+    });
+  }
+
+  if (body.action === 'band') {
+    // ⛔ THE REVIEWER SETS THE BAND. The requester's asked-for band is recorded beside it and never signed.
+    const band = String(body.band ?? '');
+    if (!isBand(band)) return new Response(`unknown band: ${band}`, { status: 400 });
+    const ok = await store.setBand(domain, band);
+    return new Response(ok ? `band set to ${band}` : 'row is already decided', {
+      status: ok ? 200 : 409,
+    });
+  }
+
+  if (body.action === 'direct') {
+    // ⭐ A DEAL CLOSED OFFLINE, OR A RE-ISSUE — THE SAME THING FROM TWO ENTRY POINTS. It FILES a row; it
+    // does not sign one. A second minting site would be a second place for the ordering rules
+    // (claim → mint → self-verify → record → send) to drift, and those rules exist because each step's
+    // failure is unrecoverable in a different way.
+    const band = String(body.band ?? '');
+    const contactEmail = String(body.contactEmail ?? '').trim();
+    const termMonths = Number(body.termMonths ?? 0);
+    if (!isBand(band)) return new Response(`unknown band: ${band}`, { status: 400 });
+    if (!contactEmail.includes('@')) return new Response('a contact address is required', { status: 400 });
+    if (!Number.isInteger(termMonths) || termMonths < 1 || termMonths > 60) {
+      return new Response('term must be 1–60 months', { status: 400 });
+    }
+    const outcome = await store.createDirect({
+      domain,
+      band,
+      contactEmail,
+      termMonths,
+      issuedAt: now,
+      expiresAt: now + termMonths * 30 * 24 * 60 * 60,
+      licenseId: crypto.randomUUID(),
+      notes: String(body.notes ?? ''),
+    });
+    return outcome === 'queued'
+      ? new Response(`filed for ${domain} — review and sign it in the queue`)
+      : new Response(
+          `a request for ${domain} is already open — settle or refuse that one first`,
+          { status: 409 },
+        );
+  }
 
   if (body.refuse) {
     const r = await refuseFromQueue({ store }, domain);
     return new Response(r.ok ? 'refused' : 'already decided', { status: r.ok ? 200 : 409 });
   }
 
-  const row = (await store.pendingQueue()).find((q) => q.trialDomain === domain);
+  const row = (await store.pendingQueue()).find((q) => q.domain === domain);
   if (!row) return new Response('no such pending row', { status: 404 });
 
   const mailer = createMailer({ transport: transportFromEnv(env), baseUrl: emailLinkBaseUrl });
@@ -60,21 +123,34 @@ export const POST: APIRoute = async ({ request }) => {
       store,
       env: secrets,
       async sendKey(to, dom, licenceKey, expiresAt) {
-        await mailer.send('trial-key-delivery', to, {
+        const expiry = new Date(expiresAt * 1000).toISOString().slice(0, 10);
+        // ⛔ THE TRIAL TEMPLATE IS NOT A GENERIC KEY TEMPLATE. It promises a free evaluation and says
+        // enforcement is not live — copy that would be false in a paying customer's inbox, and the kind of
+        // false that reads as a refund conversation. Two kinds, chosen by the row.
+        if (row.kind === 'trial') {
+          await mailer.send('trial-key-delivery', to, {
+            domain: dom,
+            licenseKey: licenceKey,
+            expiresAt: expiry,
+          });
+          return;
+        }
+        await mailer.send('licence-key-delivery', to, {
           domain: dom,
+          band: row.tier,
           licenseKey: licenceKey,
-          expiresAt: new Date(expiresAt * 1000).toISOString().slice(0, 10),
+          expiresAt: expiry,
         });
       },
     },
     row,
   );
 
-  if (result.ok && result.emailed) return new Response(`issued and emailed to ${row.trialEmail}`);
+  if (result.ok && result.emailed) return new Response(`issued and emailed to ${row.contactEmail ?? row.trialEmail}`);
   if (result.ok) {
     // ⚠ NEVER SILENT. The key is minted and unrevocable; losing it helps nobody.
     return new Response(
-      `ISSUED, BUT NOT EMAILED (${result.deliveryError}).\nSend this to ${row.trialEmail} manually:\n\n${result.licenceKey}`,
+      `ISSUED, BUT NOT EMAILED (${result.deliveryError}).\nSend this to ${row.contactEmail ?? row.trialEmail} manually:\n\n${result.licenceKey}`,
       { status: 200 },
     );
   }
@@ -89,6 +165,11 @@ export const POST: APIRoute = async ({ request }) => {
   // malformed secret from a key this runtime refuses — and the second is not a paste error, it is the
   // ceremony emitting the wrong thing. `detail` carries the exception's name and message, never a value.
   const hint: Partial<Record<string, string>> = {
+    // ⛔ THE REFUSAL THE BUTTON ALSO EXPRESSES, SAID BY THE SERVER. A disabled control is a statement about
+    // a DOM; this endpoint is reachable without it.
+    payment_not_settled:
+      'This is a PAID request and the money has not been recorded as arrived. Mark the payment received ' +
+      'on the queue first — a paid key is a year long and cannot be recalled.',
     signing_key_unreadable:
       'SIGNING_KEY_JWK is absent or not valid JSON — re-run the ceremony in README.md.',
     signing_key_rejected:

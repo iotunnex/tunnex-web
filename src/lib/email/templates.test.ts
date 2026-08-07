@@ -32,6 +32,18 @@ const cases: { [K in EmailKind]: TemplateDataMap[K] } = {
     name: 'Ada Lovelace',
     company: 'Acme Corp',
   },
+  'licence-request-verify': {
+    domain: 'acme.com',
+    band: 'growth',
+    verifyUrl: 'https://example.test/licence/verify?token=RAW_TOKEN_PLACEHOLDER',
+  },
+  'licence-request-received': { domain: 'acme.com', band: 'growth' },
+  'licence-key-delivery': {
+    domain: 'acme.com',
+    band: 'growth',
+    licenseKey: 'TNX-PAID-KEY-PLACEHOLDER',
+    expiresAt: 'July 25, 2027',
+  },
 };
 
 const kinds = Object.keys(cases) as EmailKind[];

@@ -177,11 +177,15 @@ const vendorQuestions = [
           >
             Start {TRIAL_LENGTH_ADJ} free trial
           </a>
+          {/* ⛔ THE PAID CTA GOES TO THE PAID PATH. It pointed at the enterprise LEAD form — which asks for
+              a seat count the pricing above explicitly disclaims, verifies nothing, and writes to a table
+              nothing reads. Two ways to buy is the "two places to forget to look" the queue was ruled
+              against, one layer up. `/enterprise` stays for open-ended sales questions. */}
           <a
-            href="/enterprise"
+            href="/licence"
             class="t-btn t-sec w-full block text-center rounded-[9px] px-5 py-3 font-semibold text-[13.5px]"
           >
-            Contact sales
+            Request a licence
           </a>
         </div>
       </div>
