@@ -1,0 +1,14 @@
+-- S12.10: the ledger records WHO signed each key.
+--
+-- ⛔ `issued_keys` HAS BEEN THE ONLY RECORD OF WHAT LEFT THIS SERVICE, AND IT COULD NOT NAME A PERSON.
+-- The signing surface was guarded by ADMIN_TOKEN — one shared string, no identity — so every key in the
+-- ledger was minted by "whoever had the token". Under offline verification a key cannot be recalled, which
+-- makes "who authorised this" a question that can only ever be answered by a row written at the time.
+--
+-- ⭐ THE ANSWER NOW COMES FROM A SIGNATURE, NOT A CLAIM: Cloudflare Access's assertion is verified against
+-- the team's published keys and the email inside it is what lands here. See src/lib/access.ts.
+--
+-- ⚠ NULLABLE, AND THAT IS HONEST RATHER THAN LAX. Rows minted before this migration have no attributable
+-- actor and never will; a backfilled default would invent one. NULL reads as "minted before the ledger
+-- recorded people", and the admin surface says exactly that.
+ALTER TABLE issued_keys ADD COLUMN issued_by TEXT;

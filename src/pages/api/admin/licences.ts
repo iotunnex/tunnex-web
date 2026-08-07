@@ -2,7 +2,7 @@ import type { APIRoute } from 'astro';
 import { env } from 'cloudflare:workers';
 import { d1AdminIssueStore, groupByDomain, withinTerm } from '../../../lib/admin-issue.ts';
 import { PAID_BANDS, TERM_MONTHS } from '../../../lib/paid-request.ts';
-import { adminGate, adminChrome, esc, day } from '../../../lib/admin-page.ts';
+import { adminIdentity, adminChrome, esc, day } from '../../../lib/admin-page.ts';
 
 export const prerender = false;
 
@@ -22,7 +22,7 @@ export const prerender = false;
  * "Within term" is arithmetic over the clock, not a status this service controls.
  */
 export const GET: APIRoute = async ({ request }) => {
-  const gate = adminGate(request, env);
+  const gate = await adminIdentity(request, env);
   if (gate.kind !== 'ok') return gate.response;
 
   const rows = await d1AdminIssueStore(env.DB).ledger();
@@ -43,11 +43,12 @@ export const GET: APIRoute = async ({ request }) => {
 <td><small>${esc(k.kid)}</small></td>
 <td><small>${esc(k.licenseId)}</small></td>
 <td><small>${k.emailedAt ? day(k.emailedAt) : '⛔ never confirmed sent'}</small></td>
+<td><small>${esc(k.issuedBy) || '<i>before this was recorded</i>'}</small></td>
 </tr>`,
         )
         .join('');
       return `<h2>${esc(g.domain)} <small>— ${g.keys.length} key${g.keys.length === 1 ? '' : 's'}, ${live} within term</small></h2>
-<table><tr><th>Band</th><th>Term</th><th>Now</th><th>kid</th><th>licence id</th><th>Emailed</th></tr>
+<table><tr><th>Band</th><th>Term</th><th>Now</th><th>kid</th><th>licence id</th><th>Emailed</th><th>Signed by</th></tr>
 ${keys}</table>
 <form class="reissue" data-domain="${esc(g.domain)}">
   <input name="contactEmail" type="email" placeholder="who receives the new key" required>

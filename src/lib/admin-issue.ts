@@ -113,6 +113,8 @@ export interface AdminIssueStore {
     issuedAt: number;
     expiresAt: number;
     licenceKey: string;
+    /** ⛔ WHO SIGNED IT — a verified Access identity, never a self-declared name. */
+    issuedBy: string;
   }): Promise<void>;
   markEmailed(licenseId: string, at: number): Promise<void>;
   activateTrial(
@@ -130,6 +132,8 @@ export interface AdminIssueStore {
  */
 export interface LedgerRow {
   licenseId: string;
+  /** ⚠ Empty for keys minted before the ledger recorded people — an absence, never a guess. */
+  issuedBy: string;
   domain: string;
   band: string;
   kid: string;
@@ -157,6 +161,11 @@ export function groupByDomain(rows: LedgerRow[]): { domain: string; keys: Ledger
 
 export interface AdminIssueDeps {
   store: AdminIssueStore;
+  /**
+   * ⛔ THE VERIFIED IDENTITY OF THE PERSON PULLING THE TRIGGER. Required, not optional: a signing call
+   * that cannot say who made it produces a key nobody can be asked about, and the key cannot be recalled.
+   */
+  actor: string;
   env: { SIGNING_KEY_JWK?: string; SIGNING_KID?: string; SIGNING_PUBLIC_JWK?: string };
   sendKey(to: string, domain: string, licenceKey: string, expiresAt: number): Promise<void>;
   now?: () => number;
@@ -329,6 +338,7 @@ export async function issueFromQueue(deps: AdminIssueDeps, row: QueueRow): Promi
       issuedAt: now,
       expiresAt,
       licenceKey,
+      issuedBy: deps.actor,
     });
     // The trial's clock starts at issuance — the public promise. Same activation path the seam already used.
     //
@@ -490,7 +500,7 @@ export function d1AdminIssueStore(db: D1Database): AdminIssueStore {
     async ledger() {
       const { results } = await db
         .prepare(
-          `SELECT license_id, domain, band, kid, issued_at, expires_at, emailed_at
+          `SELECT license_id, domain, band, kid, issued_at, expires_at, emailed_at, issued_by
              FROM issued_keys ORDER BY issued_at DESC, id DESC`,
         )
         .all<Record<string, string | number | null>>();
@@ -502,6 +512,7 @@ export function d1AdminIssueStore(db: D1Database): AdminIssueStore {
         issuedAt: Number(r.issued_at),
         expiresAt: Number(r.expires_at),
         emailedAt: r.emailed_at === null ? null : Number(r.emailed_at),
+        issuedBy: r.issued_by === null ? '' : String(r.issued_by),
       }));
     },
 
@@ -529,8 +540,8 @@ export function d1AdminIssueStore(db: D1Database): AdminIssueStore {
     async recordIssued(row) {
       await db
         .prepare(
-          `INSERT INTO issued_keys (license_id, domain, band, kid, issued_at, expires_at, licence_key)
-           VALUES (?, ?, ?, ?, ?, ?, ?)`,
+          `INSERT INTO issued_keys (license_id, domain, band, kid, issued_at, expires_at, licence_key, issued_by)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
         )
         .bind(
           row.licenseId,
@@ -540,6 +551,7 @@ export function d1AdminIssueStore(db: D1Database): AdminIssueStore {
           row.issuedAt,
           row.expiresAt,
           row.licenceKey,
+          row.issuedBy,
         )
         .run();
     },

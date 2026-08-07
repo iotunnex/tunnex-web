@@ -1,20 +1,13 @@
 import { EMAIL } from './email/palette.ts';
+import { verifyAccess, type AccessEnv } from './access.ts';
 
 /**
- * The admin surfaces' shared gate and chrome (S12.7).
+ * The admin surfaces' shared gate and chrome.
  *
- * ⛔ EXTRACTED BECAUSE THIS STORY ADDS SURFACES BEHIND ONE SHARED SECRET, AND THAT IS THE RISK THE FOUNDER
- * NAMED. `ADMIN_TOKEN` is a single bearer string with no identity: it cannot say who signed a key, and
- * every new page behind it widens what one leaked string reaches. Copying the check into each page would
- * make that worse in the quietest possible way — three implementations, one of which will eventually be
- * the weakest.
- *
- * ⚠ ACCESS IS THE CONTROL; THIS IS THE FLOOR BENEATH IT. Cloudflare Access sits in front of these routes
- * and is what actually knows who is asking. Registered, unchanged, and now true of three pages instead of
- * one: replacing the token with real identity is its own story.
+ * ⛔ ONE GATE FOR EVERY ADMIN PAGE, and that is the point rather than tidiness: three copies of an
+ * identity check is three chances for one of them to be the weakest, on the surfaces that mint
+ * unrevocable licences. The gate is `adminIdentity` below — Cloudflare Access, verified.
  */
-
-const COOKIE = 'tnx_admin';
 
 export function esc(s: unknown): string {
   return String(s ?? '').replace(
@@ -27,58 +20,39 @@ export function day(t: number): string {
   return new Date(t * 1000).toISOString().slice(0, 10);
 }
 
-/** Constant-time compare: a `===` on the only secret guarding the signer leaks its prefix by timing. */
-export function tokenMatches(token: string, expected: string | undefined): boolean {
-  if (!expected || token.length !== expected.length) return false;
-  let diff = 0;
-  for (let i = 0; i < token.length; i++) diff |= token.charCodeAt(i) ^ expected.charCodeAt(i);
-  return diff === 0;
-}
-
-export type AdminGate = { kind: 'ok' } | { kind: 'redirect' | 'denied'; response: Response };
+export type AdminGate =
+  { kind: 'ok'; actor: string } | { kind: 'redirect' | 'denied'; response: Response };
 
 /**
- * ⛔ THE TOKEN MUST NOT LIVE IN THE URL. The walk put it in browser history, in the `Referer` header of
- * every subsequent request, and in Cloudflare's own request logs — where the tail output showed it in
- * plain text. It guards the only surface that mints unrevocable keys.
+ * ⛔ THE ADMIN GATE IS CLOUDFLARE ACCESS, VERIFIED — and `ADMIN_TOKEN` is gone (S12.10).
  *
- * So `?t=` is accepted ONCE, exchanged for an HttpOnly cookie, and redirected away. The URL left in
- * history carries no secret.
+ * What it replaced: one shared bearer string, with no identity, no per-person revocation, and no way for
+ * `issued_keys` to say WHO signed a key. It travelled in a URL — browser history, `Referer`, and
+ * Cloudflare's own request logs, where the walk found it in plain text — guarding the only surface that
+ * mints unrevocable licences.
  *
- * ⚠ Path=/api/admin so the cookie reaches every admin surface, not just the one that minted it — a
- * per-page cookie would send the operator back through a URL-borne token for each new screen, which is
- * the exact thing this exists to stop.
+ * ⭐ MEASURED BEFORE IT WAS TRUSTED, and all four probes agreed:
+ *   - every `/api/admin/*` path 302s to the team's Access login, INCLUDING a path that does not exist —
+ *     so the application is a PREFIX and a future admin route inherits the gate rather than opening a hole
+ *   - POST is covered, not just GET
+ *   - `/api/trial/request` is NOT behind Access — the negative control, proving the app is scoped rather
+ *     than "everything happens to be protected"
+ *   - the team's JWKS is live: 2 RSA keys, RS256, kid-selected
+ *
+ * ⚠ AND THE VERIFICATION IS WHAT MAKES IT SAFE, not the coverage. Access being in front today is an
+ * operational fact that a dashboard click can undo; a signature check fails closed the moment it is
+ * undone. See `verifyAccess`.
  */
-export function adminGate(request: Request, env: unknown): AdminGate {
-  const expected = (env as { ADMIN_TOKEN?: string }).ADMIN_TOKEN;
-  const url = new URL(request.url);
-  const fromQuery = url.searchParams.get('t');
-  const cookie = new RegExp(`(?:^|;\\s*)${COOKIE}=([^;]+)`).exec(
-    request.headers.get('cookie') ?? '',
-  )?.[1];
-  const bearer = (request.headers.get('authorization') ?? '').replace(/^Bearer /, '');
-  // ⚠ `||`, NOT `??`. An absent header is the EMPTY STRING, not null, so `??` would stop at it and never
-  // reach the cookie — the page would 401 for an operator who is correctly signed in.
-  const token = fromQuery || bearer || (cookie ? decodeURIComponent(cookie) : '');
-
-  if (!tokenMatches(token, expected)) {
-    return { kind: 'denied', response: new Response('unauthorized', { status: 401 }) };
-  }
-  if (fromQuery) {
-    url.searchParams.delete('t');
-    return {
-      kind: 'redirect',
-      response: new Response(null, {
-        status: 302,
-        headers: {
-          location: url.pathname + (url.search || ''),
-          'set-cookie': `${COOKIE}=${encodeURIComponent(fromQuery)}; Path=/api/admin; HttpOnly; Secure; SameSite=Strict`,
-          'referrer-policy': 'no-referrer',
-        },
-      }),
-    };
-  }
-  return { kind: 'ok' };
+export async function adminIdentity(request: Request, env: unknown): Promise<AdminGate> {
+  const res = await verifyAccess(request, env as AccessEnv);
+  if (res.ok) return { kind: 'ok', actor: res.identity.actor };
+  return {
+    kind: 'denied',
+    response: new Response(`unauthorized: ${res.reason}\n`, {
+      status: res.status,
+      headers: { 'referrer-policy': 'no-referrer' },
+    }),
+  };
 }
 
 /**

@@ -15,7 +15,18 @@ import { join } from 'node:path';
  * declaring it.
  */
 describe('licensing secret names', () => {
-  /** Set on the live Worker (confirmed via `wrangler secret list`, 2026-08-06). */
+  /**
+   * Set on the live Worker (confirmed via `wrangler secret list`, 2026-08-06).
+   *
+   * ⛔ `ADMIN_TOKEN` IS STILL LISTED AND NO LONGER READ, and that is the honest state rather than an
+   * oversight. S12.10 replaced it with verified Cloudflare Access identity, so nothing in the source asks
+   * for it — but the SECRET REMAINS SET ON THE WORKER until someone runs `wrangler secret delete
+   * ADMIN_TOKEN`. This list describes the deployment, not the code; removing the name here before the
+   * secret is gone would make the list lie in the direction of "we cleaned that up".
+   *
+   * ⚠ It is a stale credential with no reader — harmless while unread, and exactly the kind of thing that
+   * gets re-adopted by the next person who needs "an admin check". Delete it on the Worker.
+   */
   const SET_ON_WORKER = [
     'SIGNING_KEY_JWK',
     'SIGNING_PUBLIC_JWK',

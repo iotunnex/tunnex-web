@@ -3,7 +3,7 @@ import { env } from 'cloudflare:workers';
 import { d1AdminIssueStore, type QueueRow } from '../../../lib/admin-issue.ts';
 import { PAID_BANDS, TERM_MONTHS } from '../../../lib/paid-request.ts';
 import { EMAIL } from '../../../lib/email/palette.ts';
-import { adminGate, adminChrome, esc, day } from '../../../lib/admin-page.ts';
+import { adminIdentity, adminChrome, esc, day } from '../../../lib/admin-page.ts';
 
 export const prerender = false;
 
@@ -50,7 +50,7 @@ function priorKeys(r: QueueRow): string {
  * domain, because each one is live until its own expiry and nothing here can recall any of them.
  */
 export const GET: APIRoute = async ({ request }) => {
-  const gate = adminGate(request, env);
+  const gate = await adminIdentity(request, env);
   if (gate.kind !== 'ok') return gate.response;
 
   const rows = await d1AdminIssueStore(env.DB).pendingQueue();

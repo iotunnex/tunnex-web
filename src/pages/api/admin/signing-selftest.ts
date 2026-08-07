@@ -1,5 +1,6 @@
 import type { APIRoute } from 'astro';
 import { env } from 'cloudflare:workers';
+import { adminIdentity } from '../../../lib/admin-page.ts';
 import {
   activeSigningKey,
   buildPayload,
@@ -21,19 +22,13 @@ export const prerender = false;
  * email is sent. Safe to run at any time, including on a live deployment.
  */
 export const GET: APIRoute = async ({ request }) => {
+  const gate = await adminIdentity(request, env);
+  if (gate.kind !== 'ok') return gate.response;
   const secrets = env as unknown as {
     SIGNING_KEY_JWK?: string;
     SIGNING_KID?: string;
     SIGNING_PUBLIC_JWK?: string;
-    ADMIN_TOKEN?: string;
   };
-  const token = (request.headers.get('authorization') ?? '').replace(/^Bearer /, '');
-  const expected = secrets.ADMIN_TOKEN;
-  if (!expected || token.length !== expected.length)
-    return new Response('unauthorized', { status: 401 });
-  let diff = 0;
-  for (let i = 0; i < token.length; i++) diff |= token.charCodeAt(i) ^ expected.charCodeAt(i);
-  if (diff !== 0) return new Response('unauthorized', { status: 401 });
 
   const fail = (why: string, e?: unknown) =>
     new Response(

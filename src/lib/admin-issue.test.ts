@@ -113,7 +113,12 @@ describe('the admin signing surface', () => {
     const s = store();
     const sent: string[] = [];
     const r = await issueFromQueue(
-      { store: s.store, env: env(), sendKey: async (_t, _d, k) => void sent.push(k) },
+      {
+        store: s.store,
+        env: env(),
+        actor: 'ada@tunnex.io',
+        sendKey: async (_t, _d, k) => void sent.push(k),
+      },
       row,
     );
     expect(r.ok).toBe(true);
@@ -132,7 +137,12 @@ describe('the admin signing surface', () => {
       },
     });
     await issueFromQueue(
-      { store: s.store, env: env(), sendKey: async () => void order.push('send') },
+      {
+        store: s.store,
+        env: env(),
+        actor: 'ada@tunnex.io',
+        sendKey: async () => void order.push('send'),
+      },
       row,
     );
     expect(order).toEqual(['record', 'send']);
@@ -143,7 +153,12 @@ describe('the admin signing surface', () => {
   it('a second decision is REFUSED, and mints nothing', async () => {
     const s = store();
     let mints = 0;
-    const deps = { store: s.store, env: env(), sendKey: async () => void (mints += 1) };
+    const deps = {
+      store: s.store,
+      env: env(),
+      actor: 'ada@tunnex.io',
+      sendKey: async () => void (mints += 1),
+    };
     const first = await issueFromQueue(deps, row);
     const second = await issueFromQueue(deps, row);
     expect(first.ok).toBe(true);
@@ -160,6 +175,7 @@ describe('the admin signing surface', () => {
       {
         store: s.store,
         env: env(),
+        actor: 'ada@tunnex.io',
         sendKey: async () => {
           throw new Error('smtp down');
         },
@@ -180,7 +196,10 @@ describe('the admin signing surface', () => {
         throw new Error('d1 unavailable');
       },
     });
-    const r = await issueFromQueue({ store: s.store, env: env(), sendKey: async () => {} }, row);
+    const r = await issueFromQueue(
+      { store: s.store, env: env(), actor: 'ada@tunnex.io', sendKey: async () => {} },
+      row,
+    );
     expect(r.ok).toBe(false);
     expect(!r.ok && r.code).toBe('minted_but_unrecorded');
     expect(!r.ok && r.code === 'minted_but_unrecorded' && r.licenceKey).toMatch(/^tnxl_/);
@@ -199,6 +218,7 @@ describe('the admin signing surface', () => {
     const r = await issueFromQueue(
       {
         store: s.store,
+        actor: 'ada@tunnex.io',
         // public half belongs to a DIFFERENT key: self-verification must fail
         env: {
           ...env(),
@@ -217,7 +237,7 @@ describe('the admin signing surface', () => {
   it('a row with no trial email is refused before anything is claimed', async () => {
     const s = store();
     const r = await issueFromQueue(
-      { store: s.store, env: env(), sendKey: async () => {} },
+      { store: s.store, env: env(), actor: 'ada@tunnex.io', sendKey: async () => {} },
       { ...row, trialEmail: null },
     );
     expect(!r.ok && r.code).toBe('no_trial_email');
@@ -228,7 +248,13 @@ describe('the admin signing surface', () => {
     const s = store();
     const now = 1_800_000_000;
     await issueFromQueue(
-      { store: s.store, env: env(), sendKey: async () => {}, now: () => now * 1000 },
+      {
+        store: s.store,
+        env: env(),
+        actor: 'ada@tunnex.io',
+        sendKey: async () => {},
+        now: () => now * 1000,
+      },
       row,
     );
     const rec = s.calls.recorded[0] as { issuedAt: number; expiresAt: number };
@@ -259,7 +285,12 @@ describe('paid rows and money', () => {
     const s = store();
     const sent: string[] = [];
     const r = await issueFromQueue(
-      { store: s.store, env: env(), sendKey: async (_t, _d, k) => void sent.push(k) },
+      {
+        store: s.store,
+        env: env(),
+        actor: 'ada@tunnex.io',
+        sendKey: async (_t, _d, k) => void sent.push(k),
+      },
       paidRow,
     );
     expect(r).toEqual({ ok: false, code: 'payment_not_settled' });
@@ -274,7 +305,12 @@ describe('paid rows and money', () => {
     const s = store();
     const sent: string[] = [];
     const r = await issueFromQueue(
-      { store: s.store, env: env(), sendKey: async (_t, _d, k) => void sent.push(k) },
+      {
+        store: s.store,
+        env: env(),
+        actor: 'ada@tunnex.io',
+        sendKey: async (_t, _d, k) => void sent.push(k),
+      },
       { ...paidRow, paymentState: 'settled' },
     );
     expect(r.ok).toBe(true);
@@ -287,7 +323,12 @@ describe('paid rows and money', () => {
     const s = store();
     const sent: string[] = [];
     await issueFromQueue(
-      { store: s.store, env: env(), sendKey: async (_t, _d, k) => void sent.push(k) },
+      {
+        store: s.store,
+        env: env(),
+        actor: 'ada@tunnex.io',
+        sendKey: async (_t, _d, k) => void sent.push(k),
+      },
       { ...paidRow, paymentState: 'settled' }, // asked for scale, reviewer set starter
     );
     const check = await verifyLicence({ [keys.kid]: await importPublicKey(keys.pub) }, sent[0]);
@@ -304,7 +345,7 @@ describe('paid rows and money', () => {
   it('does not touch the trial lifecycle for a paid row', async () => {
     const s = store();
     await issueFromQueue(
-      { store: s.store, env: env(), sendKey: async () => {} },
+      { store: s.store, env: env(), actor: 'ada@tunnex.io', sendKey: async () => {} },
       { ...paidRow, paymentState: 'settled' },
     );
     expect(s.calls.activated).toBe(0);
@@ -314,7 +355,7 @@ describe('paid rows and money', () => {
     const s = store();
     let to = '';
     await issueFromQueue(
-      { store: s.store, env: env(), sendKey: async (t) => void (to = t) },
+      { store: s.store, env: env(), actor: 'ada@tunnex.io', sendKey: async (t) => void (to = t) },
       // A domain that ALSO has a trial row under a different address — the purchased key must not go to
       // whoever asked for the free one.
       { ...paidRow, paymentState: 'settled', trialEmail: 'intern@buyer.com' },
@@ -335,6 +376,7 @@ describe('the ledger view', () => {
     issuedAt,
     expiresAt: issuedAt + days * 86_400,
     emailedAt: null,
+    issuedBy: 'ada@tunnex.io',
   });
 
   it('groups every key by domain, newest first, and replaces none of them', () => {

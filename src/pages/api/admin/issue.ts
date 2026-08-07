@@ -2,6 +2,7 @@ import type { APIRoute } from 'astro';
 import { env } from 'cloudflare:workers';
 import { d1AdminIssueStore, issueFromQueue, refuseFromQueue } from '../../../lib/admin-issue.ts';
 import { isBand } from '../../../lib/licence.ts';
+import { adminIdentity } from '../../../lib/admin-page.ts';
 import { createMailer, transportFromEnv } from '../../../lib/email/mailer.ts';
 import { emailLinkBaseUrl } from '../../../config';
 
@@ -20,7 +21,6 @@ interface SigningEnv {
   SIGNING_KEY_JWK?: string;
   SIGNING_KID?: string;
   SIGNING_PUBLIC_JWK?: string;
-  ADMIN_TOKEN?: string;
 }
 const secrets = env as unknown as SigningEnv;
 
@@ -35,11 +35,11 @@ const secrets = env as unknown as SigningEnv;
  * issuers and cannot reach this code.
  */
 export const POST: APIRoute = async ({ request }) => {
-  // ⚠ Bearer OR the HttpOnly cookie the queue page sets — the token no longer travels in a URL (F4).
-  const bearer = (request.headers.get('authorization') ?? '').replace(/^Bearer /, '');
-  const cookie = /(?:^|;\s*)tnx_admin=([^;]+)/.exec(request.headers.get('cookie') ?? '')?.[1];
-  const token = bearer || (cookie ? decodeURIComponent(cookie) : '');
-  if (!adminAuthed(token)) return new Response('unauthorized', { status: 401 });
+  // ⛔ VERIFIED CLOUDFLARE ACCESS IDENTITY — not a shared string, and not a header taken on trust.
+  // `gate.actor` is the email in a signature-checked assertion, and it is what the ledger records as the
+  // person who signed each key. `issued_keys` could not answer "who minted this" before.
+  const gate = await adminIdentity(request, env);
+  if (gate.kind !== 'ok') return gate.response;
 
   const body = (await request.json()) as {
     domain?: string;
@@ -125,6 +125,7 @@ export const POST: APIRoute = async ({ request }) => {
     {
       store,
       env: secrets,
+      actor: gate.actor,
       async sendKey(to, dom, licenceKey, expiresAt) {
         const expiry = new Date(expiresAt * 1000).toISOString().slice(0, 10);
         // ⛔ THE TRIAL TEMPLATE IS NOT A GENERIC KEY TEMPLATE. It promises a free evaluation and says
@@ -188,12 +189,3 @@ export const POST: APIRoute = async ({ request }) => {
     status: result.code === 'not_pending' ? 409 : 400,
   });
 };
-
-/** Constant-time compare: a `===` on the only secret guarding the signer leaks its prefix by timing. */
-function adminAuthed(token: string): boolean {
-  const expected = secrets.ADMIN_TOKEN;
-  if (!expected || token.length !== expected.length) return false;
-  let diff = 0;
-  for (let i = 0; i < token.length; i++) diff |= token.charCodeAt(i) ^ expected.charCodeAt(i);
-  return diff === 0;
-}
