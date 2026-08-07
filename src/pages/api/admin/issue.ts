@@ -63,9 +63,12 @@ export const POST: APIRoute = async ({ request }) => {
     // only how we remember which. Refuses on anything that is not a pending paid row, so it cannot be
     // replayed and cannot "settle" a trial that has nothing to settle.
     const ok = await store.settlePayment(domain, now);
-    return new Response(ok ? 'payment recorded — the row is now signable' : 'not a pending paid row', {
-      status: ok ? 200 : 409,
-    });
+    return new Response(
+      ok ? 'payment recorded — the row is now signable' : 'not a pending paid row',
+      {
+        status: ok ? 200 : 409,
+      },
+    );
   }
 
   if (body.action === 'band') {
@@ -87,7 +90,8 @@ export const POST: APIRoute = async ({ request }) => {
     const contactEmail = String(body.contactEmail ?? '').trim();
     const termMonths = Number(body.termMonths ?? 0);
     if (!isBand(band)) return new Response(`unknown band: ${band}`, { status: 400 });
-    if (!contactEmail.includes('@')) return new Response('a contact address is required', { status: 400 });
+    if (!contactEmail.includes('@'))
+      return new Response('a contact address is required', { status: 400 });
     if (!Number.isInteger(termMonths) || termMonths < 1 || termMonths > 60) {
       return new Response('term must be 1–60 months', { status: 400 });
     }
@@ -103,10 +107,9 @@ export const POST: APIRoute = async ({ request }) => {
     });
     return outcome === 'queued'
       ? new Response(`filed for ${domain} — review and sign it in the queue`)
-      : new Response(
-          `a request for ${domain} is already open — settle or refuse that one first`,
-          { status: 409 },
-        );
+      : new Response(`a request for ${domain} is already open — settle or refuse that one first`, {
+          status: 409,
+        });
   }
 
   if (body.refuse) {
@@ -146,7 +149,8 @@ export const POST: APIRoute = async ({ request }) => {
     row,
   );
 
-  if (result.ok && result.emailed) return new Response(`issued and emailed to ${row.contactEmail ?? row.trialEmail}`);
+  if (result.ok && result.emailed)
+    return new Response(`issued and emailed to ${row.contactEmail ?? row.trialEmail}`);
   if (result.ok) {
     // ⚠ NEVER SILENT. The key is minted and unrevocable; losing it helps nobody.
     return new Response(

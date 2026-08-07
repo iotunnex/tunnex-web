@@ -26,7 +26,10 @@ export const POST: APIRoute = async ({ request }) => {
   const form = await request.formData().catch(() => null);
   const token = form?.get('token');
   if (typeof token !== 'string' || token.length === 0 || token.length > 512) {
-    return new Response(null, { status: 303, headers: { location: '/licence/verify?state=invalid' } });
+    return new Response(null, {
+      status: 303,
+      headers: { location: '/licence/verify?state=invalid' },
+    });
   }
 
   const outcome = await handlePaidVerify(

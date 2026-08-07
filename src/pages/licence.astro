@@ -30,14 +30,16 @@ const gwText = (b: string) => {
   title="Request a Tunnex licence — Tunnex"
   description="Request a paid Tunnex licence for your company domain. A person reviews every request; payment is arranged directly with us."
 >
-  <div class="mx-auto max-w-[1180px] px-7 py-18 md:py-[72px] flex flex-col gap-10 max-[620px]:px-[18px]">
+  <div
+    class="mx-auto max-w-[1180px] px-7 py-18 md:py-[72px] flex flex-col gap-10 max-[620px]:px-[18px]"
+  >
     <div class="flex flex-col gap-3.5 max-w-[68ch]">
       <h1 class="font-semibold text-[34px] leading-[1.15] tracking-[-0.02em] text-text">
         Request a licence
       </h1>
       <p class="font-normal text-[15.5px] leading-[1.7] text-muted">
-        Tell us the shape of your deployment and we will come back with a price. A person reads every
-        request — and payment is arranged directly with us, never on this site.
+        Tell us the shape of your deployment and we will come back with a price. A person reads
+        every request — and payment is arranged directly with us, never on this site.
       </p>
     </div>
 
@@ -46,9 +48,20 @@ const gwText = (b: string) => {
         <div id="licence-form-box">
           <form id="licence-form" class="flex flex-col gap-4.5" novalidate>
             <div class="flex flex-col gap-2.25">
-              <label for="licence-email" class="font-mono font-semibold text-[9px] tracking-[0.16em] text-muted uppercase">WORK EMAIL</label>
-              <input id="licence-email" name="email" type="email" required autocomplete="email" placeholder="you@company.com"
-                class="bg-bg border border-border rounded-md px-3.25 py-3 text-[14.5px] text-text focus:outline-none" />
+              <label
+                for="licence-email"
+                class="font-mono font-semibold text-[9px] tracking-[0.16em] text-muted uppercase"
+                >WORK EMAIL</label
+              >
+              <input
+                id="licence-email"
+                name="email"
+                type="email"
+                required
+                autocomplete="email"
+                placeholder="you@company.com"
+                class="bg-bg border border-border rounded-md px-3.25 py-3 text-[14.5px] text-text focus:outline-none"
+              />
               <div class="text-[12.5px] leading-[1.6] text-muted">
                 The licence binds to your company domain, derived from this address — consumer and
                 disposable providers are not eligible.
@@ -56,47 +69,100 @@ const gwText = (b: string) => {
             </div>
 
             <div class="flex flex-col gap-2.25">
-              <label for="licence-company" class="font-mono font-semibold text-[9px] tracking-[0.16em] text-muted uppercase">COMPANY</label>
-              <input id="licence-company" name="company" required placeholder="Acme Ltd"
-                class="bg-bg border border-border rounded-md px-3.25 py-3 text-[14.5px] text-text focus:outline-none" />
+              <label
+                for="licence-company"
+                class="font-mono font-semibold text-[9px] tracking-[0.16em] text-muted uppercase"
+                >COMPANY</label
+              >
+              <input
+                id="licence-company"
+                name="company"
+                required
+                placeholder="Acme Ltd"
+                class="bg-bg border border-border rounded-md px-3.25 py-3 text-[14.5px] text-text focus:outline-none"
+              />
             </div>
 
             <div class="grid grid-cols-2 gap-3">
               <div class="flex flex-col gap-2.25">
-                <label for="licence-band" class="font-mono font-semibold text-[9px] tracking-[0.16em] text-muted uppercase">BAND</label>
-                <select id="licence-band" name="band" class="bg-bg border border-border rounded-md px-3.25 py-3 text-[14.5px] text-text">
-                  {PAID_BANDS.map((b) => <option value={b}>{b} — {gwText(b)}</option>)}
+                <label
+                  for="licence-band"
+                  class="font-mono font-semibold text-[9px] tracking-[0.16em] text-muted uppercase"
+                  >BAND</label
+                >
+                <select
+                  id="licence-band"
+                  name="band"
+                  class="bg-bg border border-border rounded-md px-3.25 py-3 text-[14.5px] text-text"
+                >
+                  {
+                    PAID_BANDS.map((b) => (
+                      <option value={b}>
+                        {b} — {gwText(b)}
+                      </option>
+                    ))
+                  }
                 </select>
               </div>
               <div class="flex flex-col gap-2.25">
-                <label for="licence-term" class="font-mono font-semibold text-[9px] tracking-[0.16em] text-muted uppercase">TERM</label>
-                <select id="licence-term" name="termMonths" class="bg-bg border border-border rounded-md px-3.25 py-3 text-[14.5px] text-text">
+                <label
+                  for="licence-term"
+                  class="font-mono font-semibold text-[9px] tracking-[0.16em] text-muted uppercase"
+                  >TERM</label
+                >
+                <select
+                  id="licence-term"
+                  name="termMonths"
+                  class="bg-bg border border-border rounded-md px-3.25 py-3 text-[14.5px] text-text"
+                >
                   {TERM_MONTHS.map((m) => <option value={m}>{m} months</option>)}
                 </select>
               </div>
             </div>
 
             <div class="flex flex-col gap-2.25">
-              <label for="licence-gateways" class="font-mono font-semibold text-[9px] tracking-[0.16em] text-muted uppercase">GATEWAYS YOU EXPECT TO RUN</label>
-              <input id="licence-gateways" name="gateways" type="number" min="1" value="1"
-                class="bg-bg border border-border rounded-md px-3.25 py-3 text-[14.5px] text-text focus:outline-none" />
+              <label
+                for="licence-gateways"
+                class="font-mono font-semibold text-[9px] tracking-[0.16em] text-muted uppercase"
+                >GATEWAYS YOU EXPECT TO RUN</label
+              >
+              <input
+                id="licence-gateways"
+                name="gateways"
+                type="number"
+                min="1"
+                value="1"
+                class="bg-bg border border-border rounded-md px-3.25 py-3 text-[14.5px] text-text focus:outline-none"
+              />
               <div class="text-[12.5px] leading-[1.6] text-muted">
                 Tunnex is priced per gateway, so this is the number that shapes the quote.
               </div>
             </div>
 
             <div class="flex flex-col gap-2.25">
-              <label for="licence-notes" class="font-mono font-semibold text-[9px] tracking-[0.16em] text-muted uppercase">ANYTHING ELSE (OPTIONAL)</label>
-              <textarea id="licence-notes" name="notes" rows="3" placeholder="Sites, regions, timelines, procurement requirements…"
-                class="bg-bg border border-border rounded-md px-3.25 py-3 text-[14.5px] text-text focus:outline-none"></textarea>
+              <label
+                for="licence-notes"
+                class="font-mono font-semibold text-[9px] tracking-[0.16em] text-muted uppercase"
+                >ANYTHING ELSE (OPTIONAL)</label
+              >
+              <textarea
+                id="licence-notes"
+                name="notes"
+                rows="3"
+                placeholder="Sites, regions, timelines, procurement requirements…"
+                class="bg-bg border border-border rounded-md px-3.25 py-3 text-[14.5px] text-text focus:outline-none"
+              ></textarea>
             </div>
 
             <TurnstileWidget />
 
             <div id="licence-error" class="hidden text-[13px] text-error"></div>
 
-            <button id="licence-submit" type="submit"
-              class="t-btn t-prim w-full text-center rounded-[9px] px-5 py-3.5 font-semibold text-[14px] cursor-pointer">
+            <button
+              id="licence-submit"
+              type="submit"
+              class="t-btn t-prim w-full text-center rounded-[9px] px-5 py-3.5 font-semibold text-[14px] cursor-pointer"
+            >
               Request a licence
             </button>
 
@@ -128,15 +194,19 @@ const gwText = (b: string) => {
             4. Your key is issued and emailed.
           </div>
         </div>
-        {PAID_BANDS.map((b) => (
-          <div class="t-card border border-border rounded-lg p-5 flex flex-col gap-1">
-            <div class="font-semibold text-[14px] text-text capitalize">{b}</div>
-            <div class="text-[13px] leading-[1.6] text-muted">{bandBlurb[b]}</div>
-          </div>
-        ))}
-        <div class="t-card border border-border rounded-lg p-5 text-[13px] leading-[1.65] text-muted">
-          Keys are verified offline by your control plane — it never contacts us, so a licence works on
-          an air-gapped deployment and runs to its own expiry date.
+        {
+          PAID_BANDS.map((b) => (
+            <div class="t-card border border-border rounded-lg p-5 flex flex-col gap-1">
+              <div class="font-semibold text-[14px] text-text capitalize">{b}</div>
+              <div class="text-[13px] leading-[1.6] text-muted">{bandBlurb[b]}</div>
+            </div>
+          ))
+        }
+        <div
+          class="t-card border border-border rounded-lg p-5 text-[13px] leading-[1.65] text-muted"
+        >
+          Keys are verified offline by your control plane — it never contacts us, so a licence works
+          on an air-gapped deployment and runs to its own expiry date.
         </div>
       </div>
     </div>
@@ -152,10 +222,11 @@ const gwText = (b: string) => {
 
   form?.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const val = (id: string) => (document.getElementById(id) as HTMLInputElement | null)?.value ?? '';
+    const val = (id: string) =>
+      (document.getElementById(id) as HTMLInputElement | null)?.value ?? '';
     const turnstileToken =
-      (document.querySelector('[name="cf-turnstile-response"]') as HTMLInputElement | null)?.value ||
-      'local-dev-token';
+      (document.querySelector('[name="cf-turnstile-response"]') as HTMLInputElement | null)
+        ?.value || 'local-dev-token';
     if (btn) {
       (btn as HTMLButtonElement).disabled = true;
       btn.textContent = 'Sending link…';
@@ -170,7 +241,8 @@ const gwText = (b: string) => {
           band: val('licence-band'),
           termMonths: Number(val('licence-term')),
           gateways: Number(val('licence-gateways')),
-          notes: (document.getElementById('licence-notes') as HTMLTextAreaElement | null)?.value ?? '',
+          notes:
+            (document.getElementById('licence-notes') as HTMLTextAreaElement | null)?.value ?? '',
           turnstileToken,
         }),
       });

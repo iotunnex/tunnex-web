@@ -458,9 +458,7 @@ export function d1AdminIssueStore(db: D1Database): AdminIssueStore {
       // ⛔ NOT ON A DECIDED ROW. A band changed after signing would describe a key that does not carry it —
       // and the key cannot be recalled to match.
       const res = await db
-        .prepare(
-          `UPDATE licence_review_queue SET tier = ? WHERE domain = ? AND decided_at IS NULL`,
-        )
+        .prepare(`UPDATE licence_review_queue SET tier = ? WHERE domain = ? AND decided_at IS NULL`)
         .bind(band, domain)
         .run();
       return (res.meta.changes ?? 0) > 0;

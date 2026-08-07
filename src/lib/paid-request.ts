@@ -32,7 +32,10 @@ export const paidRequestInput = z.object({
   email: z.string().trim().toLowerCase().pipe(z.email()).pipe(z.string().max(254)),
   company: z.string().trim().min(1).max(200),
   band: z.enum(PAID_BANDS),
-  termMonths: z.coerce.number().int().refine((n): n is number => TERM_MONTHS.includes(n as 12)),
+  termMonths: z.coerce
+    .number()
+    .int()
+    .refine((n): n is number => TERM_MONTHS.includes(n as 12)),
   // ⭐ WHAT THE FOUNDER NEEDS TO PRICE IT. Gateways, because that is what Tunnex charges per — the seat
   // question the old lead form asked has not been the pricing model since the per-gateway change.
   gateways: z.coerce.number().int().min(1).max(100_000),
@@ -95,7 +98,11 @@ export async function processPaidRequest(
   }
   const parsed = paidRequestInput.safeParse(body);
   if (!parsed.success) {
-    return jsonError(400, 'invalid_request', 'Check the form — something is missing or out of range.');
+    return jsonError(
+      400,
+      'invalid_request',
+      'Check the form — something is missing or out of range.',
+    );
   }
 
   const guarded = await guardFormPost(deps, request, FORM_POST_RULE, parsed.data.turnstileToken);

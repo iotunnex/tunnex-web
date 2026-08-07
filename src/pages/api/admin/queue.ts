@@ -57,9 +57,7 @@ export const GET: APIRoute = async ({ request }) => {
 
   const bandOptions = (selected: string) =>
     ['trial', ...PAID_BANDS]
-      .map(
-        (b) => `<option value="${b}"${b === selected ? ' selected' : ''}>${esc(b)}</option>`,
-      )
+      .map((b) => `<option value="${b}"${b === selected ? ' selected' : ''}>${esc(b)}</option>`)
       .join('');
 
   const body = rows
@@ -86,7 +84,9 @@ export const GET: APIRoute = async ({ request }) => {
 <td>${priorKeys(r)}</td>
 <td><small>${day(r.queuedAt)}</small></td>
 <td><button class="issue" data-d="${esc(r.domain)}"${
-        r.kind === 'paid' && r.paymentState !== 'settled' ? ' disabled title="payment not settled"' : ''
+        r.kind === 'paid' && r.paymentState !== 'settled'
+          ? ' disabled title="payment not settled"'
+          : ''
       }>Sign &amp; email</button>
 <button class="refuse" data-d="${esc(r.domain)}">Refuse</button></td></tr>`,
     )
