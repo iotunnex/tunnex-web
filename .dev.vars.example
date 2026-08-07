@@ -25,4 +25,12 @@
 # SIGNING_KEY_JWK={"kty":"OKP",...}     # PRIVATE JWK — production only, never a real value in a repo
 # SIGNING_PUBLIC_JWK={"kty":"OKP",...}  # public half; used to self-verify a key before it is sent
 # SIGNING_KID=k2026                     # which key in the SET minted it (D4). Never reused.
-# ADMIN_TOKEN=...                       # guards /api/admin/*. A FLOOR — Cloudflare Access is the real control.
+# ADMIN_TOKEN is GONE (S12.10). The admin surfaces are gated by a VERIFIED Cloudflare Access assertion —
+# real identity, per-person revocation, and the email lands in issued_keys.issued_by so the ledger can say
+# who signed each key. Delete the stale secret from the Worker: wrangler secret delete ADMIN_TOKEN
+#
+# Local development cannot mint an Access assertion (there is no edge in front of localhost), so set this
+# to reach /api/admin/* from `wrangler dev`. It admits ONLY when the request also arrived on localhost, so
+# a deployment that carried it by mistake still refuses — and a census fails the build if it ever appears
+# in wrangler.toml.
+# ADMIN_DEV_IDENTITY=you@tunnex.io

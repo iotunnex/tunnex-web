@@ -43,7 +43,11 @@ export const GET: APIRoute = async ({ request }) => {
 <td><small>${esc(k.kid)}</small></td>
 <td><small>${esc(k.licenseId)}</small></td>
 <td><small>${k.emailedAt ? day(k.emailedAt) : '⛔ never confirmed sent'}</small></td>
-<td><small>${esc(k.issuedBy) || '<i>before this was recorded</i>'}</small></td>
+<td><small>${
+            k.issuedBy === 'pre-identity'
+              ? '<i>pre-identity — signed under the shared token</i>'
+              : esc(k.issuedBy) || '<b class="warn">⛔ not recorded</b>'
+          }</small></td>
 </tr>`,
         )
         .join('');

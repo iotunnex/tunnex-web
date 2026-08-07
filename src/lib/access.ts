@@ -100,6 +100,38 @@ function decodeJson(part: string): Record<string, unknown> {
 export interface AccessEnv {
   CF_ACCESS_TEAM_DOMAIN?: string;
   CF_ACCESS_AUD?: string;
+  /**
+   * ⛔ THE LOCAL-DEVELOPMENT ANSWER, AND IT IS ANSWERED HERE RATHER THAN IN A DOC.
+   *
+   * `wrangler dev` cannot mint an Access assertion — Access is an edge feature and there is no edge in
+   * front of localhost — so without this the admin surfaces are unreachable on a developer's machine and
+   * the next person to need them invents a worse way in.
+   *
+   * ⚠ IT IS SET ONLY IN `.dev.vars`, WHICH IS GITIGNORED AND NEVER DEPLOYED. But "nobody will set it in
+   * production" is a hope, not a control, so the bypass ALSO requires the request to have arrived on
+   * localhost — see `devIdentity`. Two independent conditions, and the second one is not configurable.
+   */
+  ADMIN_DEV_IDENTITY?: string;
+}
+
+/**
+ * The dev bypass, and the reason it cannot fire in production.
+ *
+ * ⛔ THE HOST CHECK IS THE HALF THAT IS NOT A SETTING. Production requests reach this Worker on
+ * `tunnex.io` because that is the route they matched; a loopback URL is not something a caller can present
+ * to a deployed route. So even a deployment that wrongly carried `ADMIN_DEV_IDENTITY` — a mistake this
+ * repo also guards with a config census — could not be talked into using it.
+ *
+ * ⚠ AND THE VAR ALONE IS NOT ENOUGH, which is what makes this fail-closed rather than fail-open: the
+ * default path is refusal, and BOTH conditions must be true to leave it.
+ */
+function devIdentity(request: Request, env: AccessEnv): AccessIdentity | null {
+  const who = (env.ADMIN_DEV_IDENTITY ?? '').trim();
+  if (!who) return null;
+  const host = new URL(request.url).hostname;
+  if (host !== 'localhost' && host !== '127.0.0.1' && host !== '[::1]' && host !== '::1')
+    return null;
+  return { email: who, sub: '', actor: `${who} (local dev)` };
 }
 
 /**
@@ -112,6 +144,11 @@ export async function verifyAccess(
   env: AccessEnv,
   now: number = Date.now(),
 ): Promise<AccessResult> {
+  // ⚠ CHECKED FIRST so a developer is not asked to configure Access against localhost — and it is the ONLY
+  // path that does not end in a verified signature, which is why both of its conditions are stated above.
+  const dev = devIdentity(request, env);
+  if (dev) return { ok: true, identity: dev };
+
   const team = (env.CF_ACCESS_TEAM_DOMAIN ?? '').trim();
   const aud = (env.CF_ACCESS_AUD ?? '').trim();
   if (!team || !aud) {

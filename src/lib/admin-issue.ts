@@ -132,7 +132,13 @@ export interface AdminIssueStore {
  */
 export interface LedgerRow {
   licenseId: string;
-  /** ⚠ Empty for keys minted before the ledger recorded people — an absence, never a guess. */
+  /**
+   * Who signed it — a verified Access identity.
+   *
+   * ⚠ `pre-identity` marks the keys minted under the shared token, when no such fact existed. ⛔ EMPTY is
+   * a DIFFERENT state and means a write bug: every row from S12.10 onward carries an actor, so a blank
+   * after that point is something failing to record, not something we never knew.
+   */
   issuedBy: string;
   domain: string;
   band: string;

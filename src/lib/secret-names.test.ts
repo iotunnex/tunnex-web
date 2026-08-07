@@ -86,3 +86,24 @@ describe('licensing secret names', () => {
     ).toEqual([]);
   });
 });
+
+/**
+ * ⛔ THE DEV BYPASS MUST NOT BE DEPLOYABLE BY ACCIDENT.
+ *
+ * `ADMIN_DEV_IDENTITY` admits a caller without a verified Access assertion. Its second condition — the
+ * request must have arrived on localhost — is not configurable, so this census is the belt to that
+ * braces: it fails if the variable is ever committed into `wrangler.toml`, which is the one file whose
+ * contents become deployment configuration.
+ *
+ * ⚠ SUBJECT IS THE FILE THAT SHIPS, not the codebase: `.dev.vars` is gitignored and never deployed, so a
+ * value there is exactly where it belongs.
+ */
+describe('the dev bypass stays local', () => {
+  it('⛔ ADMIN_DEV_IDENTITY never appears in deployed configuration', () => {
+    const toml = readFileSync('wrangler.toml', 'utf8');
+    expect(
+      toml.includes('ADMIN_DEV_IDENTITY'),
+      'wrangler.toml IS the deployment. A dev bypass named here would ship with it — put it in .dev.vars.',
+    ).toBe(false);
+  });
+});

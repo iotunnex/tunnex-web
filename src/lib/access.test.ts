@@ -72,6 +72,38 @@ describe('Cloudflare Access assertions are verified, never trusted', () => {
   });
 
   /**
+   * ⛔ THE DEV BYPASS, AND THE REDS THAT KEEP IT LOCAL.
+   *
+   * The founder's condition was that a local-development escape hatch must be IMPOSSIBLE TO REACH IN
+   * PRODUCTION, with a red proving a missing assertion is still refused when the hatch is absent. Both
+   * halves are below: the var alone does nothing off localhost, and localhost alone does nothing without
+   * the var. The default is refusal and it takes two independent facts to leave it.
+   */
+  it('⛔ the dev bypass does NOTHING on a production host, even when the var is set', async () => {
+    const r = await verifyAccess(new Request('https://tunnex.io/api/admin/issue'), {
+      ...ENV,
+      ADMIN_DEV_IDENTITY: 'dev@tunnex.io',
+    });
+    expect(r.ok, 'a deployment that wrongly carried the dev var must still refuse').toBe(false);
+  });
+
+  it('⛔ localhost alone is not a bypass — a missing assertion is refused without the var', async () => {
+    const r = await verifyAccess(new Request('http://localhost:4321/api/admin/issue'), ENV);
+    expect(r.ok).toBe(false);
+    expect(!r.ok && r.reason).toMatch(/no cloudflare access assertion/i);
+  });
+
+  it('admits local development when BOTH conditions hold, and says so in the actor', async () => {
+    const r = await verifyAccess(new Request('http://localhost:4321/api/admin/issue'), {
+      ...ENV,
+      ADMIN_DEV_IDENTITY: 'dev@tunnex.io',
+    });
+    expect(r.ok).toBe(true);
+    // ⚠ The ledger must not read as if a verified identity signed it.
+    expect(r.ok && r.identity.actor).toBe('dev@tunnex.io (local dev)');
+  });
+
+  /**
    * ⚠ A JWKS OUTAGE IS A REFUSAL. Fetch is unavailable in this environment, so the verifier's network step
    * fails — and the assertion here is that the failure DENIES rather than admits. The signer is the wrong
    * place to degrade open.
