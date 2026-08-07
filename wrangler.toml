@@ -62,7 +62,7 @@ EMAIL_LINK_BASE_URL = "https://tunnex.io"
 # ⭐ The audience tag comes from the Access application in the Cloudflare dashboard (Application → Overview
 # → Application Audience (AUD) Tag).
 CF_ACCESS_TEAM_DOMAIN = "muddy-butterfly-9863.cloudflareaccess.com"
-CF_ACCESS_AUD = ""
+CF_ACCESS_AUD = "56c2bbb9590bf69221b61fadb4edd345c35b22f86b68b820c508fca2e776736f"
 
 [observability.logs]
 enabled = true
