@@ -3,6 +3,7 @@ import { runLifecycle, d1LifecycleStore } from './lib/lifecycle.ts';
 import { d1TrialActivationStore } from './lib/trial-issuance.ts';
 import { d1ReviewQueueStore, pendingLaunchIssuer, reviewQueueIssuer } from './lib/issuance.ts';
 import { createMailer, transportFromEnv } from './lib/email/mailer.ts';
+import { runRetention, d1RetentionStore } from './lib/retention.ts';
 import { emailLinkBaseUrl } from './config';
 
 /**
@@ -37,5 +38,9 @@ export default {
         mode,
       }),
     );
+    // ⛔ RETENTION RUNS ON THE SAME DAILY TICK (S12.6). Separate waitUntil, deliberately: a lifecycle
+    // failure must not skip the purge, and a purge failure must not stop a customer's trial email. They
+    // share a schedule, not a fate.
+    ctx.waitUntil(runRetention(d1RetentionStore(env.DB)));
   },
 } satisfies ExportedHandler<Env>;

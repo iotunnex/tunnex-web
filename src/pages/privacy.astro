@@ -4,7 +4,7 @@ import Base from '../layouts/Base.astro';
 // S4.3: honest placeholder privacy policy — accurate to what the site actually
 // does, marked pending legal review. Set LAST_UPDATED to the cutover date at
 // launch (S4.4 runbook).
-const LAST_UPDATED = '12 July 2026';
+const LAST_UPDATED = '7 August 2026';
 ---
 
 <Base
@@ -35,21 +35,49 @@ const LAST_UPDATED = '12 July 2026';
       </p>
 
       <section class="flex flex-col gap-2">
-        <h2>What we collect</h2>
+        <h2>What stays entirely on your infrastructure</h2>
+        <p>
+          Worth stating plainly, because it is unusual and it is the reason this policy is short.
+          Your Tunnex deployment <strong>never contacts us to function</strong> — licences are verified
+          offline, so it works air-gapped. We therefore hold <strong>none</strong> of the following, and
+          could not produce it if asked:
+        </p>
+        <ul>
+          <li>Your VPN traffic, WireGuard keys, device configurations, and address pools.</li>
+          <li>Your users and their accounts, roles, groups, and 2FA enrolments.</li>
+          <li>Your audit logs, access events, and policy rules.</li>
+          <li>Which gateways or devices you run, where they are, or whether they are online.</li>
+        </ul>
+        <p>
+          All of it lives in the deployment you operate. What we hold is described below, and it is
+          the sales side of the relationship only.
+        </p>
+      </section>
+
+      <section class="flex flex-col gap-2">
+        <h2>What we hold, and where</h2>
+        <p>
+          Three tables in a Cloudflare D1 database attached to this website. Named, because "we
+          collect some information" is not something you can check.
+        </p>
         <ul>
           <li>
-            <strong>Your email address</strong>, when you join the waitlist, request a trial, or
-            contact sales. We use it only to reply and to send what you asked for.
+            <strong>Trial and licence requests</strong> — your work email address and the company domain
+            derived from it, plus, for a paid request, your company name and anything you typed in the
+            notes field. Used to answer you and to decide the request.
           </li>
           <li>
-            <strong>Your name, company name, seat count, and message</strong>, only if you fill in
-            the enterprise contact form, and only to answer you.
+            <strong>Newsletter subscriptions</strong> — your email address, and nothing else.
           </li>
           <li>
-            <strong>Your IP address, transiently</strong>, to rate-limit form submissions and run
-            bot protection (Cloudflare Turnstile). It is not stored as part of a profile.
+            <strong>The licence ledger</strong> — for every key we have issued: the company domain, the
+            band, the term, and the key itself. It contains no personal contact details.
           </li>
         </ul>
+        <p>
+          <strong>Your IP address, transiently</strong>, to rate-limit form submissions and run bot
+          protection (Cloudflare Turnstile). It is not stored as part of a profile.
+        </p>
       </section>
 
       <section class="flex flex-col gap-2">
@@ -75,11 +103,27 @@ const LAST_UPDATED = '12 July 2026';
       </section>
 
       <section class="flex flex-col gap-2">
-        <h2>Keeping and deleting your data</h2>
+        <h2>How long we keep it</h2>
+        <ul>
+          <li>
+            <strong>A request that produced no licence is deleted after 90 days</strong>,
+            automatically. If you asked about Tunnex and nothing came of it, your email address does
+            not sit here indefinitely.
+          </li>
+          <li>
+            <strong>A request that produced a licence is kept</strong>, linked to that licence, for
+            as long as the licence record exists.
+          </li>
+          <li>
+            <strong>The licence ledger is permanent.</strong> It is the only record of what we have issued
+            — because deployments verify offline and never report back, it is the only way to answer whether
+            a given key came from us. Deleting a row would not stop a key working; it would only stop
+            us being able to say whose it is.
+          </li>
+        </ul>
         <p>
-          We keep the little we collect only as long as it's useful for the purpose you gave it —
-          answering you, or sending what you signed up for. To see what we hold or ask us to delete
-          it, email <a href="mailto:support@tunnex.io">support@tunnex.io</a> and a human will handle it.
+          To see what we hold, or to ask us to delete it, email{' '}
+          <a href="mailto:support@tunnex.io">support@tunnex.io</a> and a human will handle it.
         </p>
       </section>
 
