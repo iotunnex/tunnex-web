@@ -34,6 +34,35 @@ die() { printf '\n  \033[31m✗\033[0m %s\n\n' "$*" >&2; exit 1; }
 step() { printf '  \033[2m…\033[0m %s\033[K\r' "$1"; }
 ok() { printf '  \033[32m✓\033[0m %s\033[K\n' "$1"; }
 
+# ── the wordmark ────────────────────────────────────────────────────────────────────────────────
+#
+# ⭐ TUNN IN WHITE, EX IN RED — the same split the product's own logo uses, so the terminal and the
+# dashboard are recognisably one thing. Each line is printed in two segments because the colour changes
+# mid-glyph-row.
+#
+# ⚠ AND THERE IS AN ASCII FALLBACK, because box-drawing characters render as mojibake on a terminal that is
+# not UTF-8 — which is the default on a bare VPS with LANG=C, i.e. exactly the machine this runs on. A
+# banner that comes out as garbage is worse than one that is plain.
+wordmark() {
+	_r='\033[38;5;203m' # brand red
+	_w='\033[97m'       # wordmark white
+	_z='\033[0m'
+	case "${LC_ALL:-${LC_CTYPE:-${LANG:-}}}" in
+	*[Uu][Tt][Ff]*)
+		printf "\n  ${_w}%s${_z}${_r}%s${_z}\n" '▀█▀ █ █ █▄ █ █▄ █ ' '█▀▀ ▀▄▀'
+		printf "  ${_w}%s${_z}${_r}%s${_z}\n" ' █  █ █ █ ▀█ █ ▀█ ' '█▀▀ ▄▀▄'
+		printf "  ${_w}%s${_z}${_r}%s${_z}\n" ' ▀  ▀▀▀ ▀  ▀ ▀  ▀ ' '▀▀▀ ▀ ▀'
+		;;
+	*)
+		printf "\n  ${_w}%s${_z}${_r}%s${_z}\n" ' _____ _   _ _   _ ' ' _____ __  __'
+		printf "  ${_w}%s${_z}${_r}%s${_z}\n" '|_   _| | | | \ | |' '| ____|\ \/ /'
+		printf "  ${_w}%s${_z}${_r}%s${_z}\n" '  | | | | | |  \| |' '|  _|   \  / '
+		printf "  ${_w}%s${_z}${_r}%s${_z}\n" '  | | | |_| | |\  |' '| |___  /  \ '
+		printf "  ${_w}%s${_z}${_r}%s${_z}\n" '  |_|  \___/|_| \_|' '|_____|/_/\_\'
+		;;
+	esac
+}
+
 # ⛔ THE TERMINAL IS OPENED ONCE, ON FD 3, AND FAILING TO OPEN IT IS THE ONLY TTY TEST THAT MEANS ANYTHING.
 #
 # This used to test `[ -r /dev/tty ] && [ -t 1 ]` and then read from /dev/tty per question. On a real
@@ -54,6 +83,7 @@ HAVE_TTY=0
 # because it was the last thing that worked, which is what made it look like the read had failed.
 if { exec 3<>/dev/tty; } 2>/dev/null; then HAVE_TTY=1; fi
 
+BANNER_SHOWN=0
 ASSUME_YES=0
 for arg in "$@"; do
 	case "$arg" in
@@ -222,6 +252,16 @@ ask_validated() {
 }
 
 # ── 0. preflight ────────────────────────────────────────────────────────────────────────────────
+#
+# ⛔ THE BRAND COMES FIRST, BEFORE ANYTHING CAN PROMPT OR FAIL. An operator who is asked for their root
+# password before they have seen what they are installing is being asked by an anonymous script.
+wordmark
+# ⭐ THE TAGLINE, WORD FOR WORD FROM THE BRAND. The same two sentences the dashboard and the site use, so a
+# customer meeting the product in a terminal meets the same product.
+printf '  \033[2mConnect Everything. Trust Nothing.\033[0m\n'
+printf '  \033[2mSelf-hosted Zero Trust VPN\033[0m\n\n'
+BANNER_SHOWN=1
+
 command -v curl >/dev/null 2>&1 || die "curl is required."
 
 # SUDO is empty when already root. Every privileged command goes through it, so a root container and a
@@ -231,6 +271,27 @@ if [ "$(id -u)" -ne 0 ]; then
 	command -v sudo >/dev/null 2>&1 ||
 		die "not running as root and sudo is not available. Re-run as root."
 	SUDO="sudo"
+	# ⛔ THE PASSWORD IS ASKED ONCE, AT THE START, AND NOT IN THE MIDDLE OF THE WORK.
+	#
+	# Docker installation, firewall rules and every compose command need root. Left to happen naturally, the
+	# prompt appears somewhere inside a progress line — after the operator has walked away from a script
+	# they were told would take a minute — and a sudo prompt that times out fails the step it was in.
+	#
+	# ⚠ `sudo -v` VALIDATES AND CACHES, it does not run anything. If the cache is already warm it prints
+	# nothing at all, so a passwordless or recently-authenticated session sees no prompt.
+	if ! sudo -n true 2>/dev/null; then
+		# ⚠ NO TERMINAL MEANS NO PASSWORD PROMPT, and sudo's own error about askpass helpers is not a
+		# sentence an operator should have to decode. Say what to do instead.
+		if [ "$HAVE_TTY" = "0" ]; then
+			die "administrator access is required and there is no terminal to ask for a password on.
+  Re-run as root, or give this user passwordless sudo:
+      curl -fsSL https://get.tunnex.io -o get.sh && sudo sh get.sh"
+		fi
+		printf '\n  \033[1mAdministrator access\033[0m\n'
+		printf '  \033[2mDocker, firewall rules and the container stack all need root.\033[0m\n'
+		printf '  \033[2mAsked once, now, so nothing stops halfway.\033[0m\n\n'
+		sudo -v || die "administrator access is required to install Tunnex."
+	fi
 fi
 
 # DOCKER is how this script invokes docker. A user added to the `docker` group during THIS run does not
@@ -460,37 +521,8 @@ if [ -z "$VERSION" ]; then
 fi
 [ -n "$VERSION" ] || die "could not resolve a released Tunnex version. Set TUNNEX_VERSION to pin one."
 
-# ── the wordmark ────────────────────────────────────────────────────────────────────────────────
-#
-# ⭐ TUNN IN WHITE, EX IN RED — the same split the product's own logo uses, so the terminal and the
-# dashboard are recognisably one thing. Each line is printed in two segments because the colour changes
-# mid-glyph-row.
-#
-# ⚠ AND THERE IS AN ASCII FALLBACK, because box-drawing characters render as mojibake on a terminal that is
-# not UTF-8 — which is the default on a bare VPS with LANG=C, i.e. exactly the machine this runs on. A
-# banner that comes out as garbage is worse than one that is plain.
-wordmark() {
-	_r='\033[38;5;203m' # brand red
-	_w='\033[97m'       # wordmark white
-	_z='\033[0m'
-	case "${LC_ALL:-${LC_CTYPE:-${LANG:-}}}" in
-	*[Uu][Tt][Ff]*)
-		printf "\n  ${_w}%s${_z}${_r}%s${_z}\n" '▀█▀ █ █ █▄ █ █▄ █ ' '█▀▀ ▀▄▀'
-		printf "  ${_w}%s${_z}${_r}%s${_z}\n" ' █  █ █ █ ▀█ █ ▀█ ' '█▀▀ ▄▀▄'
-		printf "  ${_w}%s${_z}${_r}%s${_z}\n" ' ▀  ▀▀▀ ▀  ▀ ▀  ▀ ' '▀▀▀ ▀ ▀'
-		;;
-	*)
-		printf "\n  ${_w}%s${_z}${_r}%s${_z}\n" ' _____ _   _ _   _ ' ' _____ __  __'
-		printf "  ${_w}%s${_z}${_r}%s${_z}\n" '|_   _| | | | \ | |' '| ____|\ \/ /'
-		printf "  ${_w}%s${_z}${_r}%s${_z}\n" '  | | | | | |  \| |' '|  _|   \  / '
-		printf "  ${_w}%s${_z}${_r}%s${_z}\n" '  | | | |_| | |\  |' '| |___  /  \ '
-		printf "  ${_w}%s${_z}${_r}%s${_z}\n" '  |_|  \___/|_| \_|' '|_____|/_/\_\'
-		;;
-	esac
-}
 
-wordmark
-printf '  \033[2mSelf-hosted Zero Trust VPN\033[0m \033[2m·\033[0m \033[2m%s\033[0m\n\n' "$VERSION"
+printf '  \033[2mInstalling %s\033[0m\n' "$VERSION"
 
 [ "$HAVE_TTY" = "1" ] || [ "$ASSUME_YES" = "1" ] || no_tty_help
 
@@ -604,6 +636,32 @@ if [ -n "$PG_PASS" ]; then REUSED=" (reused the existing database password)"; fi
 umask 077
 cat >.env <<EOF
 # Written by the Tunnex installer. Edit values here; never hand-edit tunnex.yml.
+#
+# ⛔ EVERY VARIABLE tunnex.yml MARKS REQUIRED MUST BE HERE. Compose fails at interpolation — before it pulls
+# a single layer — with "required variable X is missing a value", and the four with \${VAR:?} are
+# APP_BASE_URL, DATABASE_URL, POSTGRES_PASSWORD and TUNNEX_NODE_ENDPOINT.
+TUNNEX_VERSION=${VERSION}
+TUNNEX_LOG_LEVEL=info
+APP_BASE_URL=http://${ADDR}
+# The WireGuard endpoint peers dial. Host:port, not a URL — it goes into every device config.
+TUNNEX_NODE_ENDPOINT=${ADDR}:51820
+POSTGRES_USER=tunnex
+POSTGRES_PASSWORD=${PG_PASS}
+POSTGRES_DB=tunnex
+DATABASE_URL=postgres://tunnex:${PG_PASS}@postgres:5432/tunnex?sslmode=disable
+REDIS_URL=redis://redis:6379/0
+SMTP_HOST=${SMTP_HOST}
+SMTP_PORT=${SMTP_PORT}
+SMTP_FROM=${SMTP_FROM}
+SMTP_USERNAME=${SMTP_USERNAME}
+SMTP_PASSWORD=${SMTP_PASSWORD}
+# Recorded for the operator; the pool itself is per-organization and set in the dashboard.
+TUNNEX_ADMIN_EMAIL=${ADMIN_EMAIL}
+TUNNEX_POOL_CIDR=${POOL_CIDR}
+# ⛔ NEVER SET THIS ON A DEPLOYMENT — it tees message bodies to the log, and those bodies are working links.
+MAIL_DEV_LOG=false
+EOF
+# Written by the Tunnex installer. Edit values here; never hand-edit tunnex.yml.
 TUNNEX_VERSION=${VERSION}
 APP_BASE_URL=http://${ADDR}
 TUNNEX_PUBLIC_ADDR=${ADDR}
@@ -619,6 +677,25 @@ SMTP_PASSWORD=${SMTP_PASSWORD}
 MAIL_DEV_LOG=false
 EOF
 ok "configuration written${REUSED}"
+
+# ⛔ VALIDATE THE COMPOSE FILE AGAINST THE .env WE JUST WROTE, BEFORE PULLING ANYTHING.
+#
+# A missing required variable fails at INTERPOLATION — so it surfaced as "could not pull images", which is
+# the wrong sentence about the wrong step and sent the operator looking at their registry and their docker
+# group. `config -q` asks the one question that matters — is this file complete and usable — and asks it
+# where the answer is cheap.
+#
+# ⚠ AND IT IS A GUARD AGAINST DRIFT, NOT JUST AGAINST TODAY'S BUG: tunnex.yml is fetched from the release,
+# this .env is written here, and a future release that requires a new variable would otherwise fail on a
+# customer's machine with a message about images.
+step "validating configuration"
+if ! $DOCKER compose -f tunnex.yml config -q >/tmp/tunnex-config.log 2>&1; then
+	printf '\n'
+	tail -12 /tmp/tunnex-config.log >&2
+	die "the configuration is not usable — the error is above.
+  This means tunnex.yml wants a variable the installer did not write. Full log: /tmp/tunnex-config.log"
+fi
+ok "configuration validated"
 
 # ⛔ THE ERROR IS SHOWN, NOT SWALLOWED. This read `>/dev/null 2>&1 || die "could not pull images."` — so an
 # operator whose user is not in the `docker` group, or whose registry is unreachable, got four words and no
