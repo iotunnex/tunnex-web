@@ -28,6 +28,12 @@ set -eu
 # ── plumbing ────────────────────────────────────────────────────────────────────────────────────
 die() { printf '\n  \033[31m✗\033[0m %s\n\n' "$*" >&2; exit 1; }
 
+# step/ok — a progress line OVERWRITTEN by its own result, so the transcript reads as a checklist rather
+# than a log. \033[K clears the rest of the line: without it the tail of a longer previous message survives
+# underneath a shorter one.
+step() { printf '  \033[2m…\033[0m %s\033[K\r' "$1"; }
+ok() { printf '  \033[32m✓\033[0m %s\033[K\n' "$1"; }
+
 # ⛔ THE TERMINAL IS OPENED ONCE, ON FD 3, AND FAILING TO OPEN IT IS THE ONLY TTY TEST THAT MEANS ANYTHING.
 #
 # This used to test `[ -r /dev/tty ] && [ -t 1 ]` and then read from /dev/tty per question. On a real
@@ -184,10 +190,233 @@ ask_validated() {
 }
 
 # ── 0. preflight ────────────────────────────────────────────────────────────────────────────────
-command -v docker >/dev/null 2>&1 || die "Docker is required. Install Docker Engine, then re-run."
-docker compose version >/dev/null 2>&1 ||
-	die "The Docker Compose v2 plugin is required (\`docker compose version\` must work)."
 command -v curl >/dev/null 2>&1 || die "curl is required."
+
+# SUDO is empty when already root. Every privileged command goes through it, so a root container and a
+# sudo-capable user take the same path and neither needs a special case.
+SUDO=""
+if [ "$(id -u)" -ne 0 ]; then
+	command -v sudo >/dev/null 2>&1 ||
+		die "not running as root and sudo is not available. Re-run as root."
+	SUDO="sudo"
+fi
+
+# DOCKER is how this script invokes docker. A user added to the `docker` group during THIS run does not
+# have the group in THIS shell — the membership applies at next login — so the group change alone would
+# leave every later command failing with a permission error on a machine that is correctly configured.
+DOCKER="docker"
+
+# os_family reports the family we know how to install on, or "unknown". /etc/os-release is the standard
+# every modern distribution ships; ID_LIKE catches derivatives (Pop!_OS, Rocky, Amazon Linux) without
+# naming each one.
+os_family() {
+	[ -r /etc/os-release ] || { printf 'unknown'; return; }
+	# shellcheck disable=SC1091
+	. /etc/os-release
+	case " ${ID:-} ${ID_LIKE:-} " in
+	*" debian "* | *" ubuntu "*) printf 'debian' ;;
+	*" rhel "* | *" fedora "* | *" centos "* | *" amzn "*) printf 'rhel' ;;
+	*) printf 'unknown' ;;
+	esac
+}
+
+os_pretty() {
+	if [ -r /etc/os-release ]; then
+		# shellcheck disable=SC1091
+		. /etc/os-release
+		printf '%s' "${PRETTY_NAME:-${NAME:-unknown}}"
+	else
+		printf 'unknown'
+	fi
+}
+
+docker_ready() {
+	command -v docker >/dev/null 2>&1 || return 1
+	$DOCKER compose version >/dev/null 2>&1 || return 1
+	return 0
+}
+
+# ⛔ DOCKER IS INSTALLED FOR THE OPERATOR, WITH CONSENT, RATHER THAN DEMANDED FROM THEM.
+#
+# This used to stop at `Docker is required. Install Docker Engine, then re-run.` — which is true, useless,
+# and the first thing a customer meets on a fresh VPS. A one-command installer that ends by asking someone
+# to go and run a different command is not a one-command installer.
+#
+# ⚠ CONSENT IS ASKED, NOT ASSUMED. Installing a system package manager's worth of software is not something
+# to do silently inside a script someone piped into a shell, and the prompt names exactly what will happen.
+ensure_docker() {
+	if docker_ready; then return 0; fi
+
+	# Docker present but unusable by this user is a DIFFERENT problem from Docker absent, and it has a
+	# different fix — so it is detected separately rather than folded into "install it".
+	if command -v docker >/dev/null 2>&1 && ! docker info >/dev/null 2>&1; then
+		if [ -n "$SUDO" ] && $SUDO docker compose version >/dev/null 2>&1; then
+			DOCKER="sudo docker"
+			return 0
+		fi
+	fi
+
+	_fam="$(os_family)"
+	printf "\n  \033[1mDocker\033[0m\n"
+	printf "  \033[2mTunnex runs as containers. Docker Engine and the Compose v2 plugin are required.\033[0m\n"
+	printf "  \033[2mDetected: %s\033[0m\n" "$(os_pretty)"
+
+	if [ "$_fam" = "unknown" ]; then
+		die "Docker is not installed and this system is not one I can install it on automatically.
+  Install Docker Engine and the Compose v2 plugin, then re-run:
+      https://docs.docker.com/engine/install/"
+	fi
+
+	choose "Install Docker now?" 1 \
+		"Yes — install Docker Engine + Compose plugin (uses Docker's official installer)" \
+		"No — stop here and I will install it myself"
+	if [ "$CHOICE" != "1" ]; then
+		die "Docker is required. Install it and re-run:
+      https://docs.docker.com/engine/install/"
+	fi
+
+	# ⚠ DOCKER'S OWN CONVENIENCE SCRIPT, FROM DOCKER'S OWN DOMAIN. It is the method Docker publishes and
+	# maintains for every distribution here, and it adds their signed apt/yum repository rather than
+	# dropping binaries — so upgrades keep working through the system package manager afterwards.
+	step "installing Docker (a few minutes)"
+	if ! curl -fsSL https://get.docker.com -o /tmp/get-docker.sh 2>/dev/null; then
+		die "could not download Docker's installer from https://get.docker.com"
+	fi
+	if ! $SUDO sh /tmp/get-docker.sh >/tmp/docker-install.log 2>&1; then
+		die "Docker installation failed. The log is at /tmp/docker-install.log
+  Install it manually and re-run: https://docs.docker.com/engine/install/"
+	fi
+	rm -f /tmp/get-docker.sh
+	ok "Docker installed"
+
+	# Start it and make it survive a reboot — the convenience script does this on systemd distributions,
+	# but not on every image, and a Tunnex that vanishes after the first reboot is worse than one that
+	# never started.
+	if command -v systemctl >/dev/null 2>&1; then
+		$SUDO systemctl enable --now docker >/dev/null 2>&1 || true
+	fi
+
+	# ⚠ THE GROUP CHANGE IS FOR NEXT LOGIN; THIS RUN USES sudo. Adding the user to `docker` is the right
+	# thing to leave behind, and relying on it NOW is the classic mistake — the membership does not exist
+	# in the current shell, so every command after this point would fail on a correctly configured machine.
+	if [ -n "$SUDO" ]; then
+		$SUDO usermod -aG docker "$(id -un)" >/dev/null 2>&1 || true
+		DOCKER="sudo docker"
+		GROUP_NOTE=1
+	fi
+
+	docker_ready || die "Docker was installed but \`docker compose version\` still does not work.
+  The install log is at /tmp/docker-install.log"
+}
+
+GROUP_NOTE=0
+
+# ── ports ───────────────────────────────────────────────────────────────────────────────────────
+#
+# ⛔ THE PORTS ARE THE THING THAT MAKES AN INSTALL LOOK BROKEN WHEN IT WORKED PERFECTLY.
+#
+# Every service comes up healthy, the script prints a dashboard URL, and the browser times out — because a
+# cloud security group closed everything except SSH. The operator has no way to tell that apart from a
+# failed install, and the first thing they do is run it again.
+#
+# ⚠ THIS ADVISES; IT DOES NOT REACH OUT AND OPEN THINGS IT CANNOT SEE. A local firewall it can offer to
+# open, with consent. A cloud security group lives in an API this script has no credentials for and should
+# not have — so it is NAMED, with the exact ports, at the moment the operator can still go and fix it.
+#
+#   80/tcp     the dashboard
+#   8443/tcp   the agent control channel — gateways dial this directly, so it is NOT optional
+#   51820/udp  WireGuard
+#
+# ⚠ 8443 IS THE ONE PEOPLE MISS. It looks like an internal port and it is not: a gateway enrols and
+# reconciles over it from wherever it runs, so a deployment with 80 open and 8443 closed has a dashboard
+# that works and gateways that never come online.
+detect_cloud() {
+	# IMDS, one second, no retries. A non-cloud machine must not pay for this check.
+	if curl -fsS -m 1 -H 'Metadata-Flavor: Google' \
+		http://169.254.169.254/computeMetadata/v1/instance/id >/dev/null 2>&1; then
+		printf 'gcp'
+		return
+	fi
+	if curl -fsS -m 1 -H 'Metadata: true' \
+		"http://169.254.169.254/metadata/instance?api-version=2021-02-01" >/dev/null 2>&1; then
+		printf 'azure'
+		return
+	fi
+	# AWS IMDSv2 first (a token is required on modern instances), then v1 for older ones.
+	_t="$(curl -fsS -m 1 -X PUT http://169.254.169.254/latest/api/token \
+		-H 'X-aws-ec2-metadata-token-ttl-seconds: 60' 2>/dev/null || true)"
+	if [ -n "$_t" ] && curl -fsS -m 1 -H "X-aws-ec2-metadata-token: $_t" \
+		http://169.254.169.254/latest/meta-data/instance-id >/dev/null 2>&1; then
+		printf 'aws'
+		return
+	fi
+	if curl -fsS -m 1 http://169.254.169.254/latest/meta-data/instance-id >/dev/null 2>&1; then
+		printf 'aws'
+		return
+	fi
+	printf 'none'
+}
+
+report_ports() {
+	printf '\n  \033[1mNetwork\033[0m\n'
+	printf '  \033[2mThese must be reachable from your users and gateways:\033[0m\n'
+	printf '      \033[1m80/tcp\033[0m     dashboard\n'
+	printf '      \033[1m8443/tcp\033[0m   agent control channel \033[2m(gateways dial this — often missed)\033[0m\n'
+	printf '      \033[1m51820/udp\033[0m  WireGuard\n'
+
+	# A local firewall this script CAN see, and can offer to open.
+	_fw=""
+	if command -v ufw >/dev/null 2>&1 && $SUDO ufw status 2>/dev/null | grep -qi '^Status: active'; then
+		_fw="ufw"
+	elif command -v firewall-cmd >/dev/null 2>&1 && $SUDO firewall-cmd --state >/dev/null 2>&1; then
+		_fw="firewalld"
+	fi
+
+	if [ -n "$_fw" ]; then
+		printf '\n  \033[33m%s is active on this machine and will block them.\033[0m\n' "$_fw"
+		choose "Open these ports in $_fw now?" 1 "Yes — open 80/tcp, 8443/tcp, 51820/udp" "No — I will do it myself"
+		if [ "$CHOICE" = "1" ]; then
+			step "opening ports in $_fw"
+			if [ "$_fw" = "ufw" ]; then
+				$SUDO ufw allow 80/tcp >/dev/null 2>&1 || true
+				$SUDO ufw allow 8443/tcp >/dev/null 2>&1 || true
+				$SUDO ufw allow 51820/udp >/dev/null 2>&1 || true
+			else
+				$SUDO firewall-cmd --permanent --add-port=80/tcp >/dev/null 2>&1 || true
+				$SUDO firewall-cmd --permanent --add-port=8443/tcp >/dev/null 2>&1 || true
+				$SUDO firewall-cmd --permanent --add-port=51820/udp >/dev/null 2>&1 || true
+				$SUDO firewall-cmd --reload >/dev/null 2>&1 || true
+			fi
+			ok "ports opened in $_fw"
+		fi
+	fi
+
+	# ⛔ AND THE CLOUD FIREWALL, WHICH IS A DIFFERENT FIREWALL AND THE ONE THAT ACTUALLY BLOCKS PEOPLE. It
+	# is outside the machine, so opening ufw says nothing about it — an operator who just answered "yes"
+	# above would otherwise reasonably believe the networking was handled.
+	case "$(detect_cloud)" in
+	aws)
+		printf '\n  \033[33m⚠ This looks like an EC2 instance.\033[0m Its \033[1msecurity group\033[0m is separate from\n'
+		printf '  anything on this machine and will block those ports until you add inbound rules:\n'
+		printf '      EC2 → Instances → this instance → Security → Security groups → Edit inbound rules\n'
+		;;
+	gcp)
+		printf '\n  \033[33m⚠ This looks like a Compute Engine instance.\033[0m VPC \033[1mfirewall rules\033[0m are separate\n'
+		printf '  from anything on this machine and will block those ports until you allow them:\n'
+		printf '      gcloud compute firewall-rules create tunnex \\\n'
+		printf '        --allow=tcp:80,tcp:8443,udp:51820 --target-tags=tunnex\n'
+		;;
+	azure)
+		printf '\n  \033[33m⚠ This looks like an Azure VM.\033[0m Its \033[1mnetwork security group\033[0m is separate from\n'
+		printf '  anything on this machine and will block those ports until you add inbound rules:\n'
+		printf '      Virtual machine → Networking → Add inbound port rule\n'
+		;;
+	*)
+		printf '\n  \033[2mIf this machine sits behind a cloud firewall, router or NAT, allow those ports there too.\033[0m\n'
+		;;
+	esac
+	printf '\n'
+}
 
 # ── 1. pin a real RELEASE — never :latest for a real deploy ─────────────────────────────────────
 API="https://api.github.com/repos/iotunnex/tunnex"
@@ -232,6 +461,9 @@ wordmark
 printf '  \033[2mSelf-hosted Zero Trust VPN\033[0m \033[2m·\033[0m \033[2m%s\033[0m\n\n' "$VERSION"
 
 [ "$HAVE_TTY" = "1" ] || [ "$ASSUME_YES" = "1" ] || no_tty_help
+
+ensure_docker
+report_ports
 
 # ── 2. EVERY QUESTION, BEFORE ANY WORK ──────────────────────────────────────────────────────────
 printf '  \033[1mDeployment\033[0m\n'
@@ -309,11 +541,6 @@ if [ "$ASSUME_YES" = "0" ] && [ "$HAVE_TTY" = "1" ]; then
 fi
 
 # ── 4. install ──────────────────────────────────────────────────────────────────────────────────
-# step/ok — a progress line that is OVERWRITTEN by its own result, so the transcript reads as a checklist
-# rather than a log. \033[K clears the rest of the line: without it the tail of a longer previous message
-# survives underneath a shorter one.
-step() { printf '  \033[2m…\033[0m %s\033[K\r' "$1"; }
-ok() { printf '  \033[32m✓\033[0m %s\033[K\n' "$1"; }
 
 printf '\n'
 mkdir -p tunnex
@@ -362,11 +589,11 @@ EOF
 ok "configuration written${REUSED}"
 
 step "pulling images — this takes a minute"
-docker compose -f tunnex.yml pull >/dev/null 2>&1 || die "could not pull images."
+$DOCKER compose -f tunnex.yml pull >/dev/null 2>&1 || die "could not pull images."
 ok "images pulled"
 
 step "starting the stack"
-docker compose -f tunnex.yml up -d --wait >/dev/null 2>&1 || die "the stack did not come up healthy."
+$DOCKER compose -f tunnex.yml up -d --wait >/dev/null 2>&1 || die "the stack did not come up healthy."
 ok "stack running"
 
 # ── 5. THE FIRST-RUN CREDENTIAL, READ BACK AND SHOWN WHERE THE OPERATOR IS LOOKING ──────────────
@@ -374,7 +601,7 @@ ok "stack running"
 # ⛔ THE STEP THAT WAS MISSING AND IT COST THE WHOLE INSTALL. The administrator credential is printed ONCE,
 # to the API container's stdout — and `up -d` is detached, so it scrolled into a log the operator was never
 # told to read. It exists as an argon2id hash and nowhere else, so this is the only moment it can be shown.
-CREDS="$(docker compose -f tunnex.yml logs api 2>/dev/null |
+CREDS="$($DOCKER compose -f tunnex.yml logs api 2>/dev/null |
 	sed -n '/TUNNEX - FIRST RUN/,/^.*=\{20,\}$/p' | tail -n +2 || true)"
 
 printf '\n'
@@ -402,5 +629,8 @@ if [ -z "$SMTP_HOST" ]; then
 fi
 # ⭐ SIGNUP IS ALREADY SHUT, and saying so is the difference between an operator who thinks they must hurry
 # and one who knows the deployment is already theirs.
+if [ "$GROUP_NOTE" = "1" ]; then
+	printf '\n  \033[2mYou were added to the `docker` group. Log out and back in to run docker without sudo.\033[0m\n'
+fi
 printf '\n  \033[2mPublic signup is closed on this deployment — the administrator above is the only way in,\n'
 printf '  and everyone else arrives by invitation or SSO.\033[0m\n\n'
