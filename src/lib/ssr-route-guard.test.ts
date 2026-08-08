@@ -41,6 +41,23 @@ function ssrRoutes(): string[] {
   return routes.sort();
 }
 
+/**
+ * ⭐ `run_worker_first = true` COVERS EVERY ROUTE, so it satisfies this guard by construction.
+ *
+ * The setting takes either a list of path globs or the boolean. It became the boolean when `get.tunnex.io`
+ * was added: that host must reach the Worker for EVERY path — including ones that do not exist, because a
+ * fall-through to `not_found_handling = "404-page"` returns the site's 404 as HTML, and that HTML goes into
+ * `curl … | sh`. run_worker_first is path-scoped, not host-scoped, so covering every path on one hostname
+ * means covering every path.
+ *
+ * ⚠ THIS GUARD STILL EARNS ITS KEEP. If the boolean is ever narrowed back to a list, every assertion below
+ * starts checking that list again — so the SSR routes cannot silently lose coverage on the way back.
+ */
+function runWorkerFirstCoversEverything(): boolean {
+  const toml = readFileSync(join(ROOT, 'wrangler.toml'), 'utf8');
+  return /^run_worker_first\s*=\s*true\s*$/m.test(toml);
+}
+
 function runWorkerFirstPatterns(): string[] {
   const toml = readFileSync(join(ROOT, 'wrangler.toml'), 'utf8');
   const match = toml.match(/run_worker_first\s*=\s*\[([^\]]*)\]/);
@@ -50,6 +67,7 @@ function runWorkerFirstPatterns(): string[] {
 
 /** Conservative matcher: `*` is greedy (Cloudflare glob); exact needs exact. */
 function covered(route: string, patterns: string[]): boolean {
+  if (runWorkerFirstCoversEverything()) return true;
   return patterns.some((pattern) => {
     if (pattern.includes('*')) {
       const re = new RegExp('^' + pattern.split('*').map(escapeRe).join('.*') + '$');
@@ -67,8 +85,11 @@ describe('run_worker_first covers every SSR route', () => {
   const patterns = runWorkerFirstPatterns();
   const routes = ssrRoutes();
 
-  it('found the pattern list and at least the known SSR routes', () => {
-    expect(patterns.length).toBeGreaterThan(0);
+  // ⛔ THE VACUITY FLOOR. Without it this suite passes the day the route walk stops finding files, or the
+  // toml parse silently returns nothing — reporting "every SSR route is covered" about zero routes.
+  it('found a coverage declaration and at least the known SSR routes', () => {
+    // Either form is a real declaration: the boolean covers everything, a list must be non-empty.
+    expect(runWorkerFirstCoversEverything() || patterns.length > 0).toBe(true);
     expect(routes).toEqual(expect.arrayContaining(['/api/subscribe', '/api/enterprise-lead']));
   });
 

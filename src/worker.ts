@@ -5,6 +5,7 @@ import { d1ReviewQueueStore, pendingLaunchIssuer, reviewQueueIssuer } from './li
 import { createMailer, transportFromEnv } from './lib/email/mailer.ts';
 import { runRetention, d1RetentionStore } from './lib/retention.ts';
 import { emailLinkBaseUrl } from './config';
+import { handleInstallHost, INSTALL_HOST } from './install/handler.ts';
 
 /**
  * Custom Worker entry (wrangler.toml `main`): the adapter's fetch handler
@@ -15,7 +16,28 @@ import { emailLinkBaseUrl } from './config';
  * follow the deployed wrangler.toml [vars] flip like everything else.
  */
 export default {
-  fetch: server.fetch,
+  /**
+   * ⛔ THE INSTALL HOST IS INTERCEPTED BEFORE THE ASTRO ADAPTER EVER SEES THE REQUEST.
+   *
+   * `get.tunnex.io` serves ONE thing — the installer — and it must never delegate to `server.fetch` for any
+   * path, including paths that do not exist. This is not a preference; it is the whole fix.
+   *
+   * A DNS record and a route went live for a few minutes with no handler at all. `/` fell through to the
+   * adapter, matched the marketing homepage route, and returned HTTP 200 `text/html` to a shell:
+   * `curl -fsSL https://get.tunnex.io | sh` piped the landing page into `sh`. `/install.sh` was no better —
+   * it returned the site's 404 PAGE, which is also HTML and also 200-shaped to a pipe.
+   *
+   * > ## ⭐ **A HOST WHOSE OUTPUT IS EXECUTED MUST NOT SHARE A FALLBACK WITH A HOST THAT SERVES PAGES.**
+   *
+   * So the check is on hostname, it is first, and it returns unconditionally. `handleInstallHost` has no
+   * null branch by construction — there is nothing it can decline that would land somewhere worse.
+   */
+  async fetch(request: Request, env: Env, ctx: ExecutionContext) {
+    if (new URL(request.url).hostname === INSTALL_HOST) {
+      return handleInstallHost(request);
+    }
+    return server.fetch(request, env, ctx);
+  },
   async scheduled(_controller, env, ctx) {
     // worker-configuration.d.ts types the var as its current literal value —
     // widen, since the whole point is that the deployed value can flip.

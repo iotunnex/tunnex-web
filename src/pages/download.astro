@@ -198,13 +198,16 @@ const icons: Record<string, string> = {
             <div class="font-normal text-[13.5px] leading-[1.65] text-[#858582] max-w-[80ch]">
               Download, check the hash against{' '}
               <span class="font-mono font-medium text-[12.5px] text-[#C9C9C4]">SHA256SUMS</span>,
-              inspect the script, then run it. The one-liner is the same artifact for people who
-              would rather not.
+              read the script, then run it. The checksum is computed from the exact bytes the server
+              sends, so it cannot drift from the script it describes. The one-liner is the same
+              artifact for people who would rather not.
             </div>
             <div class="bg-[#101010] border border-[#2E2E2E] rounded-[7px] p-4 font-mono font-medium text-[12.5px] leading-[1.85] text-[#D6D6D2] overflow-x-auto whitespace-pre">
-              curl -fsSLO https://dl.tunnex.io/latest/install.sh curl -fsSLO
-              https://dl.tunnex.io/latest/SHA256SUMS sha256sum -c SHA256SUMS --ignore-missing less
-              install.sh && sh install.sh
+curl -fsSL https://get.tunnex.io -o get.sh
+curl -fsSL https://get.tunnex.io/SHA256SUMS -o SHA256SUMS
+
+sha256sum -c SHA256SUMS --ignore-missing
+less get.sh && sh get.sh
             </div>
             <div class="font-normal text-[12.5px] leading-[1.6] text-[#5E5E5B]">
               Any VPS with Docker and a public address.

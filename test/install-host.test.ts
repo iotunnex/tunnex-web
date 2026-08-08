@@ -1,0 +1,105 @@
+import { describe, expect, it } from 'vitest';
+import { handleInstallHost, INSTALL_HOST } from '../src/install/handler.ts';
+
+const get = (path = '/', headers: Record<string, string> = {}) =>
+  handleInstallHost(new Request(`https://${INSTALL_HOST}${path}`, { headers }));
+
+describe('get.tunnex.io', () => {
+  // ⛔ THE ASSERTION THE OUTAGE EXISTS FOR. A DNS record and a route went live with no handler, `/` fell
+  // through to the Astro adapter, and `curl -fsSL https://get.tunnex.io | sh` piped the marketing homepage
+  // into a shell — HTTP 200, text/html.
+  it('serves the SCRIPT by default, as text/plain', async () => {
+    const res = await get('/');
+    expect(res.status).toBe(200);
+    expect(res.headers.get('content-type')).toBe('text/plain; charset=utf-8');
+    const body = await res.text();
+    expect(body.startsWith('#!/bin/sh')).toBe(true);
+    // ⚠ NOT A FRAGMENT MATCH — the response must not be HTML at all. `<!doctype` appearing anywhere is the
+    // exact failure, and a `startsWith` check alone would pass on a page with a shebang comment in it.
+    expect(body.toLowerCase()).not.toContain('<!doctype');
+    expect(body.toLowerCase()).not.toContain('<html');
+  });
+
+  // ⛔ NO 404 ON THIS HOST. An unknown path must be the script, never the site's 404 page — that page is
+  // HTML too, and a pipe cannot tell the difference between a 404 and a homepage.
+  it.each(['/install.sh', '/latest/install.sh', '/nonsense', '/', '/SHA256SUMS/../oops'])(
+    'serves the script for %s rather than falling through',
+    async (path) => {
+      const res = await get(path);
+      expect(res.status).toBe(200);
+      expect(await res.text()).toContain('#!/bin/sh');
+    },
+  );
+
+  // ⚠ CONTENT NEGOTIATION IS ON Accept. curl sends `*/*`; a browser sends `text/html,…`.
+  it('serves the script to curl and a page to a browser', async () => {
+    expect(await (await get('/', { accept: '*/*' })).text()).toContain('#!/bin/sh');
+
+    const page = await get('/', {
+      accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+    });
+    expect(page.headers.get('content-type')).toBe('text/html; charset=utf-8');
+    expect(await page.text()).toContain('curl -fsSL https://get.tunnex.io | sh');
+  });
+
+  // ⛔ AMBIGUITY RESOLVES TO THE SCRIPT. Being wrong this way shows a human some shell; being wrong the
+  // other way runs a web page on their machine.
+  it('serves the script when Accept is absent', async () => {
+    const res = await handleInstallHost(new Request(`https://${INSTALL_HOST}/`));
+    expect(res.headers.get('content-type')).toBe('text/plain; charset=utf-8');
+    expect(await res.text()).toContain('#!/bin/sh');
+  });
+
+  // ⛔ THE ABSENT HEADER IS WHY THE BROKEN RESPONSE CACHED AS A HIT — and the same silence would pin a
+  // stale installer after the next release.
+  it('always sets Cache-Control explicitly', async () => {
+    for (const path of ['/', '/SHA256SUMS']) {
+      const res = await get(path);
+      expect(res.headers.get('cache-control')).toBe('public, max-age=300, must-revalidate');
+    }
+  });
+
+  // ⭐ THE CHECKSUM IS COMPUTED FROM THE BYTES SERVED, so it cannot drift from the script. A committed
+  // sums file would fail on a correct script and teach customers the check is noise.
+  it('publishes a SHA256SUMS that matches the script it serves', async () => {
+    const script = await (await get('/')).text();
+    const sums = await (await get('/SHA256SUMS')).text();
+
+    const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(script));
+    const expected = [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, '0')).join('');
+
+    expect(sums).toBe(`${expected}  get.sh\n`);
+    // The format `sha256sum -c` parses: "<64 hex>  <filename>", exactly two spaces.
+    expect(sums).toMatch(/^[0-9a-f]{64} {2}get\.sh\n$/);
+  });
+
+  it('refuses methods other than GET and HEAD', async () => {
+    const res = await handleInstallHost(new Request(`https://${INSTALL_HOST}/`, { method: 'POST' }));
+    expect(res.status).toBe(405);
+  });
+
+  // ⚠ The script must be the REAL one, not a placeholder that happens to start with a shebang.
+  it('serves the actual installer', async () => {
+    const body = await (await get('/')).text();
+    expect(body).toContain('TUNNEX_PUBLIC_ADDR');
+    expect(body).toContain('TUNNEX_ENV: production');
+    expect(body).toContain('FIRST RUN');
+  });
+
+  // ⛔ THE FAILURE THAT COST THE MOST TIME, PINNED AS A CONFIG ASSERTION.
+  //
+  // Everything inspectable was correct — the deployed bundle contained the hostname check, Cloudflare's own
+  // route list showed `get.tunnex.io/*` pointing at this script, DNS resolved — and requests still returned
+  // the marketing homepage. The Worker was NEVER INVOKED: Workers Static Assets serves matching paths
+  // directly, and `run_worker_first` was an ALLOW-LIST that did not include `/`.
+  //
+  // ⚠ A probe header proved it (no response on either hostname carried it) after four wrong hypotheses —
+  // cache rules, DNS record type, route propagation, custom-domain conflict. The config was the cause the
+  // whole time, so the config is what this asserts.
+  it('runs the Worker before the assets layer for every path', async () => {
+    const toml = await import('node:fs/promises').then((fs) =>
+      fs.readFile(new URL('../wrangler.toml', import.meta.url), 'utf8'),
+    );
+    expect(toml).toMatch(/^run_worker_first = true$/m);
+  });
+});

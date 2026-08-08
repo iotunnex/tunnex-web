@@ -9,7 +9,20 @@ compatibility_flags = ["nodejs_compat"]
 # Custom Domain routes are attached on Cloudflare Dashboard.
 routes = [
   { pattern = "tunnex.io", custom_domain = true },
-  { pattern = "www.tunnex.io", custom_domain = true }
+  { pattern = "www.tunnex.io", custom_domain = true },
+  # ⛔ THE INSTALL HOST. src/worker.ts intercepts this hostname BEFORE the Astro adapter and serves the
+  # installer for every path — never the site, never the site's 404 page. Adding the route without the
+  # handler is what piped the marketing homepage into a customer's shell; the two ship together.
+  #
+  # ⚠ A ZONE ROUTE, NOT `custom_domain = true`, AND THE DIFFERENCE IS WHO OWNS THE DNS RECORD. A custom
+  # domain makes Cloudflare CREATE and own the record, and it REFUSES when a record for that name already
+  # exists — which is exactly what happened: the deploy uploaded the Worker and then failed to attach the
+  # trigger, leaving the code live and the hostname still served by the site. A zone route binds the Worker
+  # to a record that already exists and touches DNS not at all.
+  #
+  # ⛔ AND THE PATTERN IS `/*`, NOT THE BARE HOST. A bare hostname matches only `/`; every other path would
+  # fall through to the site — including the site's 404 page, which is HTML going into a shell.
+  { pattern = "get.tunnex.io/*", zone_name = "tunnex.io" }
 ]
 # Custom entry: the adapter's fetch handler + the lifecycle cron's scheduled
 # handler (the adapter uses this instead of its default entry).
@@ -30,19 +43,23 @@ not_found_handling = "404-page"
 # prerender=false MUST be listed here, or browsers get the 404 page while curl
 # gets the real response (Sec-Fetch-Mode: navigate triggers not_found_handling
 # instead of invoking the Worker).
-run_worker_first = [
-  "/api/*",
-  "/enterprise",
-  "/enterprise/",
-  "/subscribe/confirm",
-  "/trial/verify",
-  "/trial/verify/",
-  # S12.7 — the paid request path. ⚠ `/licence/verify` READS D1 to render (it peeks the token without
-  # writing), so a cached static response would show a stale or wrong state; the guard in
-  # ssr-route-guard.test.ts caught its absence before deploy.
-  "/licence/verify",
-  "/licence/verify/",
-]
+# ⛔ THE WORKER RUNS FIRST FOR EVERY REQUEST, AND THE INSTALL HOST IS WHY.
+#
+# This was an ALLOW-LIST of SSR paths, and the comment above records the trap it was written for: the
+# assets layer serves matching paths DIRECTLY and never invokes the Worker script. `get.tunnex.io` needs
+# the opposite of a path list — it needs EVERY path, including ones that do not exist, because a request
+# to `get.tunnex.io/anything` that falls through to `not_found_handling = "404-page"` returns the site's
+# 404 PAGE as HTML, and that HTML goes into `curl … | sh`.
+#
+# ⚠ IT IS NOT PATH-SCOPABLE TO A HOSTNAME. run_worker_first takes path globs, not hosts, so covering every
+# path on one hostname means covering every path. The cost is one Worker invocation per asset request; the
+# Astro adapter serves assets through the ASSETS binding either way, so behaviour is unchanged.
+#
+# ⭐ THE SYMPTOM THIS FIXES: the deployed Worker contained the correct hostname check, the zone route
+# existed and pointed at the right script, DNS resolved — and requests still returned the marketing
+# homepage, because the script was never invoked at all. A probe header proved it: no response on either
+# hostname carried it.
+run_worker_first = true
 
 [vars]
 # "prelaunch" | "beta" — see README. Flipping this is the only change
