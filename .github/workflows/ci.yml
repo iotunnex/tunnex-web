@@ -25,6 +25,9 @@ jobs:
           node-version-file: .nvmrc
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      - run: pnpm installer:sync
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
       - run: pnpm typecheck
       - run: pnpm lint
       - run: pnpm test
