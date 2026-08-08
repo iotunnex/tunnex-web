@@ -60,11 +60,13 @@ jobs:
           WRANGLER_OUTPUT_FILE_PATH: upload-output.json
         run: |
           pnpm exec wrangler versions upload
+          version="$(jq -r 'select(.type == "version-upload") | .version_id // empty' upload-output.json | tail -1)"
           url="$(jq -r 'select(.type == "version-upload") | .preview_url // empty' upload-output.json | tail -1)"
-          if [ -z "$url" ]; then
-            echo "No preview URL found in Wrangler's machine-readable output" >&2
+          if [ -z "$version" ]; then
+            echo "No version ID found in Wrangler's machine-readable output" >&2
             exit 1
           fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
           echo "url=$url" >> "$GITHUB_OUTPUT"
       - name: Post preview URL on PR (sticky comment)
         uses: actions/github-script@v7
@@ -72,7 +74,11 @@ jobs:
           script: |
             const marker = '<!-- tunnex-preview-url -->';
             const url = '${{ steps.upload.outputs.url }}';
-            const body = `${marker}\n**Preview:** ${url}\n\n_Commit ${context.payload.pull_request.head.sha.slice(0, 7)} · updated ${new Date().toISOString()}_`;
+            const version = '${{ steps.upload.outputs.version }}';
+            const preview = url
+              ? `**Preview:** ${url}`
+              : `**Preview version uploaded:** \`${version}\`\n\n_A shareable URL will appear after preview URLs are activated by the next production deploy._`;
+            const body = `${marker}\n${preview}\n\n_Commit ${context.payload.pull_request.head.sha.slice(0, 7)} · updated ${new Date().toISOString()}_`;
             const { data: comments } = await github.rest.issues.listComments({
               ...context.repo,
               issue_number: context.issue.number,
