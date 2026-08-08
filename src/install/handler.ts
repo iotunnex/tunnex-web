@@ -2,6 +2,7 @@
 // upstream that can fail. A proxy to GitHub raw would — and the failure mode of `curl | sh` against an
 // upstream error page is arbitrary code.
 import script from './get.sh?raw';
+import { INSTALL_PAGE } from './palette';
 
 /**
  * The `get.tunnex.io` handler — everything `curl -fsSL https://get.tunnex.io | sh` touches.
@@ -120,16 +121,16 @@ async function browserPage(): Promise<Response> {
 <title>Install Tunnex</title>
 <style>
 :root{color-scheme:dark}
-body{margin:0;padding:48px 20px;background:#0A0A0A;color:#EDEDEB;
+body{margin:0;padding:48px 20px;background:${INSTALL_PAGE.bg};color:${INSTALL_PAGE.text};
   font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;line-height:1.65}
 main{max-width:680px;margin:0 auto}
 h1{font-size:22px;margin:0 0 8px}
-p{color:#A9A9A6;font-size:15px}
-pre{background:#101010;border:1px solid #2E2E2E;border-radius:8px;padding:16px;overflow-x:auto;
-  font-size:13px;color:#D6D6D2;white-space:pre-wrap;word-break:break-all}
+p{color:${INSTALL_PAGE.textMuted};font-size:15px}
+pre{background:${INSTALL_PAGE.codeBg};border:1px solid ${INSTALL_PAGE.border};border-radius:8px;padding:16px;overflow-x:auto;
+  font-size:13px;color:${INSTALL_PAGE.codeText};white-space:pre-wrap;word-break:break-all}
 code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
-a{color:#EDEDEB}
-h2{font-size:15px;margin:32px 0 8px;color:#EDEDEB}
+a{color:${INSTALL_PAGE.text}}
+h2{font-size:15px;margin:32px 0 8px;color:${INSTALL_PAGE.text}}
 </style></head>
 <body><main>
 <h1>Install Tunnex</h1>
