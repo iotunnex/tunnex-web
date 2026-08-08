@@ -137,4 +137,27 @@ describe('get.tunnex.io', () => {
     expect(script.indexOf('config -q')).toBeLessThan(script.indexOf('compose -f tunnex.yml pull'));
   });
 
+  // ⛔ READINESS MUST MEAN THE DAEMON ANSWERS, NOT THAT THE CLI EXISTS.
+  //
+  // The check was `docker compose version`, which SUCCEEDS with no daemon access at all — it is a
+  // client-side plugin query. So on a machine where Docker was installed by hand and the user was never
+  // added to the `docker` group, readiness passed, the sudo fallback was never reached, and the install ran
+  // all the way to `docker pull` before dying on the socket. `docker info` round-trips to the daemon.
+  it('tests daemon reachability, not just the docker CLI', async () => {
+    const script = await (await get('/')).text();
+    const fn = script.slice(script.indexOf('docker_ready() {'), script.indexOf('resolve_docker() {'));
+    expect(fn).toContain('info');
+    expect(fn).toContain('compose version');
+  });
+
+  // ⚠ AND THERE IS A LADDER, in increasing order of privilege: plain docker, then start the daemon, then
+  // sudo. Each rung is a different failure with a different fix, and collapsing them loses the diagnosis.
+  it('falls back to sudo when the daemon refuses this user', async () => {
+    const script = await (await get('/')).text();
+    const fn = script.slice(script.indexOf('resolve_docker() {'), script.indexOf('ensure_docker() {'));
+    expect(fn).toContain('systemctl start docker');
+    expect(fn).toContain('DOCKER="sudo docker"');
+    expect(fn).toContain('GROUP_FIX=1');
+  });
+
 });

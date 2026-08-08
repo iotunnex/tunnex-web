@@ -323,30 +323,64 @@ os_pretty() {
 	fi
 }
 
+# ⛔ READINESS MEANS THE DAEMON ANSWERS THIS USER — NOT THAT THE CLI EXISTS.
+#
+# This checked `docker compose version`, which SUCCEEDS with no daemon access whatsoever: it is a
+# client-side plugin query. So on a machine where Docker was installed by hand and the user was never added
+# to the `docker` group, the check passed, the sudo fallback below was never reached, and the install ran
+# all the way to `docker pull` before failing with:
+#
+#     permission denied while trying to connect to the docker API at unix:///var/run/docker.sock
+#
+# `docker info` is the question that means something: it round-trips to the daemon over the socket, so it
+# fails for a stopped daemon AND for a user who may not talk to it.
 docker_ready() {
 	command -v docker >/dev/null 2>&1 || return 1
 	$DOCKER compose version >/dev/null 2>&1 || return 1
+	$DOCKER info >/dev/null 2>&1 || return 1
 	return 0
+}
+
+# resolve_docker finds a working way to invoke docker, in increasing order of privilege, and sets DOCKER.
+# Returns non-zero only when Docker is genuinely absent or unusable by any route.
+resolve_docker() {
+	DOCKER="docker"
+	if docker_ready; then return 0; fi
+	command -v docker >/dev/null 2>&1 || return 1
+
+	# ⚠ THE DAEMON MAY SIMPLY NOT BE RUNNING — a different problem from a permission one, with a different
+	# fix, and cheap to rule out before asking anyone for anything.
+	if command -v systemctl >/dev/null 2>&1; then
+		$SUDO systemctl start docker >/dev/null 2>&1 || true
+		DOCKER="docker"
+		if docker_ready; then return 0; fi
+	fi
+
+	# ⭐ AND THE COMMON CASE ON A MACHINE WHERE SOMEONE INSTALLED DOCKER BY HAND: the daemon is fine and this
+	# user is not in the `docker` group. sudo works now; the group is fixed for next time.
+	if [ -n "$SUDO" ]; then
+		DOCKER="sudo docker"
+		if docker_ready; then
+			GROUP_FIX=1
+			return 0
+		fi
+	fi
+	DOCKER="docker"
+	return 1
 }
 
 # ⛔ DOCKER IS INSTALLED FOR THE OPERATOR, WITH CONSENT, RATHER THAN DEMANDED FROM THEM.
 #
-# This used to stop at `Docker is required. Install Docker Engine, then re-run.` — which is true, useless,
-# and the first thing a customer meets on a fresh VPS. A one-command installer that ends by asking someone
-# to go and run a different command is not a one-command installer.
+# This used to stop at `Docker is required. Install Docker Engine, then re-run.` — true, useless, and the
+# first thing a customer meets on a fresh VPS. A one-command installer that ends by asking someone to go and
+# run a different command is not a one-command installer.
 #
 # ⚠ CONSENT IS ASKED, NOT ASSUMED. Installing a system package manager's worth of software is not something
 # to do silently inside a script someone piped into a shell, and the prompt names exactly what will happen.
 ensure_docker() {
-	if docker_ready; then return 0; fi
-
-	# Docker present but unusable by this user is a DIFFERENT problem from Docker absent, and it has a
-	# different fix — so it is detected separately rather than folded into "install it".
-	if command -v docker >/dev/null 2>&1 && ! docker info >/dev/null 2>&1; then
-		if [ -n "$SUDO" ] && $SUDO docker compose version >/dev/null 2>&1; then
-			DOCKER="sudo docker"
-			return 0
-		fi
+	if resolve_docker; then
+		fix_docker_group
+		return 0
 	fi
 
 	_fam="$(os_family)"
@@ -369,40 +403,46 @@ ensure_docker() {
 	fi
 
 	# ⚠ DOCKER'S OWN CONVENIENCE SCRIPT, FROM DOCKER'S OWN DOMAIN. It is the method Docker publishes and
-	# maintains for every distribution here, and it adds their signed apt/yum repository rather than
-	# dropping binaries — so upgrades keep working through the system package manager afterwards.
+	# maintains for every distribution here, and it adds their signed repository rather than dropping
+	# binaries — so upgrades keep working through the system package manager afterwards.
 	step "installing Docker (a few minutes)"
 	if ! curl -fsSL https://get.docker.com -o /tmp/get-docker.sh 2>/dev/null; then
 		die "could not download Docker's installer from https://get.docker.com"
 	fi
 	if ! $SUDO sh /tmp/get-docker.sh >/tmp/docker-install.log 2>&1; then
-		die "Docker installation failed. The log is at /tmp/docker-install.log
+		printf '\n'
+		tail -12 /tmp/docker-install.log >&2
+		die "Docker installation failed — the error is above, full log at /tmp/docker-install.log
   Install it manually and re-run: https://docs.docker.com/engine/install/"
 	fi
 	rm -f /tmp/get-docker.sh
 	ok "Docker installed"
 
-	# Start it and make it survive a reboot — the convenience script does this on systemd distributions,
-	# but not on every image, and a Tunnex that vanishes after the first reboot is worse than one that
-	# never started.
 	if command -v systemctl >/dev/null 2>&1; then
 		$SUDO systemctl enable --now docker >/dev/null 2>&1 || true
 	fi
 
-	# ⚠ THE GROUP CHANGE IS FOR NEXT LOGIN; THIS RUN USES sudo. Adding the user to `docker` is the right
-	# thing to leave behind, and relying on it NOW is the classic mistake — the membership does not exist
-	# in the current shell, so every command after this point would fail on a correctly configured machine.
-	if [ -n "$SUDO" ]; then
-		$SUDO usermod -aG docker "$(id -un)" >/dev/null 2>&1 || true
-		DOCKER="sudo docker"
+	resolve_docker || die "Docker was installed but the daemon is not reachable.
+  Check it with: $SUDO systemctl status docker
+  Install log: /tmp/docker-install.log"
+	fix_docker_group
+}
+
+# fix_docker_group leaves the machine so the NEXT session does not need sudo.
+#
+# ⚠ AND IT DOES NOT CHANGE HOW THIS RUN INVOKES DOCKER. A group added now does not exist in the current
+# shell — it applies at next login — so relying on it here would break every command that follows, on a
+# machine that had just been configured correctly. DOCKER keeps whatever resolve_docker proved works.
+fix_docker_group() {
+	[ "${GROUP_FIX:-0}" = "1" ] || return 0
+	[ -n "$SUDO" ] || return 0
+	if $SUDO usermod -aG docker "$(id -un)" >/dev/null 2>&1; then
 		GROUP_NOTE=1
 	fi
-
-	docker_ready || die "Docker was installed but \`docker compose version\` still does not work.
-  The install log is at /tmp/docker-install.log"
 }
 
 GROUP_NOTE=0
+GROUP_FIX=0
 
 # ── ports ───────────────────────────────────────────────────────────────────────────────────────
 #
@@ -622,7 +662,7 @@ if grep -qi 'mailpit' tunnex.yml; then
 fi
 grep -q 'TUNNEX_ENV: production' tunnex.yml ||
 	die "the fetched tunnex.yml does not set TUNNEX_ENV: production. Refusing to install."
-ok "release manifest verified — production, no Mailpit"
+ok "release manifest verified"
 
 step "writing configuration"
 PG_PASS=""
