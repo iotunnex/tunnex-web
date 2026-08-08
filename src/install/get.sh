@@ -443,6 +443,7 @@ fix_docker_group() {
 
 GROUP_NOTE=0
 GROUP_FIX=0
+CRED_SHOWN=0
 
 # ── ports ───────────────────────────────────────────────────────────────────────────────────────
 #
@@ -756,18 +757,42 @@ printf '\n'
 if printf '%s' "$CREDS" | grep -q 'password'; then
 	printf '  \033[1mYour administrator credential — shown once, copy it now\033[0m\n\n'
 	printf '%s\n' "$CREDS"
+	CRED_SHOWN=1
 else
-	printf '  \033[33m⚠ Could not read the first-run credential from the API log.\033[0m\n\n'
-	printf '  Retrieve it with:\n'
-	printf '      cd %s && docker compose -f tunnex.yml logs api | grep -A8 "FIRST RUN"\n\n' "$(pwd)"
-	printf '  If it is genuinely gone there is no recovery and no second admin —\n'
-	printf '  reset with:  docker compose -f tunnex.yml down -v\n'
+	# ⛔ ABSENT IS NOT THE SAME AS LOST, AND SAYING SO WRONGLY IS ALARMING FOR NO REASON.
+	#
+	# bootstrap.EnsureAdmin mints the administrator ONLY when the deployment has never had a user, and
+	# prints nothing on every other start. So a re-run against an existing database — which is exactly what
+	# an idempotent installer produces, and what "reused the existing database password" announces two steps
+	# earlier — has no banner to find, because the account already exists and its credential was printed
+	# during the FIRST run.
+	#
+	# ⚠ THE PREVIOUS MESSAGE READ AS DATA LOSS. It said the credential could not be read and offered
+	# `down -v` — destroying the deployment — to an operator whose account was fine and whose password they
+	# may simply have kept. Distinguishing the two cases is the difference between a note and a scare.
+	if [ -n "$REUSED" ]; then
+		printf '  \033[2mNo new administrator was created — this deployment already had one, so its\033[0m\n'
+		printf '  \033[2mcredential was printed during the first install. Sign in with that.\033[0m\n\n'
+		printf '  Lost it? There is no recovery and no second admin. Start over with a clean\n'
+		printf '  database (this destroys all Tunnex data on this machine):\n'
+		printf '      cd %s && %s compose -f tunnex.yml down -v && curl -fsSL https://get.tunnex.io | sh\n' "$(pwd)" "$DOCKER"
+	else
+		printf '  \033[33m⚠ Could not read the first-run credential from the API log.\033[0m\n\n'
+		printf '  Retrieve it with:\n'
+		printf '      cd %s && %s compose -f tunnex.yml logs api | grep -A8 "FIRST RUN"\n\n' "$(pwd)" "$DOCKER"
+		printf '  If it is genuinely gone there is no recovery and no second admin —\n'
+		printf '      cd %s && %s compose -f tunnex.yml down -v\n' "$(pwd)" "$DOCKER"
+	fi
 fi
 
 # ── 6. hand-off ─────────────────────────────────────────────────────────────────────────────────
 printf '\n  \033[1mNext\033[0m\n'
 printf '    1. Open  http://%s/\n' "$ADDR"
-printf '    2. Sign in with the credential above — you must set your own password immediately.\n'
+if [ "$CRED_SHOWN" = "1" ]; then
+	printf '    2. Sign in with the credential above — you must set your own password immediately.\n'
+else
+	printf '    2. Sign in as the administrator created on the first install.\n'
+fi
 printf '    3. Create your first organization.\n'
 printf '    4. Gateways → Generate join token, then run the command it shows on your gateway host.\n'
 if [ -z "$SMTP_HOST" ]; then
