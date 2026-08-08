@@ -90,6 +90,14 @@ describe('get.tunnex.io', () => {
     expect(body).toContain('FIRST RUN');
   });
 
+  it('pins the manifest and images to the newest successful main CI commit', async () => {
+    const body = await (await get('/')).text();
+    expect(body).toContain('/actions/workflows/ci.yml/runs?branch=main&event=push&status=success');
+    expect(body).toContain('VERSION="sha-$(printf \'%.7s\' "$SOURCE_COMMIT")"');
+    expect(body).toContain('${RAW}/${SOURCE_REF}/deploy/tunnex.yml');
+    expect(body).not.toContain('/releases/latest');
+  });
+
   // ⛔ THE FAILURE THAT COST THE MOST TIME, PINNED AS A CONFIG ASSERTION.
   //
   // Everything inspectable was correct — the deployed bundle contained the hostname check, Cloudflare's own
