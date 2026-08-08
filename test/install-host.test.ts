@@ -102,4 +102,39 @@ describe('get.tunnex.io', () => {
     );
     expect(toml).toMatch(/^run_worker_first = true$/m);
   });
+  // ⛔ THE ORPHANED HEREDOC. A string edit left the OLD .env body sitting after the new one's terminator, so
+  // the script had TWO `EOF` lines: the first closed the heredoc and the second was executed as a command.
+  // On the founder's box that was `sh: 678: EOF: not found`, after the install had already started.
+  //
+  // ⚠ NEITHER `sh -n` NOR `dash -n` CAUGHT IT, because the orphan is syntactically valid — which is exactly
+  // why a syntax check is not a substitute for asserting the shape of the thing.
+  it('has exactly one .env heredoc, correctly terminated', async () => {
+    const script = await (await get('/')).text();
+    const lines = script.split('\n');
+    const opens = lines.filter((l) => l.startsWith('cat >.env <<EOF')).length;
+    const closes = lines.filter((l) => l === 'EOF').length;
+    expect(opens).toBe(1);
+    expect(closes).toBe(1);
+  });
+
+  // ⛔ EVERY VARIABLE tunnex.yml MARKS REQUIRED MUST BE WRITTEN. Compose fails at INTERPOLATION when one is
+  // missing — before it pulls a layer — and the installer reported that as "could not pull images", which
+  // sent the operator to look at their registry and their docker group.
+  it('writes every variable the compose file requires', async () => {
+    const script = await (await get('/')).text();
+    const env = script.slice(script.indexOf('cat >.env <<EOF'), script.indexOf('\nEOF'));
+    for (const v of ['APP_BASE_URL', 'DATABASE_URL', 'POSTGRES_PASSWORD', 'TUNNEX_NODE_ENDPOINT']) {
+      expect(env.split('\n').filter((l) => l.startsWith(`${v}=`)).length).toBe(1);
+    }
+  });
+
+  // ⚠ AND IT VALIDATES BEFORE IT PULLS. `config -q` asks whether the file is complete where the answer is
+  // cheap, so a future release requiring a new variable fails with a message about configuration rather
+  // than one about images.
+  it('validates the compose configuration before pulling', async () => {
+    const script = await (await get('/')).text();
+    expect(script).toContain('config -q');
+    expect(script.indexOf('config -q')).toBeLessThan(script.indexOf('compose -f tunnex.yml pull'));
+  });
+
 });

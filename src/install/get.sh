@@ -661,21 +661,6 @@ TUNNEX_POOL_CIDR=${POOL_CIDR}
 # ⛔ NEVER SET THIS ON A DEPLOYMENT — it tees message bodies to the log, and those bodies are working links.
 MAIL_DEV_LOG=false
 EOF
-# Written by the Tunnex installer. Edit values here; never hand-edit tunnex.yml.
-TUNNEX_VERSION=${VERSION}
-APP_BASE_URL=http://${ADDR}
-TUNNEX_PUBLIC_ADDR=${ADDR}
-TUNNEX_ADMIN_EMAIL=${ADMIN_EMAIL}
-TUNNEX_POOL_CIDR=${POOL_CIDR}
-POSTGRES_PASSWORD=${PG_PASS}
-SMTP_HOST=${SMTP_HOST}
-SMTP_PORT=${SMTP_PORT}
-SMTP_FROM=${SMTP_FROM}
-SMTP_USERNAME=${SMTP_USERNAME}
-SMTP_PASSWORD=${SMTP_PASSWORD}
-# ⛔ NEVER SET THIS ON A DEPLOYMENT — it tees message bodies to the log, and those bodies are working links.
-MAIL_DEV_LOG=false
-EOF
 ok "configuration written${REUSED}"
 
 # ⛔ VALIDATE THE COMPOSE FILE AGAINST THE .env WE JUST WROTE, BEFORE PULLING ANYTHING.
