@@ -98,13 +98,45 @@ ask() {
 		ANSWER="$_default"
 		return 0
 	fi
+	# ⚠ %b, NOT %s. A prompt may carry its own dim hint, and %s prints the escape LITERALLY — which is
+	# exactly what shipped: `SMTP port \033[2m(587 = STARTTLS…)\033[0m (587)`.
 	if [ -n "$_default" ]; then
-		printf '  %s \033[2m(%s)\033[0m ' "$_prompt" "$_default" >&3
+		printf '  %b \033[2m(%s)\033[0m ' "$_prompt" "$_default" >&3
 	else
-		printf '  %s ' "$_prompt" >&3
+		printf '  %b ' "$_prompt" >&3
 	fi
 	read_tty || no_tty_help
 	[ -n "$REPLY_RAW" ] || REPLY_RAW="$_default"
+	ANSWER="$REPLY_RAW"
+}
+
+# ask_secret PROMPT — like ask, with terminal echo OFF. Sets ANSWER.
+#
+# ⛔ A PASSWORD MUST NOT BE ECHOED, AND IT WAS. It went onto the operator's screen, into their scrollback,
+# and into any recording of that session — an SMTP credential that is now in a terminal buffer for as long
+# as the window lives.
+#
+# ⚠ THE RESTORE IS UNCONDITIONAL, via a trap: if the read is interrupted (Ctrl-C mid-prompt) without it,
+# the operator is left with a shell that does not echo anything they type and no obvious way back.
+ask_secret() {
+	_prompt="$1"
+	if [ "$ASSUME_YES" = "1" ] || [ "$HAVE_TTY" = "0" ]; then
+		ANSWER=""
+		return 0
+	fi
+	# ⚠ ECHO GOES OFF BEFORE THE PROMPT IS PRINTED, NOT AFTER. Printing first leaves a window between the
+	# prompt appearing and the terminal being silenced — and anything typed or PASTED into that window is
+	# echoed. It is microseconds for a human typing and reliably lost for one pasting, or for a driver that
+	# reacts the instant it sees the prompt.
+	_saved="$(stty -g <&3 2>/dev/null || true)"
+	# shellcheck disable=SC2064
+	trap "stty '$_saved' <&3 2>/dev/null || stty echo <&3 2>/dev/null; exit 130" INT TERM
+	stty -echo <&3 2>/dev/null || true
+	printf '  %b ' "$_prompt" >&3
+	read_tty || { stty echo <&3 2>/dev/null || true; no_tty_help; }
+	if [ -n "$_saved" ]; then stty "$_saved" <&3 2>/dev/null || true; else stty echo <&3 2>/dev/null || true; fi
+	trap - INT TERM
+	printf '\n' >&3
 	ANSWER="$REPLY_RAW"
 }
 
@@ -515,7 +547,7 @@ if [ -z "$SMTP_HOST" ]; then
 		ask "SMTP username \033[2m(blank if none)\033[0m" ""
 		SMTP_USERNAME="$ANSWER"
 		if [ -n "$SMTP_USERNAME" ]; then
-			ask "SMTP password" ""
+			ask_secret "SMTP password"
 			SMTP_PASSWORD="$ANSWER"
 		fi
 	fi
@@ -588,12 +620,26 @@ MAIL_DEV_LOG=false
 EOF
 ok "configuration written${REUSED}"
 
+# ⛔ THE ERROR IS SHOWN, NOT SWALLOWED. This read `>/dev/null 2>&1 || die "could not pull images."` — so an
+# operator whose user is not in the `docker` group, or whose registry is unreachable, got four words and no
+# way to tell those apart. The same swallowed-error shape this product has a law about, in the installer.
 step "pulling images — this takes a minute"
-$DOCKER compose -f tunnex.yml pull >/dev/null 2>&1 || die "could not pull images."
+if ! $DOCKER compose -f tunnex.yml pull >/tmp/tunnex-pull.log 2>&1; then
+	printf '\n'
+	tail -12 /tmp/tunnex-pull.log >&2
+	die "could not pull images — the error is above, and the full log is /tmp/tunnex-pull.log
+  If it says permission denied, this user is not in the \`docker\` group yet:
+      log out and back in, or re-run with: sudo sh get.sh"
+fi
 ok "images pulled"
 
 step "starting the stack"
-$DOCKER compose -f tunnex.yml up -d --wait >/dev/null 2>&1 || die "the stack did not come up healthy."
+if ! $DOCKER compose -f tunnex.yml up -d --wait >/tmp/tunnex-up.log 2>&1; then
+	printf '\n'
+	tail -20 /tmp/tunnex-up.log >&2
+	die "the stack did not come up healthy — the error is above, full log at /tmp/tunnex-up.log
+  Inspect with: cd $(pwd) && $DOCKER compose -f tunnex.yml ps"
+fi
 ok "stack running"
 
 # ── 5. THE FIRST-RUN CREDENTIAL, READ BACK AND SHOWN WHERE THE OPERATOR IS LOOKING ──────────────
