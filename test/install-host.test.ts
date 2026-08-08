@@ -98,6 +98,22 @@ describe('get.tunnex.io', () => {
     expect(body).not.toContain('/releases/latest');
   });
 
+  it('masks SMTP secret input and restores the terminal on every exit path', async () => {
+    const body = await (await get('/')).text();
+    const reader = body.slice(
+      body.indexOf('# BEGIN MASKED SECRET READER'),
+      body.indexOf('# END MASKED SECRET READER'),
+    );
+    expect(reader).toContain('stty raw -echo');
+    expect(reader).toContain("printf '*' >&3");
+    expect(reader).toContain("printf '\\b \\b' >&3");
+    expect(reader).toContain("$(printf '\\177')");
+    expect(reader).toContain("$(printf '\\010')");
+    expect(reader).toContain("$(printf '\\003')");
+    expect(reader.match(/stty "\$_saved"/g)?.length).toBeGreaterThanOrEqual(4);
+    expect(reader).not.toContain('ANSWER="$REPLY_RAW"');
+  });
+
   // ⛔ THE FAILURE THAT COST THE MOST TIME, PINNED AS A CONFIG ASSERTION.
   //
   // Everything inspectable was correct — the deployed bundle contained the hostname check, Cloudflare's own
