@@ -5,6 +5,10 @@
 name = "tunnex-site"
 compatibility_date = "2026-07-01"
 compatibility_flags = ["nodejs_compat"]
+# PR CI uploads an undeployed Worker version and publishes its unique preview
+# URL for review. Keep previews explicit: custom routes otherwise make Wrangler
+# default them off, leaving a successful upload with no URL for the PR.
+preview_urls = true
 
 # Custom Domain routes are attached on Cloudflare Dashboard.
 routes = [

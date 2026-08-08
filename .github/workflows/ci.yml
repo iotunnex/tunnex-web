@@ -57,11 +57,12 @@ jobs:
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          WRANGLER_OUTPUT_FILE_PATH: upload-output.json
         run: |
-          pnpm exec wrangler versions upload | tee upload.log
-          url="$(grep -Eo 'https://[A-Za-z0-9.-]+\.workers\.dev' upload.log | tail -1)"
+          pnpm exec wrangler versions upload
+          url="$(jq -r 'select(.type == "version-upload") | .preview_url // empty' upload-output.json | tail -1)"
           if [ -z "$url" ]; then
-            echo "No preview URL found in wrangler output" >&2
+            echo "No preview URL found in Wrangler's machine-readable output" >&2
             exit 1
           fi
           echo "url=$url" >> "$GITHUB_OUTPUT"
