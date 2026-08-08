@@ -199,8 +199,37 @@ if [ -z "$VERSION" ]; then
 fi
 [ -n "$VERSION" ] || die "could not resolve a released Tunnex version. Set TUNNEX_VERSION to pin one."
 
-printf '\n  \033[1mTunnex\033[0m \033[2m%s\033[0m\n' "$VERSION"
-printf '  \033[2mSelf-hosted Zero Trust VPN\033[0m\n\n'
+# ── the wordmark ────────────────────────────────────────────────────────────────────────────────
+#
+# ⭐ TUNN IN WHITE, EX IN RED — the same split the product's own logo uses, so the terminal and the
+# dashboard are recognisably one thing. Each line is printed in two segments because the colour changes
+# mid-glyph-row.
+#
+# ⚠ AND THERE IS AN ASCII FALLBACK, because box-drawing characters render as mojibake on a terminal that is
+# not UTF-8 — which is the default on a bare VPS with LANG=C, i.e. exactly the machine this runs on. A
+# banner that comes out as garbage is worse than one that is plain.
+wordmark() {
+	_r='\033[38;5;203m' # brand red
+	_w='\033[97m'       # wordmark white
+	_z='\033[0m'
+	case "${LC_ALL:-${LC_CTYPE:-${LANG:-}}}" in
+	*[Uu][Tt][Ff]*)
+		printf "\n  ${_w}%s${_z}${_r}%s${_z}\n" '╺┳╸╻ ╻┏┓╻┏┓╻' '┏━╸╻ ╻'
+		printf "  ${_w}%s${_z}${_r}%s${_z}\n" ' ┃ ┃ ┃┃┗┫┃┗┫' '┣╸ ┏╋┛'
+		printf "  ${_w}%s${_z}${_r}%s${_z}\n" ' ╹ ┗━┛╹ ╹╹ ╹' '┗━╸╹ ╹'
+		;;
+	*)
+		printf "\n  ${_w}%s${_z}${_r}%s${_z}\n" ' _____ _   _ _   _ ' ' _____ __  __'
+		printf "  ${_w}%s${_z}${_r}%s${_z}\n" '|_   _| | | | \ | |' '| ____|\ \/ /'
+		printf "  ${_w}%s${_z}${_r}%s${_z}\n" '  | | | | | |  \| |' '|  _|   \  / '
+		printf "  ${_w}%s${_z}${_r}%s${_z}\n" '  | | | |_| | |\  |' '| |___  /  \ '
+		printf "  ${_w}%s${_z}${_r}%s${_z}\n" '  |_|  \___/|_| \_|' '|_____|/_/\_\'
+		;;
+	esac
+}
+
+wordmark
+printf '  \033[2mSelf-hosted Zero Trust VPN\033[0m \033[2m·\033[0m \033[2m%s\033[0m\n\n' "$VERSION"
 
 [ "$HAVE_TTY" = "1" ] || [ "$ASSUME_YES" = "1" ] || no_tty_help
 
