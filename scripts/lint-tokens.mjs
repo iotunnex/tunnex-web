@@ -18,6 +18,9 @@ const THEME_FILES = new Set([
   // Email clients cannot resolve CSS custom properties — emails inline fixed
   // colors by design, single-sourced in this one file (mirrors light tokens).
   join(ROOT, 'src/lib/email/palette.ts'),
+  // The installer browser response is a standalone HTML document and cannot
+  // inherit site tokens. Its fixed colors are single-sourced in this palette.
+  join(ROOT, 'src/install/palette.ts'),
   // Brand marks are fixed-color by design
   join(ROOT, 'src/assets/logo.svg'),
   join(ROOT, 'src/assets/wordmark.svg'),

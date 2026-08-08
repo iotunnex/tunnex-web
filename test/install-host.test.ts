@@ -66,7 +66,9 @@ describe('get.tunnex.io', () => {
     const sums = await (await get('/SHA256SUMS')).text();
 
     const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(script));
-    const expected = [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, '0')).join('');
+    const expected = [...new Uint8Array(digest)]
+      .map((b) => b.toString(16).padStart(2, '0'))
+      .join('');
 
     expect(sums).toBe(`${expected}  get.sh\n`);
     // The format `sha256sum -c` parses: "<64 hex>  <filename>", exactly two spaces.
@@ -74,7 +76,9 @@ describe('get.tunnex.io', () => {
   });
 
   it('refuses methods other than GET and HEAD', async () => {
-    const res = await handleInstallHost(new Request(`https://${INSTALL_HOST}/`, { method: 'POST' }));
+    const res = await handleInstallHost(
+      new Request(`https://${INSTALL_HOST}/`, { method: 'POST' }),
+    );
     expect(res.status).toBe(405);
   });
 
@@ -145,7 +149,10 @@ describe('get.tunnex.io', () => {
   // all the way to `docker pull` before dying on the socket. `docker info` round-trips to the daemon.
   it('tests daemon reachability, not just the docker CLI', async () => {
     const script = await (await get('/')).text();
-    const fn = script.slice(script.indexOf('docker_ready() {'), script.indexOf('resolve_docker() {'));
+    const fn = script.slice(
+      script.indexOf('docker_ready() {'),
+      script.indexOf('resolve_docker() {'),
+    );
     expect(fn).toContain('info');
     expect(fn).toContain('compose version');
   });
@@ -154,10 +161,12 @@ describe('get.tunnex.io', () => {
   // sudo. Each rung is a different failure with a different fix, and collapsing them loses the diagnosis.
   it('falls back to sudo when the daemon refuses this user', async () => {
     const script = await (await get('/')).text();
-    const fn = script.slice(script.indexOf('resolve_docker() {'), script.indexOf('ensure_docker() {'));
+    const fn = script.slice(
+      script.indexOf('resolve_docker() {'),
+      script.indexOf('ensure_docker() {'),
+    );
     expect(fn).toContain('systemctl start docker');
     expect(fn).toContain('DOCKER="sudo docker"');
     expect(fn).toContain('GROUP_FIX=1');
   });
-
 });
